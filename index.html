@@ -1,1 +1,219 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>RAMAH WIND SPEED</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background: #08111f;
+    color: white;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    padding: 20px 10px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 30px;
+}
+
+.header p {
+    margin: 10px 0 0;
+    color: #aeb8c7;
+    font-size: 16px;
+}
+
+.card {
+    background: #121e30;
+    border-radius: 28px;
+    padding: 35px 20px;
+    margin-top: 20px;
+    text-align: center;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+}
+
+.label {
+    color: #aeb8c7;
+    font-size: 18px;
+}
+
+.speed {
+    font-size: 78px;
+    font-weight: bold;
+    line-height: 1.1;
+    margin: 15px 0 5px;
+}
+
+.unit {
+    font-size: 22px;
+    color: #aeb8c7;
+}
+
+.status {
+    margin-top: 30px;
+    padding: 14px;
+    border-radius: 16px;
+    background: #1c293d;
+    font-size: 20px;
+}
+
+.online {
+    color: #35e875;
+    font-weight: bold;
+}
+
+.offline {
+    color: #ff5555;
+    font-weight: bold;
+}
+
+.update {
+    margin-top: 18px;
+    color: #8995a7;
+    font-size: 14px;
+}
+
+.source {
+    text-align: center;
+    margin-top: 25px;
+    color: #687589;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>🌬️ RAMAH WIND SPEED</h1>
+        <p>محطة قياس سرعة الرياح - رماح</p>
+    </div>
+
+    <div class="card">
+
+        <div class="label">
+            سرعة الرياح الحالية
+        </div>
+
+        <div class="speed" id="windSpeed">
+            --
+        </div>
+
+        <div class="unit">
+            km/h
+        </div>
+
+        <div class="status" id="status">
+            جاري الاتصال...
+        </div>
+
+        <div class="update" id="lastUpdate">
+            آخر تحديث: --
+        </div>
+
+    </div>
+
+    <div class="source">
+        RAMAH WIND SPEED
+    </div>
+
+</div>
+
+<script>
+
+const CHANNEL_ID = "3455315";
+
+const API_URL =
+"https://api.thingspeak.com/channels/" +
+CHANNEL_ID +
+"/feeds/last.json?timezone=Asia%2FRiyadh";
+
+async function getData() {
+
+    try {
+
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error("ThingSpeak error");
+        }
+
+        const data = await response.json();
+
+        // Field 1 = RAMAH WIND SPEED
+        const wind = parseFloat(data.field1);
+
+        // Field 2 = STATUS
+        const status = parseFloat(data.field2);
+
+        if (!isNaN(wind)) {
+
+            document.getElementById("windSpeed").textContent =
+                wind.toFixed(1);
+
+        }
+
+        const statusElement =
+            document.getElementById("status");
+
+        if (!isNaN(status) && status > 0) {
+
+            statusElement.innerHTML =
+                "🟢 <span class='online'>متصل</span>";
+
+        } else {
+
+            statusElement.innerHTML =
+                "🔴 <span class='offline'>غير متصل</span>";
+
+        }
+
+        if (data.created_at) {
+
+            const date = new Date(data.created_at);
+
+            document.getElementById("lastUpdate").textContent =
+                "آخر تحديث: " +
+                date.toLocaleTimeString("ar-SA");
+
+        }
+
+    } catch (error) {
+
+        document.getElementById("status").innerHTML =
+            "🔴 <span class='offline'>غير متصل</span>";
+
+    }
+}
+
+// قراءة أولية
+getData();
+
+// تحديث كل 15 ثانية
+setInterval(getData, 15000);
+
+</script>
+
+</body>
+</html>
