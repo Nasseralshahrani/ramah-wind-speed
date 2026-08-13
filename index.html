@@ -14,7 +14,7 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: linear-gradient(160deg, #07111f, #10243a);
-  color: #fff;
+  color: white;
   min-height: 100vh;
 }
 
@@ -33,22 +33,21 @@ body {
 .header h1 {
   margin: 0;
   font-size: 30px;
-  letter-spacing: 1px;
 }
 
 .header p {
   margin: 8px 0 0;
   color: #aebdce;
-  font-size: 16px;
 }
 
-.card {
-  background: rgba(20, 35, 55, 0.95);
+.card,
+.chart-card {
+  background: #142337;
   border-radius: 28px;
   padding: 30px 20px;
   margin-top: 15px;
-  box-shadow: 0 15px 40px rgba(0,0,0,.35);
   text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,.35);
 }
 
 .label {
@@ -59,14 +58,12 @@ body {
 .speed {
   font-size: 82px;
   font-weight: bold;
-  margin: 10px 0 0;
-  line-height: 1;
+  margin: 12px 0 0;
 }
 
 .unit {
   color: #aebdce;
   font-size: 21px;
-  margin-top: 8px;
 }
 
 .status {
@@ -80,3 +77,325 @@ body {
 
 .online {
   color: #39e878;
+  font-weight: bold;
+}
+
+.offline {
+  color: #ff5555;
+  font-weight: bold;
+}
+
+.update {
+  margin-top: 15px;
+  color: #8291a5;
+  font-size: 14px;
+}
+
+.chart-title {
+  font-size: 19px;
+  margin-bottom: 15px;
+}
+
+canvas {
+  width: 100%;
+  height: 280px;
+}
+
+.footer {
+  text-align: center;
+  color: #68788d;
+  font-size: 13px;
+  padding: 22px 0;
+}
+
+@media (max-width: 450px) {
+  .speed {
+    font-size: 68px;
+  }
+
+  canvas {
+    height: 240px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+<h1>🌬️ RAMAH WIND SPEED</h1>
+<p>محطة قياس سرعة الرياح - رماح</p>
+</div>
+
+<div class="card">
+
+<div class="label">
+سرعة الرياح الحالية
+</div>
+
+<div class="speed" id="windSpeed">--</div>
+
+<div class="unit">
+km/h
+</div>
+
+<div class="status" id="status">
+جاري الاتصال...
+</div>
+
+<div class="update" id="lastUpdate">
+آخر تحديث: --
+</div>
+
+</div>
+
+<div class="chart-card">
+
+<div class="chart-title">
+📈 سرعة الرياح - آخر القراءات
+</div>
+
+<canvas id="windChart"></canvas>
+
+</div>
+
+<div class="footer">
+RAMAH WIND SPEED
+</div>
+
+</div>
+
+<script>
+
+const CHANNEL_ID = "3455315";
+
+const LAST_URL =
+"https://api.thingspeak.com/channels/" +
+CHANNEL_ID +
+"/feeds/last.json?timezone=Asia%2FRiyadh";
+
+const FEED_URL =
+"https://api.thingspeak.com/channels/" +
+CHANNEL_ID +
+"/feeds.json?results=20&timezone=Asia%2FRiyadh";
+
+
+async function getWindData() {
+
+try {
+
+const response = await fetch(LAST_URL);
+
+if (!response.ok) throw new Error();
+
+const data = await response.json();
+
+const wind = parseFloat(data.field1);
+const status = parseFloat(data.field2);
+
+if (!isNaN(wind)) {
+
+document.getElementById("windSpeed").textContent =
+wind.toFixed(1);
+
+}
+
+const statusElement =
+document.getElementById("status");
+
+if (!isNaN(status) && status > 0) {
+
+statusElement.innerHTML =
+"🟢 <span class='online'>متصل</span>";
+
+} else {
+
+statusElement.innerHTML =
+"🔴 <span class='offline'>غير متصل</span>";
+
+}
+
+if (data.created_at) {
+
+const date = new Date(data.created_at);
+
+document.getElementById("lastUpdate").textContent =
+"آخر تحديث: " +
+date.toLocaleTimeString("ar-SA");
+
+}
+
+} catch (error) {
+
+document.getElementById("status").innerHTML =
+"🔴 <span class='offline'>غير متصل</span>";
+
+}
+
+}
+
+
+async function getChartData() {
+
+try {
+
+const response = await fetch(FEED_URL);
+
+if (!response.ok) throw new Error();
+
+const data = await response.json();
+
+drawChart(data.feeds || []);
+
+} catch (error) {
+
+console.log("Chart error");
+
+}
+
+}
+
+
+function drawChart(feeds) {
+
+const canvas =
+document.getElementById("windChart");
+
+const ctx = canvas.getContext("2d");
+
+const width = canvas.clientWidth;
+const height = canvas.clientHeight;
+
+const ratio = window.devicePixelRatio || 1;
+
+canvas.width = width * ratio;
+canvas.height = height * ratio;
+
+ctx.scale(ratio, ratio);
+
+ctx.clearRect(0, 0, width, height);
+
+const values = feeds
+.map(f => parseFloat(f.field1))
+.filter(v => !isNaN(v));
+
+if (values.length < 2) return;
+
+const maxValue =
+Math.max(...values, 10);
+
+const padding = 35;
+
+const chartWidth =
+width - padding * 2;
+
+const chartHeight =
+height - padding * 2;
+
+
+/* شبكة الرسم */
+
+ctx.strokeStyle = "#2a3a50";
+ctx.lineWidth = 1;
+
+for (let i = 0; i <= 4; i++) {
+
+const y =
+padding +
+(chartHeight / 4) * i;
+
+ctx.beginPath();
+ctx.moveTo(padding, y);
+ctx.lineTo(width - padding, y);
+ctx.stroke();
+
+}
+
+
+/* خط سرعة الرياح */
+
+ctx.strokeStyle = "#35e878";
+ctx.lineWidth = 3;
+
+ctx.beginPath();
+
+values.forEach((value, index) => {
+
+const x =
+padding +
+(chartWidth / (values.length - 1)) *
+index;
+
+const y =
+height -
+padding -
+(value / maxValue) *
+chartHeight;
+
+if (index === 0) {
+
+ctx.moveTo(x, y);
+
+} else {
+
+ctx.lineTo(x, y);
+
+}
+
+});
+
+ctx.stroke();
+
+
+/* نقاط */
+
+ctx.fillStyle = "#ffffff";
+
+values.forEach((value, index) => {
+
+const x =
+padding +
+(chartWidth / (values.length - 1)) *
+index;
+
+const y =
+height -
+padding -
+(value / maxValue) *
+chartHeight;
+
+ctx.beginPath();
+
+ctx.arc(
+x,
+y,
+3,
+0,
+Math.PI * 2
+);
+
+ctx.fill();
+
+});
+
+}
+
+
+getWindData();
+getChartData();
+
+setInterval(getWindData, 15000);
+
+setInterval(getChartData, 30000);
+
+window.addEventListener(
+"resize",
+getChartData
+);
+
+</script>
+
+</body>
+</html>
