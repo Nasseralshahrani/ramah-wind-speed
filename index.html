@@ -2,94 +2,116 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RAMAH WIND SPEED</title>
 
 <style>
+*{box-sizing:border-box}
+
 body{
 margin:0;
 min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
 background:#08111f;
-color:white;
+color:#fff;
 font-family:Arial,Tahoma,sans-serif;
 }
-.box{text-align:center}
-.title{font-size:24px;margin-bottom:25px}
-.speed{font-size:90px;font-weight:bold;color:#42d9ff}
-.unit{font-size:20px;color:#9dbbca}
-.status{margin-top:25px}
+
+.container{
+width:100%;
+max-width:720px;
+margin:auto;
+padding:30px 16px;
+text-align:center;
+}
+
+.title{
+font-size:28px;
+font-weight:bold;
+margin:20px 0 10px;
+}
+
+.subtitle{
+color:#8db5cf;
+font-size:14px;
+margin-bottom:25px;
+}
+
+.speed{
+font-size:90px;
+font-weight:bold;
+color:#42d9ff;
+}
+
+.unit{
+font-size:20px;
+color:#9dbbca;
+margin-top:8px;
+}
+
+.status{
+margin:25px 0;
+font-size:14px;
+}
+
+.dot{
+display:inline-block;
+width:9px;
+height:9px;
+border-radius:50%;
+background:#777;
+margin-left:7px;
+}
+
+.card{
+background:rgba(22,53,78,.7);
+border:1px solid rgba(77,175,220,.18);
+border-radius:20px;
+padding:20px;
+margin-top:20px;
+}
+
+.chart{
+width:100%;
+height:220px;
+}
+
+canvas{
+width:100%;
+height:100%;
+}
+
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<div class="container">
 
 <div class="title">
 RAMAH WIND SPEED
 </div>
 
-<div>
-<span id="speed" class="speed">--</span>
+<div class="subtitle">
+نظام مراقبة سرعة الرياح - رماح
+</div>
+
+<div class="status">
+<span id="dot" class="dot"></span>
+<span id="status">جاري الاتصال...</span>
+</div>
+
+<div class="card">
+
+<div id="speed" class="speed">
+--
 </div>
 
 <div class="unit">
 RPM
 </div>
 
-<div id="status" class="status">
-جاري الاتصال...
 </div>
 
-</div>
+<div class="card">
 
-<script>
-
-const CHANNEL_ID="3455315";
-const FIELD_ID="1";
-
-async function getSpeed(){
-
-try{
-
-const url=
-`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD_ID}/last.json?_=${Date.now()}`;
-
-const response=await fetch(url);
-
-if(!response.ok) throw new Error();
-
-const data=await response.json();
-
-const speed=parseFloat(data[`field${FIELD_ID}`]);
-
-if(isNaN(speed)) throw new Error();
-
-document.getElementById("speed").textContent=
-speed.toFixed(0);
-
-document.getElementById("status").textContent=
-"متصل";
-
-}
-
-catch(error){
-
-document.getElementById("status").textContent=
-"غير متصل";
-
-}
-
-}
-
-getSpeed();
-
-setInterval(getSpeed,15000);
-
-</script>
-
-</body>
-</html>
+آخر تحديث:
