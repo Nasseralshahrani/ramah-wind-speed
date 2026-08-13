@@ -1,85 +1,95 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>RAMAH WIND SPEED</title>
 
 <style>
-
-*{
-    box-sizing:border-box;
-}
-
 body{
-    margin:0;
-    min-height:100vh;
-    background:
-    radial-gradient(
-        circle at top,
-        #173554 0%,
-        #08111f 45%,
-        #040912 100%
-    );
-    color:#fff;
-    font-family:Arial,Tahoma,sans-serif;
+margin:0;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#08111f;
+color:white;
+font-family:Arial,Tahoma,sans-serif;
+}
+.box{text-align:center}
+.title{font-size:24px;margin-bottom:25px}
+.speed{font-size:90px;font-weight:bold;color:#42d9ff}
+.unit{font-size:20px;color:#9dbbca}
+.status{margin-top:25px}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<div class="title">
+RAMAH WIND SPEED
+</div>
+
+<div>
+<span id="speed" class="speed">--</span>
+</div>
+
+<div class="unit">
+RPM
+</div>
+
+<div id="status" class="status">
+جاري الاتصال...
+</div>
+
+</div>
+
+<script>
+
+const CHANNEL_ID="3455315";
+const FIELD_ID="1";
+
+async function getSpeed(){
+
+try{
+
+const url=
+`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD_ID}/last.json?_=${Date.now()}`;
+
+const response=await fetch(url);
+
+if(!response.ok) throw new Error();
+
+const data=await response.json();
+
+const speed=parseFloat(data[`field${FIELD_ID}`]);
+
+if(isNaN(speed)) throw new Error();
+
+document.getElementById("speed").textContent=
+speed.toFixed(0);
+
+document.getElementById("status").textContent=
+"متصل";
+
 }
 
-.container{
-    width:100%;
-    max-width:720px;
-    margin:auto;
-    padding:22px 16px 30px;
+catch(error){
+
+document.getElementById("status").textContent=
+"غير متصل";
+
 }
 
-.header{
-    text-align:center;
-    padding:12px 0 8px;
 }
 
-.wind-logo{
-    width:92px;
-    height:92px;
-    margin:0 auto 12px;
-    position:relative;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    border-radius:50%;
-    background:linear-gradient(145deg,#1d4d70,#0a1b2c);
-    box-shadow:
-    0 0 0 1px rgba(70,190,255,.18),
-    0 12px 35px rgba(0,0,0,.4),
-    inset 0 0 25px rgba(50,190,255,.12);
-}
+getSpeed();
 
-.wind-logo::before,
-.wind-logo::after{
-    content:"";
-    position:absolute;
-    border:2px solid #42d9ff;
-    border-right-color:transparent;
-    border-radius:50%;
-    transform:rotate(-25deg);
-}
+setInterval(getSpeed,15000);
 
-.wind-logo::before{
-    width:48px;
-    height:25px;
-}
+</script>
 
-.wind-logo::after{
-    width:62px;
-    height:32px;
-    opacity:.55;
-}
-
-.logo-center{
-    width:10px;
-    height:10px;
-    border-radius:50%;
-    background:#42d9ff;
-    box-shadow:0 0 14px #42d9ff;
-   
+</body>
+</html>
