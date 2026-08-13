@@ -3,178 +3,374 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>RAMAH WIND SPEED</title>
 
 <style>
+
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(160deg, #07111f, #10243a);
-  color: white;
-  min-height: 100vh;
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Tahoma, sans-serif;
+    background:
+        radial-gradient(circle at top, #173452 0%, #07111f 55%, #040a12 100%);
+    color: white;
 }
 
 .container {
-  width: 100%;
-  max-width: 700px;
-  margin: auto;
-  padding: 18px;
+    width: 100%;
+    max-width: 720px;
+    margin: auto;
+    padding: 18px;
 }
 
+/* HEADER */
+
 .header {
-  text-align: center;
-  padding: 18px 5px;
+    text-align: center;
+    padding: 18px 5px 12px;
+}
+
+.header .icon {
+    font-size: 42px;
+    margin-bottom: 5px;
 }
 
 .header h1 {
-  margin: 0;
-  font-size: 30px;
+    margin: 0;
+    font-size: 30px;
+    letter-spacing: 1px;
 }
 
 .header p {
-  margin: 8px 0 0;
-  color: #aebdce;
+    margin: 8px 0 0;
+    color: #9fb0c4;
+    font-size: 15px;
 }
 
-.card,
-.chart-card {
-  background: #142337;
-  border-radius: 28px;
-  padding: 30px 20px;
-  margin-top: 15px;
-  text-align: center;
-  box-shadow: 0 15px 40px rgba(0,0,0,.35);
+/* MAIN SPEED CARD */
+
+.speed-card {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    margin-top: 18px;
+    padding: 35px 20px 30px;
+
+    background: rgba(18, 34, 53, 0.96);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 20px 50px rgba(0,0,0,0.35),
+        inset 0 1px rgba(255,255,255,0.04);
 }
 
-.label {
-  color: #aebdce;
-  font-size: 18px;
+.speed-card::before {
+    content: "";
+    position: absolute;
+
+    width: 220px;
+    height: 220px;
+
+    border-radius: 50%;
+
+    background: rgba(40, 220, 130, 0.08);
+
+    top: -110px;
+    left: 50%;
+
+    transform: translateX(-50%);
+}
+
+.speed-label {
+    position: relative;
+    color: #9fb0c4;
+    font-size: 18px;
 }
 
 .speed {
-  font-size: 82px;
-  font-weight: bold;
-  margin: 12px 0 0;
+    position: relative;
+
+    margin-top: 12px;
+
+    font-size: 92px;
+    line-height: 1;
+
+    font-weight: bold;
+
+    letter-spacing: -3px;
 }
 
 .unit {
-  color: #aebdce;
-  font-size: 21px;
+    margin-top: 10px;
+
+    color: #aebdce;
+
+    font-size: 22px;
 }
 
+/* STATUS */
+
 .status {
-  margin: 25px auto 0;
-  width: fit-content;
-  padding: 10px 22px;
-  border-radius: 30px;
-  background: #1d2c40;
-  font-size: 19px;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 28px;
+
+    padding: 11px 25px;
+
+    border-radius: 40px;
+
+    background: rgba(255,255,255,0.06);
+
+    font-size: 19px;
+}
+
+.status-dot {
+    width: 12px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    background: #35e878;
+
+    box-shadow:
+        0 0 10px rgba(53,232,120,0.8);
 }
 
 .online {
-  color: #39e878;
-  font-weight: bold;
+    color: #35e878;
+    font-weight: bold;
 }
 
 .offline {
-  color: #ff5555;
-  font-weight: bold;
+    color: #ff5555;
+    font-weight: bold;
 }
 
+.offline-dot {
+    background: #ff5555;
+
+    box-shadow:
+        0 0 10px rgba(255,85,85,0.8);
+}
+
+/* UPDATE */
+
 .update {
-  margin-top: 15px;
-  color: #8291a5;
-  font-size: 14px;
+    margin-top: 17px;
+
+    color: #77889d;
+
+    font-size: 14px;
+}
+
+/* CHART */
+
+.chart-card {
+    margin-top: 18px;
+
+    padding: 22px 16px;
+
+    background: rgba(18, 34, 53, 0.96);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,0.28);
 }
 
 .chart-title {
-  font-size: 19px;
-  margin-bottom: 15px;
+    text-align: center;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    margin-bottom: 18px;
+
+    color: #dbe6f2;
+}
+
+.chart-wrapper {
+    width: 100%;
+    height: 280px;
 }
 
 canvas {
-  width: 100%;
-  height: 280px;
+    width: 100%;
+    height: 100%;
 }
+
+/* FOOTER */
 
 .footer {
-  text-align: center;
-  color: #68788d;
-  font-size: 13px;
-  padding: 22px 0;
+    text-align: center;
+
+    padding: 25px 0 10px;
+
+    color: #596a7f;
+
+    font-size: 13px;
 }
 
-@media (max-width: 450px) {
-  .speed {
-    font-size: 68px;
-  }
+/* MOBILE */
 
-  canvas {
-    height: 240px;
-  }
+@media (max-width: 480px) {
+
+    .container {
+        padding: 12px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .header .icon {
+        font-size: 36px;
+    }
+
+    .speed-card {
+        padding: 30px 15px;
+    }
+
+    .speed {
+        font-size: 72px;
+    }
+
+    .chart-wrapper {
+        height: 240px;
+    }
+
 }
+
 </style>
+
 </head>
 
 <body>
 
 <div class="container">
 
-<div class="header">
-<h1>🌬️ RAMAH WIND SPEED</h1>
-<p>محطة قياس سرعة الرياح - رماح</p>
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="icon">🌬️</div>
+
+        <h1>
+            RAMAH WIND SPEED
+        </h1>
+
+        <p>
+            محطة قياس سرعة الرياح - رماح
+        </p>
+
+    </div>
+
+
+    <!-- SPEED -->
+
+    <div class="speed-card">
+
+        <div class="speed-label">
+            سرعة الرياح الحالية
+        </div>
+
+        <div
+            class="speed"
+            id="windSpeed">
+            --
+        </div>
+
+        <div class="unit">
+            km/h
+        </div>
+
+
+        <!-- STATUS -->
+
+        <div
+            class="status"
+            id="status">
+
+            <span
+                class="status-dot"
+                id="statusDot">
+            </span>
+
+            <span id="statusText">
+                جاري الاتصال...
+            </span>
+
+        </div>
+
+
+        <div
+            class="update"
+            id="lastUpdate">
+
+            آخر تحديث: --
+
+        </div>
+
+    </div>
+
+
+    <!-- CHART -->
+
+    <div class="chart-card">
+
+        <div class="chart-title">
+
+            📈 سرعة الرياح
+
+        </div>
+
+        <div class="chart-wrapper">
+
+            <canvas
+                id="windChart">
+            </canvas>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        RAMAH WIND SPEED
+
+    </div>
+
 </div>
 
-<div class="card">
-
-<div class="label">
-سرعة الرياح الحالية
-</div>
-
-<div class="speed" id="windSpeed">--</div>
-
-<div class="unit">
-km/h
-</div>
-
-<div class="status" id="status">
-جاري الاتصال...
-</div>
-
-<div class="update" id="lastUpdate">
-آخر تحديث: --
-</div>
-
-</div>
-
-<div class="chart-card">
-
-<div class="chart-title">
-📈 سرعة الرياح - آخر القراءات
-</div>
-
-<canvas id="windChart"></canvas>
-
-</div>
-
-<div class="footer">
-RAMAH WIND SPEED
-</div>
-
-</div>
 
 <script>
 
+/* ==========================
+   THINGSPEAK
+========================== */
+
 const CHANNEL_ID = "3455315";
+
 
 const LAST_URL =
 "https://api.thingspeak.com/channels/" +
 CHANNEL_ID +
 "/feeds/last.json?timezone=Asia%2FRiyadh";
+
 
 const FEED_URL =
 "https://api.thingspeak.com/channels/" +
@@ -182,220 +378,81 @@ CHANNEL_ID +
 "/feeds.json?results=20&timezone=Asia%2FRiyadh";
 
 
+/* ==========================
+   READ CURRENT DATA
+========================== */
+
 async function getWindData() {
 
-try {
+    try {
 
-const response = await fetch(LAST_URL);
+        const response =
+            await fetch(LAST_URL);
 
-if (!response.ok) throw new Error();
+        if (!response.ok) {
 
-const data = await response.json();
+            throw new Error(
+                "ThingSpeak error"
+            );
 
-const wind = parseFloat(data.field1);
-const status = parseFloat(data.field2);
+        }
 
-if (!isNaN(wind)) {
+        const data =
+            await response.json();
 
-document.getElementById("windSpeed").textContent =
-wind.toFixed(1);
 
-}
+        /* FIELD 1 */
 
-const statusElement =
-document.getElementById("status");
+        const wind =
+            parseFloat(data.field1);
 
-if (!isNaN(status) && status > 0) {
 
-statusElement.innerHTML =
-"🟢 <span class='online'>متصل</span>";
+        if (!isNaN(wind)) {
 
-} else {
+            document
+                .getElementById("windSpeed")
+                .textContent =
+                wind.toFixed(1);
 
-statusElement.innerHTML =
-"🔴 <span class='offline'>غير متصل</span>";
+        }
 
-}
 
-if (data.created_at) {
+        /* FIELD 2 */
 
-const date = new Date(data.created_at);
+        const status =
+            parseFloat(data.field2);
 
-document.getElementById("lastUpdate").textContent =
-"آخر تحديث: " +
-date.toLocaleTimeString("ar-SA");
 
-}
+        const statusText =
+            document.getElementById(
+                "statusText"
+            );
 
-} catch (error) {
 
-document.getElementById("status").innerHTML =
-"🔴 <span class='offline'>غير متصل</span>";
+        const statusDot =
+            document.getElementById(
+                "statusDot"
+            );
 
-}
 
-}
+        if (
+            !isNaN(status)
+            &&
+            status > 0
+        ) {
 
+            statusText.innerHTML =
+                "متصل";
 
-async function getChartData() {
+            statusText.className =
+                "online";
 
-try {
+            statusDot.className =
+                "status-dot";
 
-const response = await fetch(FEED_URL);
+        } else {
 
-if (!response.ok) throw new Error();
+            statusText.innerHTML =
+                "غير متصل";
 
-const data = await response.json();
-
-drawChart(data.feeds || []);
-
-} catch (error) {
-
-console.log("Chart error");
-
-}
-
-}
-
-
-function drawChart(feeds) {
-
-const canvas =
-document.getElementById("windChart");
-
-const ctx = canvas.getContext("2d");
-
-const width = canvas.clientWidth;
-const height = canvas.clientHeight;
-
-const ratio = window.devicePixelRatio || 1;
-
-canvas.width = width * ratio;
-canvas.height = height * ratio;
-
-ctx.scale(ratio, ratio);
-
-ctx.clearRect(0, 0, width, height);
-
-const values = feeds
-.map(f => parseFloat(f.field1))
-.filter(v => !isNaN(v));
-
-if (values.length < 2) return;
-
-const maxValue =
-Math.max(...values, 10);
-
-const padding = 35;
-
-const chartWidth =
-width - padding * 2;
-
-const chartHeight =
-height - padding * 2;
-
-
-/* شبكة الرسم */
-
-ctx.strokeStyle = "#2a3a50";
-ctx.lineWidth = 1;
-
-for (let i = 0; i <= 4; i++) {
-
-const y =
-padding +
-(chartHeight / 4) * i;
-
-ctx.beginPath();
-ctx.moveTo(padding, y);
-ctx.lineTo(width - padding, y);
-ctx.stroke();
-
-}
-
-
-/* خط سرعة الرياح */
-
-ctx.strokeStyle = "#35e878";
-ctx.lineWidth = 3;
-
-ctx.beginPath();
-
-values.forEach((value, index) => {
-
-const x =
-padding +
-(chartWidth / (values.length - 1)) *
-index;
-
-const y =
-height -
-padding -
-(value / maxValue) *
-chartHeight;
-
-if (index === 0) {
-
-ctx.moveTo(x, y);
-
-} else {
-
-ctx.lineTo(x, y);
-
-}
-
-});
-
-ctx.stroke();
-
-
-/* نقاط */
-
-ctx.fillStyle = "#ffffff";
-
-values.forEach((value, index) => {
-
-const x =
-padding +
-(chartWidth / (values.length - 1)) *
-index;
-
-const y =
-height -
-padding -
-(value / maxValue) *
-chartHeight;
-
-ctx.beginPath();
-
-ctx.arc(
-x,
-y,
-3,
-0,
-Math.PI * 2
-);
-
-ctx.fill();
-
-});
-
-}
-
-
-getWindData();
-getChartData();
-
-setInterval(getWindData, 15000);
-
-setInterval(getChartData, 30000);
-
-window.addEventListener(
-"resize",
-getChartData
-);
-
-</script>
-
-</body>
-</html>
+           
