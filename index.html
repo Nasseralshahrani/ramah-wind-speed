@@ -2,394 +2,434 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>محطة الطقس الرقمية</title>
+<meta charset="UTF-8">
 
-    <style>
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-        * {
-            box-sizing: border-box;
-        }
+<title>RAMAH WIND SPEED</title>
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
+<style>
 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+*{
+box-sizing:border-box;
+}
 
-            min-height: 100vh;
-            margin: 0;
+body{
 
-            transition: background-color 1s ease;
-        }
+margin:0;
 
-        .card {
-            background-color: rgba(30, 30, 30, 0.75);
+min-height:100vh;
 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+font-family:Arial,sans-serif;
 
-            padding: 50px 30px;
+background:
+radial-gradient(
+circle at top,
+#173554 0%,
+#08111f 45%,
+#040912 100%
+);
 
-            border-radius: 20px;
+color:white;
 
-            text-align: center;
+display:flex;
 
-            box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.5);
+justify-content:center;
 
-            border:
-                1px solid rgba(255, 255, 255, 0.1);
+align-items:center;
 
-            width: 280px;
+transition:background 1s ease;
 
-            position: relative;
-        }
+}
 
-        h1 {
-            font-size: 22px;
+.card{
 
-            margin:
-                0 0 25px 0;
+width:320px;
 
-            color: #ffffff;
+padding:40px 25px;
 
-            font-weight: normal;
-        }
+border-radius:25px;
 
-        .temp-container {
-            font-size: 72px;
+text-align:center;
 
-            font-weight: bold;
+background:
+rgba(20,30,45,.80);
 
-            color: #ffffff;
+backdrop-filter:blur(12px);
 
-            direction: ltr;
-        }
+-webkit-backdrop-filter:blur(12px);
 
-        .unit {
-            font-size: 32px;
+border:
+1px solid rgba(255,255,255,.12);
 
-            color: #cccccc;
+box-shadow:
+0 15px 40px rgba(0,0,0,.5);
 
-            margin-left: 5px;
-        }
+position:relative;
 
-        /* مؤشر الاتصال */
+}
 
-        .led-indicator {
-            position: absolute;
+h1{
 
-            top: 20px;
-            left: 20px;
+margin:0 0 8px;
 
-            width: 12px;
-            height: 12px;
+font-size:27px;
 
-            background-color: #444444;
+font-weight:bold;
 
-            border-radius: 50%;
+}
 
-            transition:
-                background-color 0.3s ease,
-                box-shadow 0.3s ease;
-        }
+.subtitle{
 
-        /* اتصال ناجح */
+font-size:16px;
 
-        .led-success {
-            background-color: #00ff66 !important;
+color:#aebdcc;
 
-            box-shadow:
-                0 0 12px #00ff66;
-        }
+margin-bottom:30px;
 
-        /* خطأ */
+}
 
-        .led-error {
-            background-color: #ff3333 !important;
+.speed{
 
-            box-shadow:
-                0 0 12px #ff3333;
-        }
+font-size:70px;
 
-    </style>
+font-weight:bold;
+
+line-height:1;
+
+direction:ltr;
+
+}
+
+.unit{
+
+font-size:25px;
+
+color:#bfc8d2;
+
+margin-right:8px;
+
+}
+
+.status{
+
+margin-top:30px;
+
+font-size:16px;
+
+}
+
+.led{
+
+display:inline-block;
+
+width:12px;
+
+height:12px;
+
+border-radius:50%;
+
+background:#777;
+
+margin-left:8px;
+
+vertical-align:middle;
+
+}
+
+.connected{
+
+background:#00ff66;
+
+box-shadow:
+0 0 12px #00ff66;
+
+}
+
+.error{
+
+background:#ff3333;
+
+box-shadow:
+0 0 12px #ff3333;
+
+}
+
+.info{
+
+margin-top:20px;
+
+font-size:12px;
+
+color:#7f91a3;
+
+}
+
+</style>
 
 </head>
 
+
 <body>
 
-    <div class="card">
+<div class="card">
 
-        <div
-            id="status_led"
-            class="led-indicator">
-        </div>
+<h1>RAMAH WIND SPEED</h1>
 
-        <h1>
-            درجة الحرارة الحالية
-        </h1>
+<div class="subtitle">
+سرعة الرياح الحالية
+</div>
 
-        <div class="temp-container">
+<div>
 
-            <span id="temp_value">
-                --
-            </span>
+<span
+id="speed"
+class="speed">
+--
+</span>
 
-            <span class="unit">
-                °C
-            </span>
+<span class="unit">
+RPM
+</span>
 
-        </div>
+</div>
 
-    </div>
+<div class="status">
 
+<span
+id="led"
+class="led">
+</span>
 
-    <script>
+<span id="status">
+جاري الاتصال...
+</span>
 
-        // =====================================
-        // إعدادات ThingSpeak
-        // =====================================
+</div>
 
-        const CHANNEL_ID = "3455315";
+<div class="info">
 
-        // ضع Read API Key هنا
-        const READ_API_KEY = "ضع_مفتاح_القراءة_هنا";
+ThingSpeak Channel: 3455315
 
+</div>
 
-        // =====================================
-        // رابط ThingSpeak الصحيح
-        // =====================================
+</div>
 
-        const URL =
-            "https://api.thingspeak.com/channels/" +
-            CHANNEL_ID +
-            "/feeds/last.json?api_key=" +
-            READ_API_KEY;
 
+<script>
 
-        // =====================================
-        // تحديث حالة الاتصال والخلفية
-        // =====================================
 
-        function updateUIElements(
-            temperature,
-            success
-        ) {
+// =====================================
+// ThingSpeak
+// =====================================
 
-            const led =
-                document.getElementById(
-                    "status_led"
-                );
+const CHANNEL_ID = "3455315";
 
+const READ_API_KEY = "XKI2TU4LEPG0C9YN";
 
-            if (!success) {
 
-                led.className =
-                    "led-indicator led-error";
+// =====================================
+// Field الخاص بسرعة الرياح
+// =====================================
 
-                document.body.style.backgroundColor =
-                    "#241414";
+const FIELD = "1";
 
-                return;
-            }
 
+// =====================================
+// رابط قراءة آخر قيمة
+// =====================================
 
-            led.className =
-                "led-indicator led-success";
+const API_URL =
+`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1`;
 
 
-            setTimeout(function () {
+// =====================================
+// عناصر الصفحة
+// =====================================
 
-                led.className =
-                    "led-indicator";
+const speedElement =
+document.getElementById("speed");
 
-            }, 2000);
+const statusElement =
+document.getElementById("status");
 
+const ledElement =
+document.getElementById("led");
 
-            // =================================
-            // لون الخلفية حسب درجة الحرارة
-            // =================================
 
-            if (temperature <= 18) {
+// =====================================
+// جلب سرعة الرياح
+// =====================================
 
-                document.body.style.backgroundColor =
-                    "#1A365D";
+async function getWindSpeed(){
 
-            }
+try{
 
-            else if (
-                temperature > 18 &&
-                temperature <= 28
-            ) {
+const response =
+await fetch(
+API_URL,
+{
+cache:"no-store"
+}
+);
 
-                document.body.style.backgroundColor =
-                    "#1C4533";
 
-            }
+if(!response.ok){
 
-            else if (
-                temperature > 28 &&
-                temperature <= 38
-            ) {
+throw new Error(
+"HTTP " + response.status
+);
 
-                document.body.style.backgroundColor =
-                    "#7B341E";
+}
 
-            }
 
-            else {
+const data =
+await response.json();
 
-                document.body.style.backgroundColor =
-                    "#6B1D1D";
 
-            }
+console.log(
+"ThingSpeak:",
+data
+);
 
-        }
 
+// =================================
+// التأكد من وجود البيانات
+// =================================
 
-        // =====================================
-        // جلب البيانات
-        // =====================================
+if(
+!data.feeds ||
+data.feeds.length === 0
+){
 
-        async function fetchWeather() {
+throw new Error(
+"لا توجد بيانات"
+);
 
-            try {
+}
 
-                const response =
-                    await fetch(
-                        URL,
-                        {
-                            cache: "no-store"
-                        }
-                    );
 
+const value =
+data.feeds[0][
+`field${FIELD}`
+];
 
-                if (!response.ok) {
 
-                    throw new Error(
-                        "HTTP Error: " +
-                        response.status
-                    );
+// =================================
+// تحويل القيمة إلى رقم
+// =================================
 
-                }
+const rpm =
+parseFloat(value);
 
 
-                const data =
-                    await response.json();
+if(
+Number.isNaN(rpm)
+){
 
+throw new Error(
+"القيمة غير صالحة"
+);
 
-                console.log(
-                    "ThingSpeak:",
-                    data
-                );
+}
 
 
-                // =================================
-                // قراءة Field 1
-                // =================================
+// =================================
+// عرض سرعة الرياح
+// =================================
 
-                if (
-                    data.field1 !== null &&
-                    data.field1 !== undefined &&
-                    data.field1 !== ""
-                ) {
+speedElement.textContent =
+rpm.toFixed(1);
 
-                    const temperature =
-                        parseFloat(
-                            data.field1
-                        );
 
+// =================================
+// حالة الاتصال
+// =================================
 
-                    if (
-                        Number.isNaN(
-                            temperature
-                        )
-                    ) {
+statusElement.textContent =
+"متصل";
 
-                        throw new Error(
-                            "القيمة ليست رقمًا"
-                        );
+ledElement.className =
+"led connected";
 
-                    }
 
+// =================================
+// تغيير الخلفية حسب السرعة
+// =================================
 
-                    document.getElementById(
-                        "temp_value"
-                    ).textContent =
-                        temperature.toFixed(1);
+if(rpm <= 10){
 
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
 
-                    updateUIElements(
-                        temperature,
-                        true
-                    );
+}
 
-                }
+else if(rpm <= 30){
 
-                else {
+document.body.style.background =
+"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
 
-                    document.getElementById(
-                        "temp_value"
-                    ).textContent =
-                        "--";
+}
 
+else if(rpm <= 60){
 
-                    updateUIElements(
-                        null,
-                        false
-                    );
+document.body.style.background =
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
 
-                }
+}
 
-            }
+else{
 
-            catch (error) {
+document.body.style.background =
+"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
 
-                console.error(
-                    "خطأ في ThingSpeak:",
-                    error
-                );
+}
 
 
-                document.getElementById(
-                    "temp_value"
-                ).textContent =
-                    "--";
+}
 
+catch(error){
 
-                updateUIElements(
-                    null,
-                    false
-                );
+console.error(
+"ThingSpeak Error:",
+error
+);
 
-            }
 
-        }
+speedElement.textContent =
+"--";
 
+statusElement.textContent =
+"خطأ في الاتصال";
 
-        // =====================================
-        // تشغيل أول قراءة
-        // =====================================
+ledElement.className =
+"led error";
 
-        fetchWeather();
+}
 
+}
 
-        // =====================================
-        // تحديث كل 15 ثانية
-        // =====================================
 
-        setInterval(
-            fetchWeather,
-            15000
-        );
+// =====================================
+// تشغيل مباشر
+// =====================================
 
-    </script>
+getWindSpeed();
+
+
+// =====================================
+// تحديث كل 15 ثانية
+// =====================================
+
+setInterval(
+getWindSpeed,
+15000
+);
+
+
+</script>
 
 </body>
 
