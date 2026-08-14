@@ -162,9 +162,27 @@ border:1px solid rgba(255,255,255,.08);
 }
 
 
+/* الرموز بجانب الأرقام */
+
+.value-row{
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:8px;
+
+direction:ltr;
+
+}
+
 .icon{
 
 font-size:35px;
+
+line-height:1;
 
 }
 
@@ -268,14 +286,18 @@ class="led">
 
 <div class="box">
 
-<div class="icon">
-🌬️
-</div>
+<div class="value-row">
 
 <div
 id="wind"
 class="value">
 --
+</div>
+
+<div class="icon">
+🌪️
+</div>
+
 </div>
 
 <div class="unit">
@@ -293,14 +315,18 @@ km/h
 
 <div class="box">
 
-<div class="icon">
-🌡️
-</div>
+<div class="value-row">
 
 <div
 id="temperature"
 class="value">
 --
+</div>
+
+<div class="icon">
+🌡️
+</div>
+
 </div>
 
 <div class="unit">
@@ -318,14 +344,18 @@ class="value">
 
 <div class="box">
 
-<div class="icon">
-💧
-</div>
+<div class="value-row">
 
 <div
 id="humidity"
 class="value">
 --
+</div>
+
+<div class="icon">
+💧
+</div>
+
 </div>
 
 <div class="unit">
