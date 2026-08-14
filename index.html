@@ -191,7 +191,6 @@ RAMAH WIND SPEED
 <span
 id="speed"
 class="speed">
---
 </span>
 
 <span class="unit">
@@ -240,7 +239,7 @@ const FIREBASE_URL =
 // آخر قراءة
 // ======================================
 
-let lastWindSpeed = null;
+let lastRPM = null;
 
 
 // ======================================
@@ -281,16 +280,16 @@ data
 
 
 // ======================================
-// قراءة سرعة الرياح km/h
+// قراءة WIND SPEED
 // ======================================
 
-const windSpeed =
+const rpm =
 parseFloat(
 data.windSpeed
 );
 
 
-if(Number.isNaN(windSpeed)){
+if(Number.isNaN(rpm)){
 
 throw new Error(
 "windSpeed غير موجود"
@@ -303,8 +302,7 @@ throw new Error(
 // حفظ آخر قراءة
 // ======================================
 
-lastWindSpeed =
-windSpeed;
+lastRPM = rpm;
 
 
 // ======================================
@@ -314,7 +312,7 @@ windSpeed;
 document.getElementById(
 "speed"
 ).textContent =
-windSpeed.toFixed(2);
+rpm.toFixed(1);
 
 
 // ======================================
@@ -340,92 +338,4 @@ throw new Error(
 // حساب عمر الاتصال
 // ======================================
 
-const now =
-Date.now();
-
-const age =
-now - lastSeen;
-
-
-console.log(
-"lastSeen age:",
-age,
-"ms"
-);
-
-
-// ======================================
-// حالة الاتصال
-// ======================================
-
-if(age <= 15000){
-
-document.getElementById(
-"status"
-).textContent =
-"متصل";
-
-document.getElementById(
-"led"
-).className =
-"led connected";
-
-}
-
-else{
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
-
-// ======================================
-// وقت آخر قراءة
-// ======================================
-
-document.getElementById(
-"time"
-).textContent =
-"آخر قراءة: " +
-new Date(
-lastSeen
-).toLocaleTimeString(
-"ar-SA",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
-);
-
-
-// ======================================
-// تغيير الخلفية حسب سرعة الرياح
-// ======================================
-
-if(windSpeed <= 0.10){
-
-document.body.style.background =
-"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
-
-}
-
-else if(windSpeed <= 0.30){
-
-document.body.style.background =
-"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
-
-}
-
-else if(windSpeed <= 0.60){
-
-document.body.style.background =
-"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#
+const
