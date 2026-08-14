@@ -162,8 +162,6 @@ border:1px solid rgba(255,255,255,.08);
 }
 
 
-/* الرموز بجانب الأرقام */
-
 .value-row{
 
 display:flex;
@@ -396,6 +394,15 @@ const FIREBASE_URL =
 "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 
+// =================================
+// متغيرات اتصال ESP32
+// =================================
+
+let lastESP32Seen = undefined;
+
+let lastESP32Update = undefined;
+
+
 
 async function readFirebase(){
 
@@ -514,20 +521,88 @@ humidity.toFixed(1);
 
 
 // =================================
-// اتصال Firebase
+// اتصال ESP32 الحقيقي
 // =================================
+
+if(
+data.weather &&
+data.weather.lastSeen !== undefined
+){
+
+const currentLastSeen =
+data.weather.lastSeen;
+
+
+// إذا تغيرت قيمة lastSeen
+// فهذا يعني أن ESP32 أرسل بيانات جديدة
+
+if(
+lastESP32Seen === undefined ||
+lastESP32Seen !== currentLastSeen
+){
+
+lastESP32Seen =
+currentLastSeen;
+
+lastESP32Update =
+Date.now();
+
+}
+
+
+// =================================
+// فحص آخر إرسال من ESP32
+// =================================
+
+if(
+lastESP32Update !== undefined &&
+(Date.now() - lastESP32Update) < 7000
+){
 
 document.getElementById(
 "status"
 ).textContent =
 "متصل";
 
-
 document.getElementById(
 "led"
 ).className =
 "led connected";
 
+}else{
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+
+}else{
+
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+
+// =================================
+// آخر تحديث
+// =================================
 
 document.getElementById(
 "time"
