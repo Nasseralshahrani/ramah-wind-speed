@@ -1,18 +1,6 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>  <html lang="ar" dir="rtl">  <head>  <meta charset="UTF-8">  <meta name="viewport"    content="width=device-width, initial-scale=1.0">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
-
-<title>RAMAH WIND SPEED</title>
-
-<style>
-
-*{
+<title>RAMAH WIND SPEED</title>  <style>    *{
 box-sizing:border-box;
 }
 
@@ -170,77 +158,41 @@ color:#718096;
 
 }
 
-</style>
-
-</head>
-
-<body>
-
-<div class="card">
-
-<h1>
+</style>  </head>  <body>  <div class="card">  <h1>
 RAMAH WIND SPEED
-</h1>
 
-<div class="subtitle">
-سرعة الرياح الحالية
-</div>
-
-<div>
-
-<span
-id="speed"
-class="speed">
-</span>
-
-<span class="unit">
+</h1>  <div class="subtitle">    
+سرعة الرياح الحالية    
+</div>  <div>  <span    
+id="speed"    
+class="speed">  </span>   <span class="unit">
 km/h
 </span>
-
-</div>
-
-<div class="status">
-
-<span
-id="led"
+</span>  </div>  <div class="status">  <span    
+id="led"    
 class="led">
 </span>
 
-<span id="status">
-جاري الاتصال...
-</span>
-
-</div>
-
-<div
-id="time"
-class="time">
-آخر قراءة: --
-</div>
-
-<div class="info">
-Firebase Live Data
-</div>
-
-</div>
-
-
-<script>
-
-// ======================================
+<span id="status">    
+جاري الاتصال...    
+</span>  </div>  <div    
+id="time"    
+class="time">    
+آخر قراءة: --    
+</div>  <div class="info">    
+Firebase Live Data    
+</div>  </div>  <script>    // ======================================
 // Firebase
 // ======================================
 
 const FIREBASE_URL =
 "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
 
-
 // ======================================
 // آخر قراءة
 // ======================================
 
 let lastRPM = null;
-
 
 // ======================================
 // قراءة Firebase
@@ -259,7 +211,6 @@ cache:"no-store"
 }
 );
 
-
 if(!response.ok){
 
 throw new Error(
@@ -268,16 +219,13 @@ throw new Error(
 
 }
 
-
 const data =
 await response.json();
-
 
 console.log(
 "Firebase:",
 data
 );
-
 
 // ======================================
 // قراءة WIND SPEED
@@ -288,7 +236,6 @@ parseFloat(
 data.windSpeed
 );
 
-
 if(Number.isNaN(rpm)){
 
 throw new Error(
@@ -297,13 +244,11 @@ throw new Error(
 
 }
 
-
 // ======================================
 // حفظ آخر قراءة
 // ======================================
 
 lastRPM = rpm;
-
 
 // ======================================
 // عرض السرعة
@@ -314,7 +259,6 @@ document.getElementById(
 ).textContent =
 rpm.toFixed(1);
 
-
 // ======================================
 // قراءة lastSeen
 // ======================================
@@ -324,7 +268,6 @@ Number(
 data.lastSeen
 );
 
-
 if(!lastSeen){
 
 throw new Error(
@@ -333,9 +276,168 @@ throw new Error(
 
 }
 
-
 // ======================================
 // حساب عمر الاتصال
 // ======================================
 
-const
+const now =
+Date.now();
+
+const age =
+now - lastSeen;
+
+console.log(
+"lastSeen age:",
+age,
+"ms"
+);
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+if(age <= 15000){
+
+// ==================================
+// متصل
+// ==================================
+
+document.getElementById(
+"status"
+).textContent =
+"متصل";
+
+document.getElementById(
+"led"
+).className =
+"led connected";
+
+}
+
+else{
+
+// ==================================
+// غير متصل
+// ==================================
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+// ======================================
+// وقت آخر قراءة
+// ======================================
+
+document.getElementById(
+"time"
+).textContent =
+"آخر قراءة: " +
+new Date(
+lastSeen
+).toLocaleTimeString(
+"ar-SA",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+// ======================================
+// تغيير الخلفية حسب السرعة
+// ======================================
+
+if(rpm <= 10){
+
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
+
+}
+
+else if(rpm <= 30){
+
+document.body.style.background =
+"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
+
+}
+
+else if(rpm <= 60){
+
+document.body.style.background =
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
+
+}
+
+else{
+
+document.body.style.background =
+"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+
+}
+
+}
+
+// ======================================
+// خطأ في الاتصال
+// ======================================
+
+catch(error){
+
+console.error(
+"Firebase:",
+error
+);
+
+// لا نمسح آخر قراءة
+
+if(lastRPM !== null){
+
+document.getElementById(
+"speed"
+).textContent =
+lastRPM.toFixed(1);
+
+}
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+}
+
+// ======================================
+// تشغيل أول مرة
+// ======================================
+
+getWindSpeed();
+
+// ======================================
+// تحديث كل ثانيتين
+// ======================================
+
+setInterval(
+getWindSpeed,
+2000
+);
+
+</script>  </body>  </html>
