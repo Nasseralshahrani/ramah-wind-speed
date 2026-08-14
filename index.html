@@ -54,18 +54,15 @@ border-radius:25px;
 
 text-align:center;
 
-background:
-rgba(20,30,45,.80);
+background:rgba(20,30,45,.80);
 
 backdrop-filter:blur(12px);
 
 -webkit-backdrop-filter:blur(12px);
 
-border:
-1px solid rgba(255,255,255,.12);
+border:1px solid rgba(255,255,255,.12);
 
-box-shadow:
-0 15px 40px rgba(0,0,0,.5);
+box-shadow:0 15px 40px rgba(0,0,0,.5);
 
 position:relative;
 
@@ -76,8 +73,6 @@ h1{
 margin:0 0 8px;
 
 font-size:27px;
-
-font-weight:bold;
 
 }
 
@@ -143,8 +138,7 @@ vertical-align:middle;
 
 background:#00ff66;
 
-box-shadow:
-0 0 12px #00ff66;
+box-shadow:0 0 12px #00ff66;
 
 }
 
@@ -152,18 +146,27 @@ box-shadow:
 
 background:#ff3333;
 
-box-shadow:
-0 0 12px #ff3333;
+box-shadow:0 0 12px #ff3333;
+
+}
+
+.time{
+
+margin-top:15px;
+
+font-size:13px;
+
+color:#aebdcc;
 
 }
 
 .info{
 
-margin-top:20px;
+margin-top:15px;
 
 font-size:12px;
 
-color:#7f91a3;
+color:#718096;
 
 }
 
@@ -174,13 +177,17 @@ color:#7f91a3;
 
 <body>
 
+
 <div class="card">
 
-<h1>RAMAH WIND SPEED</h1>
+<h1>
+RAMAH WIND SPEED
+</h1>
 
 <div class="subtitle">
 سرعة الرياح الحالية
 </div>
+
 
 <div>
 
@@ -196,6 +203,7 @@ RPM
 
 </div>
 
+
 <div class="status">
 
 <span
@@ -209,36 +217,38 @@ class="led">
 
 </div>
 
+
+<div
+id="time"
+class="time">
+آخر قراءة: --
+</div>
+
+
 <div class="info">
-
 ThingSpeak Channel: 3455315
-
 </div>
 
 </div>
+
 
 
 <script>
 
 
 // =====================================
-// ThingSpeak
+// إعدادات ThingSpeak
 // =====================================
 
 const CHANNEL_ID = "3455315";
 
 const READ_API_KEY = "XKI2TU4LEPG0C9YN";
 
-
-// =====================================
-// Field الخاص بسرعة الرياح
-// =====================================
-
 const FIELD = "1";
 
 
 // =====================================
-// رابط قراءة آخر قيمة
+// رابط API
 // =====================================
 
 const API_URL =
@@ -258,9 +268,12 @@ document.getElementById("status");
 const ledElement =
 document.getElementById("led");
 
+const timeElement =
+document.getElementById("time");
+
 
 // =====================================
-// جلب سرعة الرياح
+// جلب البيانات
 // =====================================
 
 async function getWindSpeed(){
@@ -295,10 +308,6 @@ data
 );
 
 
-// =================================
-// التأكد من وجود البيانات
-// =================================
-
 if(
 !data.feeds ||
 data.feeds.length === 0
@@ -311,42 +320,38 @@ throw new Error(
 }
 
 
+const feed =
+data.feeds[0];
+
+
 const value =
-data.feeds[0][
-`field${FIELD}`
-];
+feed[`field${FIELD}`];
 
-
-// =================================
-// تحويل القيمة إلى رقم
-// =================================
 
 const rpm =
 parseFloat(value);
 
 
-if(
-Number.isNaN(rpm)
-){
+if(Number.isNaN(rpm)){
 
 throw new Error(
-"القيمة غير صالحة"
+"قيمة غير صالحة"
 );
 
 }
 
 
-// =================================
-// عرض سرعة الرياح
-// =================================
+// =====================================
+// عرض السرعة
+// =====================================
 
 speedElement.textContent =
 rpm.toFixed(1);
 
 
-// =================================
+// =====================================
 // حالة الاتصال
-// =================================
+// =====================================
 
 statusElement.textContent =
 "متصل";
@@ -355,9 +360,32 @@ ledElement.className =
 "led connected";
 
 
-// =================================
-// تغيير الخلفية حسب السرعة
-// =================================
+// =====================================
+// وقت آخر قراءة من ThingSpeak
+// =====================================
+
+if(feed.created_at){
+
+const date =
+new Date(feed.created_at);
+
+timeElement.textContent =
+"آخر قراءة: " +
+date.toLocaleTimeString(
+"ar-SA",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+}
+
+
+// =====================================
+// لون الخلفية حسب السرعة
+// =====================================
 
 if(rpm <= 10){
 
@@ -397,10 +425,6 @@ console.error(
 error
 );
 
-
-speedElement.textContent =
-"--";
-
 statusElement.textContent =
 "خطأ في الاتصال";
 
@@ -420,12 +444,12 @@ getWindSpeed();
 
 
 // =====================================
-// تحديث كل 15 ثانية
+// تحديث كل 5 ثوانٍ
 // =====================================
 
 setInterval(
 getWindSpeed,
-15000
+5000
 );
 
 
