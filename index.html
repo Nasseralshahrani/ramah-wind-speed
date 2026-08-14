@@ -267,8 +267,9 @@ const cacheBuster =
 Date.now();
 
 
+// تعديل مسار الـ API الصحيح لـ ThingSpeak (تعديل fields/${FIELD})
 const API_URL =
-`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1&_=${cacheBuster}`;
+`https://thingspeak.com{CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1&_=${cacheBuster}`;
 
 
 const response =
@@ -495,12 +496,12 @@ getWindSpeed();
 
 
 // ======================================
-// تحديث كل 5 ثوانٍ
+// تحديث كل 15 ثانية متوافق مع خوادم ThingSpeak
 // ======================================
 
 setInterval(
 getWindSpeed,
-5000
+15000
 );
 
 
