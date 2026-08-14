@@ -94,6 +94,10 @@ line-height:1;
 
 direction:ltr;
 
+color:#ffff00;
+
+text-shadow:0 0 10px rgba(255,255,0,.25);
+
 }
 
 .unit{
@@ -170,9 +174,7 @@ color:#718096;
 
 </head>
 
-
 <body>
-
 
 <div class="card">
 
@@ -183,7 +185,6 @@ RAMAH WIND SPEED
 <div class="subtitle">
 سرعة الرياح الحالية
 </div>
-
 
 <div>
 
@@ -199,7 +200,6 @@ RPM
 
 </div>
 
-
 <div class="status">
 
 <span
@@ -213,77 +213,45 @@ class="led">
 
 </div>
 
-
 <div
 id="time"
 class="time">
 آخر قراءة: --
 </div>
 
-
 <div class="info">
-ThingSpeak Channel: 3455315
+Firebase Live Data
 </div>
 
 </div>
-
 
 
 <script>
 
+// =====================================
+// Firebase
+// =====================================
 
-// ======================================
-// إعدادات ThingSpeak
-// ======================================
-
-const CHANNEL_ID = "3455315";
-
-const READ_API_KEY = "XKI2TU4LEPG0C9YN";
-
-const FIELD = "1";
-
-
-// ======================================
-// آخر قراءة محفوظة في الصفحة
-// ======================================
+const FIREBASE_URL =
+"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app/windSpeed";
 
 let lastRPM = null;
 
-let lastCreatedAt = null;
 
-
-// ======================================
-// جلب البيانات
-// ======================================
+// =====================================
+// قراءة WIND SPEED من Firebase
+// =====================================
 
 async function getWindSpeed(){
 
 try{
 
-
-// منع التخزين المؤقت
-
-const cacheBuster =
-Date.now();
-
-
-// تعديل مسار الـ API الصحيح لـ ThingSpeak (تعديل fields/${FIELD})
-const API_URL =
-`https://thingspeak.com{CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1&_=${cacheBuster}`;
-
-
 const response =
 await fetch(
-API_URL,
+FIREBASE_URL + ".json?_=" + Date.now(),
 {
 method:"GET",
-
-cache:"no-store",
-
-headers:{
-"Cache-Control":"no-cache"
-}
-
+cache:"no-store"
 }
 );
 
@@ -302,61 +270,38 @@ await response.json();
 
 
 console.log(
-"ThingSpeak:",
+"Firebase windSpeed:",
 data
 );
 
 
-if(
-!data.feeds ||
-data.feeds.length === 0
-){
-
-throw new Error(
-"لا توجد بيانات"
-);
-
-}
-
-
-const feed =
-data.feeds[0];
-
-
-const value =
-feed[`field${FIELD}`];
-
+// =====================================
+// تحويل القراءة إلى رقم
+// =====================================
 
 const rpm =
-parseFloat(value);
+parseFloat(data);
 
-
-// ======================================
-// التأكد من صحة الرقم
-// ======================================
 
 if(Number.isNaN(rpm)){
 
 throw new Error(
-"القيمة ليست رقمًا"
+"windSpeed ليست رقمًا"
 );
 
 }
 
 
-// ======================================
-// حفظ آخر قراءة صحيحة
-// ======================================
+// =====================================
+// حفظ القراءة
+// =====================================
 
 lastRPM = rpm;
 
-lastCreatedAt =
-feed.created_at;
 
-
-// ======================================
-// عرض السرعة
-// ======================================
+// =====================================
+// عرض القراءة
+// =====================================
 
 document.getElementById(
 "speed"
@@ -364,9 +309,9 @@ document.getElementById(
 rpm.toFixed(1);
 
 
-// ======================================
+// =====================================
 // حالة الاتصال
-// ======================================
+// =====================================
 
 document.getElementById(
 "status"
@@ -380,21 +325,15 @@ document.getElementById(
 "led connected";
 
 
-// ======================================
-// عرض وقت القراءة
-// ======================================
-
-if(lastCreatedAt){
-
-const date =
-new Date(lastCreatedAt);
-
+// =====================================
+// وقت القراءة
+// =====================================
 
 document.getElementById(
 "time"
 ).textContent =
 "آخر قراءة: " +
-date.toLocaleTimeString(
+new Date().toLocaleTimeString(
 "ar-SA",
 {
 hour:"2-digit",
@@ -403,12 +342,10 @@ second:"2-digit"
 }
 );
 
-}
 
-
-// ======================================
-// تغيير الخلفية
-// ======================================
+// =====================================
+// الخلفية حسب السرعة
+// =====================================
 
 if(rpm <= 10){
 
@@ -438,24 +375,14 @@ document.body.style.background =
 
 }
 
-
 }
-
-
-// ======================================
-// خطأ مؤقت
-// ======================================
 
 catch(error){
 
-
 console.error(
-"ThingSpeak:",
+"Firebase:",
 error
 );
-
-
-// لا نمسح السرعة السابقة
 
 
 if(lastRPM !== null){
@@ -468,14 +395,10 @@ lastRPM.toFixed(1);
 }
 
 
-// ======================================
-// حالة الاتصال
-// ======================================
-
 document.getElementById(
 "status"
 ).textContent =
-"تحديث البيانات...";
+"خطأ في الاتصال";
 
 
 document.getElementById(
@@ -488,25 +411,23 @@ document.getElementById(
 }
 
 
-// ======================================
-// تشغيل أول مرة
-// ======================================
+// =====================================
+// تشغيل مباشر
+// =====================================
 
 getWindSpeed();
 
 
-// ======================================
-// تحديث كل 15 ثانية متوافق مع خوادم ThingSpeak
-// ======================================
+// =====================================
+// تحديث كل ثانيتين
+// =====================================
 
 setInterval(
 getWindSpeed,
-15000
+2000
 );
 
-
 </script>
-
 
 </body>
 
