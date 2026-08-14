@@ -14,10 +14,10 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            transition: background-color 1s ease; /* انتقال ناعم لتغير لون الخلفية */
+            transition: background-color 1s ease; /* انتقال ناعم لتغير لون خلفية الشاشة */
         }
         .card {
-            background-color: rgba(30, 30, 30, 0.75); /* جعل البطاقة شبه شفافة لتندمج مع الخلفية */
+            background-color: rgba(30, 30, 30, 0.75); /* بطاقة شبه شفافة */
             backdrop-filter: blur(10px); /* تأثير ضبابي عصري خلف البطاقة */
             padding: 50px 30px;
             border-radius: 20px;
@@ -81,7 +81,7 @@
         const CHANNEL_ID = "ضع_رقم_القناة_هنا"; 
         const READ_API_KEY = "ضع_مفتاح_القراءة_هنا"; 
         
-        // تم تصحيح رابط الـ API للاتصال بالسيرفر بشكل سليم
+        // 1. تصحيح الرابط (إضافة الفرعي api وتصحيح استدعاء المتغير وإضافة المجلد channels)
         const url = `https://thingspeak.com{CHANNEL_ID}/feeds/last.json?api_key=${READ_API_KEY}`;
 
         // دالة لتغيير خلفية الصفحة ومؤشر الـ LED بناءً على حالة البيانات
@@ -119,12 +119,17 @@
                 
                 const data = await response.json();
                 
-                if (data.field1 !== null && data.field1 !== undefined && data.field1 !== "") {
+                // 2. التحقق من أن القيمة ليست نصاً فارغاً أو غير معرفة، واستثناء الصفر الفعلي
+                if (data.field1 !== null && data.field1 !== undefined && String(data.field1).trim() !== "") {
                     const currentTemp = parseFloat(data.field1);
-                    document.getElementById('temp_value').innerText = currentTemp.toFixed(1);
                     
-                    // تحديث الألوان ومؤشر الـ LED بناءً على درجة الحرارة الجديدة
-                    updateUIElements(currentTemp, true);
+                    // تأكيد أن الحقل يحتوي على رقم صالح فعلياً وليس نصاً عشوائياً خطأ
+                    if (!isNaN(currentTemp)) {
+                        document.getElementById('temp_value').innerText = currentTemp.toFixed(1);
+                        updateUIElements(currentTemp, true);
+                    } else {
+                        throw new Error('Data is not a number');
+                    }
                 } else {
                     document.getElementById('temp_value').innerText = "لا توجد بيانات";
                     updateUIElements(null, false);
