@@ -2,11 +2,8 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>محطة الطقس الرقمية</title>
 
@@ -17,39 +14,25 @@
         }
 
         body {
-
             font-family: Arial, sans-serif;
-
             background-color: #121212;
-
             color: #ffffff;
 
             display: flex;
-
             justify-content: center;
-
             align-items: center;
 
             min-height: 100vh;
-
             margin: 0;
 
-            transition:
-                background-color 1s ease;
-
+            transition: background-color 1s ease;
         }
 
-
         .card {
+            background-color: rgba(30, 30, 30, 0.75);
 
-            background-color:
-                rgba(30, 30, 30, 0.75);
-
-            backdrop-filter:
-                blur(10px);
-
-            -webkit-backdrop-filter:
-                blur(10px);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
 
             padding: 50px 30px;
 
@@ -58,20 +41,17 @@
             text-align: center;
 
             box-shadow:
-                0 10px 30px rgba(0,0,0,0.5);
+                0 10px 30px rgba(0, 0, 0, 0.5);
 
             border:
-                1px solid rgba(255,255,255,0.1);
+                1px solid rgba(255, 255, 255, 0.1);
 
             width: 280px;
 
             position: relative;
-
         }
 
-
         h1 {
-
             font-size: 22px;
 
             margin:
@@ -80,12 +60,9 @@
             color: #ffffff;
 
             font-weight: normal;
-
         }
 
-
         .temp-container {
-
             font-size: 72px;
 
             font-weight: bold;
@@ -93,33 +70,25 @@
             color: #ffffff;
 
             direction: ltr;
-
         }
 
-
         .unit {
-
             font-size: 32px;
 
             color: #cccccc;
 
             margin-left: 5px;
-
         }
-
 
         /* مؤشر الاتصال */
 
         .led-indicator {
-
             position: absolute;
 
             top: 20px;
-
             left: 20px;
 
             width: 12px;
-
             height: 12px;
 
             background-color: #444444;
@@ -129,26 +98,299 @@
             transition:
                 background-color 0.3s ease,
                 box-shadow 0.3s ease;
-
         }
-
 
         /* اتصال ناجح */
 
         .led-success {
-
-            background-color:
-                #00ff66 !important;
+            background-color: #00ff66 !important;
 
             box-shadow:
                 0 0 12px #00ff66;
-
         }
-
 
         /* خطأ */
 
         .led-error {
+            background-color: #ff3333 !important;
 
-            background-color:
-                #ff3333 !important
+            box-shadow:
+                0 0 12px #ff3333;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+
+        <div
+            id="status_led"
+            class="led-indicator">
+        </div>
+
+        <h1>
+            درجة الحرارة الحالية
+        </h1>
+
+        <div class="temp-container">
+
+            <span id="temp_value">
+                --
+            </span>
+
+            <span class="unit">
+                °C
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        // =====================================
+        // إعدادات ThingSpeak
+        // =====================================
+
+        const CHANNEL_ID = "3455315";
+
+        // ضع Read API Key هنا
+        const READ_API_KEY = "ضع_مفتاح_القراءة_هنا";
+
+
+        // =====================================
+        // رابط ThingSpeak الصحيح
+        // =====================================
+
+        const URL =
+            "https://api.thingspeak.com/channels/" +
+            CHANNEL_ID +
+            "/feeds/last.json?api_key=" +
+            READ_API_KEY;
+
+
+        // =====================================
+        // تحديث حالة الاتصال والخلفية
+        // =====================================
+
+        function updateUIElements(
+            temperature,
+            success
+        ) {
+
+            const led =
+                document.getElementById(
+                    "status_led"
+                );
+
+
+            if (!success) {
+
+                led.className =
+                    "led-indicator led-error";
+
+                document.body.style.backgroundColor =
+                    "#241414";
+
+                return;
+            }
+
+
+            led.className =
+                "led-indicator led-success";
+
+
+            setTimeout(function () {
+
+                led.className =
+                    "led-indicator";
+
+            }, 2000);
+
+
+            // =================================
+            // لون الخلفية حسب درجة الحرارة
+            // =================================
+
+            if (temperature <= 18) {
+
+                document.body.style.backgroundColor =
+                    "#1A365D";
+
+            }
+
+            else if (
+                temperature > 18 &&
+                temperature <= 28
+            ) {
+
+                document.body.style.backgroundColor =
+                    "#1C4533";
+
+            }
+
+            else if (
+                temperature > 28 &&
+                temperature <= 38
+            ) {
+
+                document.body.style.backgroundColor =
+                    "#7B341E";
+
+            }
+
+            else {
+
+                document.body.style.backgroundColor =
+                    "#6B1D1D";
+
+            }
+
+        }
+
+
+        // =====================================
+        // جلب البيانات
+        // =====================================
+
+        async function fetchWeather() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        URL,
+                        {
+                            cache: "no-store"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "HTTP Error: " +
+                        response.status
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                console.log(
+                    "ThingSpeak:",
+                    data
+                );
+
+
+                // =================================
+                // قراءة Field 1
+                // =================================
+
+                if (
+                    data.field1 !== null &&
+                    data.field1 !== undefined &&
+                    data.field1 !== ""
+                ) {
+
+                    const temperature =
+                        parseFloat(
+                            data.field1
+                        );
+
+
+                    if (
+                        Number.isNaN(
+                            temperature
+                        )
+                    ) {
+
+                        throw new Error(
+                            "القيمة ليست رقمًا"
+                        );
+
+                    }
+
+
+                    document.getElementById(
+                        "temp_value"
+                    ).textContent =
+                        temperature.toFixed(1);
+
+
+                    updateUIElements(
+                        temperature,
+                        true
+                    );
+
+                }
+
+                else {
+
+                    document.getElementById(
+                        "temp_value"
+                    ).textContent =
+                        "--";
+
+
+                    updateUIElements(
+                        null,
+                        false
+                    );
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "خطأ في ThingSpeak:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "temp_value"
+                ).textContent =
+                    "--";
+
+
+                updateUIElements(
+                    null,
+                    false
+                );
+
+            }
+
+        }
+
+
+        // =====================================
+        // تشغيل أول قراءة
+        // =====================================
+
+        fetchWeather();
+
+
+        // =====================================
+        // تحديث كل 15 ثانية
+        // =====================================
+
+        setInterval(
+            fetchWeather,
+            15000
+        );
+
+    </script>
+
+</body>
+
+</html>
