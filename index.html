@@ -194,9 +194,8 @@ class="speed">
 --
 </span>
 
- <span class="unit">
+<span class="unit">
 km/h
-</span>
 </span>
 
 </div>
@@ -241,7 +240,7 @@ const FIREBASE_URL =
 // آخر قراءة
 // ======================================
 
-let lastRPM = null;
+let lastWindSpeed = null;
 
 
 // ======================================
@@ -282,16 +281,16 @@ data
 
 
 // ======================================
-// قراءة WIND SPEED
+// قراءة سرعة الرياح km/h
 // ======================================
 
-const rpm =
+const windSpeed =
 parseFloat(
 data.windSpeed
 );
 
 
-if(Number.isNaN(rpm)){
+if(Number.isNaN(windSpeed)){
 
 throw new Error(
 "windSpeed غير موجود"
@@ -304,7 +303,8 @@ throw new Error(
 // حفظ آخر قراءة
 // ======================================
 
-lastRPM = rpm;
+lastWindSpeed =
+windSpeed;
 
 
 // ======================================
@@ -314,7 +314,7 @@ lastRPM = rpm;
 document.getElementById(
 "speed"
 ).textContent =
-rpm.toFixed(1);
+windSpeed.toFixed(2);
 
 
 // ======================================
@@ -360,15 +360,10 @@ age,
 
 if(age <= 15000){
 
-// ==================================
-// متصل
-// ==================================
-
 document.getElementById(
 "status"
 ).textContent =
 "متصل";
-
 
 document.getElementById(
 "led"
@@ -379,15 +374,10 @@ document.getElementById(
 
 else{
 
-// ==================================
-// غير متصل
-// ==================================
-
 document.getElementById(
 "status"
 ).textContent =
 "غير متصل";
-
 
 document.getElementById(
 "led"
@@ -418,102 +408,24 @@ second:"2-digit"
 
 
 // ======================================
-// تغيير الخلفية حسب السرعة
+// تغيير الخلفية حسب سرعة الرياح
 // ======================================
 
-if(rpm <= 10){
+if(windSpeed <= 0.10){
 
 document.body.style.background =
 "radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
 
 }
 
-else if(rpm <= 30){
+else if(windSpeed <= 0.30){
 
 document.body.style.background =
 "radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
 
 }
 
-else if(rpm <= 60){
+else if(windSpeed <= 0.60){
 
 document.body.style.background =
-"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
-
-}
-
-else{
-
-document.body.style.background =
-"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
-
-}
-
-}
-
-
-// ======================================
-// خطأ في الاتصال
-// ======================================
-
-catch(error){
-
-console.error(
-"Firebase:",
-error
-);
-
-
-// لا نمسح آخر قراءة
-
-if(lastRPM !== null){
-
-document.getElementById(
-"speed"
-).textContent =
-lastRPM.toFixed(1);
-
-}
-
-
-// ======================================
-// حالة الاتصال
-// ======================================
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
-}
-
-
-// ======================================
-// تشغيل أول مرة
-// ======================================
-
-getWindSpeed();
-
-
-// ======================================
-// تحديث كل ثانيتين
-// ======================================
-
-setInterval(
-getWindSpeed,
-2000
-);
-
-</script>
-
-</body>
-
-</html>
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#
