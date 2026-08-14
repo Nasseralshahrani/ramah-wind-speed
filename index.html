@@ -54,7 +54,7 @@ border-radius:25px;
 
 text-align:center;
 
-background:rgba(20,30,45,.80);
+background:rgba(20,30,45,.82);
 
 backdrop-filter:blur(12px);
 
@@ -63,8 +63,6 @@ backdrop-filter:blur(12px);
 border:1px solid rgba(255,255,255,.12);
 
 box-shadow:0 15px 40px rgba(0,0,0,.5);
-
-position:relative;
 
 }
 
@@ -129,8 +127,6 @@ border-radius:50%;
 background:#777;
 
 margin-left:8px;
-
-vertical-align:middle;
 
 }
 
@@ -236,9 +232,9 @@ ThingSpeak Channel: 3455315
 <script>
 
 
-// =====================================
+// ======================================
 // إعدادات ThingSpeak
-// =====================================
+// ======================================
 
 const CHANNEL_ID = "3455315";
 
@@ -247,44 +243,46 @@ const READ_API_KEY = "XKI2TU4LEPG0C9YN";
 const FIELD = "1";
 
 
-// =====================================
-// رابط API
-// =====================================
+// ======================================
+// آخر قراءة محفوظة في الصفحة
+// ======================================
 
-const API_URL =
-`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1`;
+let lastRPM = null;
 
-
-// =====================================
-// عناصر الصفحة
-// =====================================
-
-const speedElement =
-document.getElementById("speed");
-
-const statusElement =
-document.getElementById("status");
-
-const ledElement =
-document.getElementById("led");
-
-const timeElement =
-document.getElementById("time");
+let lastCreatedAt = null;
 
 
-// =====================================
+// ======================================
 // جلب البيانات
-// =====================================
+// ======================================
 
 async function getWindSpeed(){
 
 try{
 
+
+// منع التخزين المؤقت
+
+const cacheBuster =
+Date.now();
+
+
+const API_URL =
+`https://api.thingspeak.com/channels/${CHANNEL_ID}/fields/${FIELD}.json?api_key=${READ_API_KEY}&results=1&_=${cacheBuster}`;
+
+
 const response =
 await fetch(
 API_URL,
 {
-cache:"no-store"
+method:"GET",
+
+cache:"no-store",
+
+headers:{
+"Cache-Control":"no-cache"
+}
+
 }
 );
 
@@ -332,44 +330,68 @@ const rpm =
 parseFloat(value);
 
 
+// ======================================
+// التأكد من صحة الرقم
+// ======================================
+
 if(Number.isNaN(rpm)){
 
 throw new Error(
-"قيمة غير صالحة"
+"القيمة ليست رقمًا"
 );
 
 }
 
 
-// =====================================
-// عرض السرعة
-// =====================================
+// ======================================
+// حفظ آخر قراءة صحيحة
+// ======================================
 
-speedElement.textContent =
+lastRPM = rpm;
+
+lastCreatedAt =
+feed.created_at;
+
+
+// ======================================
+// عرض السرعة
+// ======================================
+
+document.getElementById(
+"speed"
+).textContent =
 rpm.toFixed(1);
 
 
-// =====================================
+// ======================================
 // حالة الاتصال
-// =====================================
+// ======================================
 
-statusElement.textContent =
+document.getElementById(
+"status"
+).textContent =
 "متصل";
 
-ledElement.className =
+
+document.getElementById(
+"led"
+).className =
 "led connected";
 
 
-// =====================================
-// وقت آخر قراءة من ThingSpeak
-// =====================================
+// ======================================
+// عرض وقت القراءة
+// ======================================
 
-if(feed.created_at){
+if(lastCreatedAt){
 
 const date =
-new Date(feed.created_at);
+new Date(lastCreatedAt);
 
-timeElement.textContent =
+
+document.getElementById(
+"time"
+).textContent =
 "آخر قراءة: " +
 date.toLocaleTimeString(
 "ar-SA",
@@ -383,9 +405,9 @@ second:"2-digit"
 }
 
 
-// =====================================
-// لون الخلفية حسب السرعة
-// =====================================
+// ======================================
+// تغيير الخلفية
+// ======================================
 
 if(rpm <= 10){
 
@@ -418,17 +440,46 @@ document.body.style.background =
 
 }
 
+
+// ======================================
+// خطأ مؤقت
+// ======================================
+
 catch(error){
 
+
 console.error(
-"ThingSpeak Error:",
+"ThingSpeak:",
 error
 );
 
-statusElement.textContent =
-"خطأ في الاتصال";
 
-ledElement.className =
+// لا نمسح السرعة السابقة
+
+
+if(lastRPM !== null){
+
+document.getElementById(
+"speed"
+).textContent =
+lastRPM.toFixed(1);
+
+}
+
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+document.getElementById(
+"status"
+).textContent =
+"تحديث البيانات...";
+
+
+document.getElementById(
+"led"
+).className =
 "led error";
 
 }
@@ -436,16 +487,16 @@ ledElement.className =
 }
 
 
-// =====================================
-// تشغيل مباشر
-// =====================================
+// ======================================
+// تشغيل أول مرة
+// ======================================
 
 getWindSpeed();
 
 
-// =====================================
+// ======================================
 // تحديث كل 5 ثوانٍ
-// =====================================
+// ======================================
 
 setInterval(
 getWindSpeed,
@@ -454,6 +505,7 @@ getWindSpeed,
 
 
 </script>
+
 
 </body>
 
