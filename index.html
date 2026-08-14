@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>RAMAH WIND SPEED</title>
+<title>RAMAH WEATHER</title>
 
 <style>
 
@@ -50,15 +50,15 @@ transition:background 1s ease;
 
 width:100%;
 
-max-width:360px;
+max-width:380px;
 
-padding:35px 25px;
+padding:30px 20px;
 
 border-radius:25px;
 
 text-align:center;
 
-background:rgba(20,30,45,.82);
+background:rgba(20,30,45,.85);
 
 backdrop-filter:blur(12px);
 
@@ -80,7 +80,7 @@ font-size:27px;
 
 .subtitle{
 
-font-size:16px;
+font-size:15px;
 
 color:#aebdcc;
 
@@ -88,38 +88,16 @@ margin-bottom:25px;
 
 }
 
-.speed{
 
-font-size:70px;
-
-font-weight:bold;
-
-line-height:1;
-
-direction:ltr;
-
-color:#ffff00;
-
-text-shadow:
-0 0 10px rgba(255,255,0,.25);
-
-}
-
-.unit{
-
-font-size:25px;
-
-color:#bfc8d2;
-
-margin-right:8px;
-
-}
+/* =========================
+   CONNECTION
+========================= */
 
 .status{
 
-margin-top:25px;
+margin-bottom:25px;
 
-font-size:16px;
+font-size:15px;
 
 }
 
@@ -127,15 +105,15 @@ font-size:16px;
 
 display:inline-block;
 
-width:12px;
+width:11px;
 
-height:12px;
+height:11px;
 
 border-radius:50%;
 
 background:#777;
 
-margin-left:8px;
+margin-left:7px;
 
 }
 
@@ -155,13 +133,86 @@ box-shadow:0 0 12px #ff3333;
 
 }
 
+
+/* =========================
+   VALUES
+========================= */
+
+.values{
+
+display:grid;
+
+grid-template-columns:1fr;
+
+gap:14px;
+
+}
+
+
+.box{
+
+padding:20px 10px;
+
+border-radius:20px;
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+
+.icon{
+
+font-size:35px;
+
+}
+
+
+.value{
+
+font-size:48px;
+
+font-weight:bold;
+
+direction:ltr;
+
+margin-top:5px;
+
+}
+
+
+.unit{
+
+font-size:18px;
+
+color:#aebdcc;
+
+}
+
+
+.label{
+
+margin-top:6px;
+
+font-size:14px;
+
+color:#aebdcc;
+
+}
+
+
+/* =========================
+   TIME
+========================= */
+
 .time{
 
-margin-top:15px;
+margin-top:20px;
 
 font-size:13px;
 
-color:#aebdcc;
+color:#8fa0b2;
 
 }
 
@@ -171,74 +222,7 @@ margin-top:15px;
 
 font-size:12px;
 
-color:#718096;
-
-}
-
-
-/* ==============================
-   WEATHER
-============================== */
-
-.weather{
-
-margin-top:25px;
-
-display:grid;
-
-grid-template-columns:1fr 1fr;
-
-gap:12px;
-
-}
-
-.weather-box{
-
-padding:18px 10px;
-
-border-radius:18px;
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.08);
-
-}
-
-.weather-icon{
-
-font-size:28px;
-
-margin-bottom:5px;
-
-}
-
-.weather-value{
-
-font-size:30px;
-
-font-weight:bold;
-
-direction:ltr;
-
-}
-
-.weather-label{
-
-font-size:13px;
-
-color:#aebdcc;
-
-margin-top:5px;
-
-}
-
-.weather-status{
-
-margin-top:12px;
-
-font-size:12px;
-
-color:#718096;
+color:#64748b;
 
 }
 
@@ -254,37 +238,14 @@ color:#718096;
 
 
 <h1>
-RAMAH WIND SPEED
+RAMAH WEATHER
 </h1>
 
 
 <div class="subtitle">
-سرعة الرياح الحالية
+محطة رماح للطقس والرياح
 </div>
 
-
-<!-- ==============================
-     WIND SPEED
-============================== -->
-
-<div>
-
-<span
-id="speed"
-class="speed">
---
-</span>
-
-<span class="unit">
-km/h
-</span>
-
-</div>
-
-
-<!-- ==============================
-     CONNECTION
-============================== -->
 
 <div class="status">
 
@@ -300,59 +261,79 @@ class="led">
 </div>
 
 
-<div
-id="time"
-class="time">
+<div class="values">
 
-آخر قراءة: --
+
+<!-- سرعة الرياح -->
+
+<div class="box">
+
+<div class="icon">
+🌬️
+</div>
+
+<div
+id="wind"
+class="value">
+--
+</div>
+
+<div class="unit">
+km/h
+</div>
+
+<div class="label">
+سرعة الرياح
+</div>
 
 </div>
 
 
-<!-- ==============================
-     WEATHER
-============================== -->
+<!-- الحرارة -->
 
-<div class="weather">
+<div class="box">
 
-
-<div class="weather-box">
-
-<div class="weather-icon">
+<div class="icon">
 🌡️
 </div>
 
 <div
 id="temperature"
-class="weather-value">
-
+class="value">
 --
+</div>
+
+<div class="unit">
+°C
+</div>
+
+<div class="label">
+درجة الحرارة
+</div>
 
 </div>
 
-<div class="weather-label">
-درجة الحرارة °C
-</div>
 
-</div>
+<!-- الرطوبة -->
 
+<div class="box">
 
-<div class="weather-box">
-
-<div class="weather-icon">
+<div class="icon">
 💧
 </div>
 
 <div
 id="humidity"
-class="weather-value">
-
+class="value">
 --
-
 </div>
 
-<div class="weather-label">
-الرطوبة %
+<div class="unit">
+%
+</div>
+
+<div class="label">
+الرطوبة
 </div>
 
 </div>
@@ -362,10 +343,10 @@ class="weather-value">
 
 
 <div
-id="weatherStatus"
-class="weather-status">
+id="time"
+class="time">
 
-جاري قراءة بيانات الطقس...
+آخر تحديث: --
 
 </div>
 
@@ -381,26 +362,12 @@ Firebase Live Data
 <script>
 
 
-// ======================================
-// Firebase
-// ======================================
-
 const FIREBASE_URL =
 "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 
-// ======================================
-// آخر سرعة رياح
-// ======================================
 
-let lastRPM = null;
-
-
-// ======================================
-// قراءة Firebase
-// ======================================
-
-async function getWindSpeed(){
+async function readFirebase(){
 
 try{
 
@@ -413,7 +380,6 @@ FIREBASE_URL +
 Date.now(),
 
 {
-method:"GET",
 cache:"no-store"
 }
 
@@ -440,125 +406,105 @@ data
 );
 
 
-// ======================================
-// WIND SPEED
-// ======================================
+// =================================
+// سرعة الرياح
+// =================================
 
-const rpm =
+if(
+data.windSpeed !== undefined
+){
+
+const wind =
 parseFloat(
 data.windSpeed
 );
 
-
-if(!Number.isNaN(rpm)){
-
-lastRPM = rpm;
-
+if(!Number.isNaN(wind)){
 
 document.getElementById(
-"speed"
+"wind"
 ).textContent =
-rpm.toFixed(1);
-
-
-// ======================================
-// تغيير الخلفية حسب السرعة
-// ======================================
-
-if(rpm <= 10){
-
-document.body.style.background =
-"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
-
-}
-
-else if(rpm <= 30){
-
-document.body.style.background =
-"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
-
-}
-
-else if(rpm <= 60){
-
-document.body.style.background =
-"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
-
-}
-
-else{
-
-document.body.style.background =
-"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+wind.toFixed(1);
 
 }
 
 }
 
 
-// ======================================
-// WIND CONNECTION
-// ======================================
+// =================================
+// الحرارة
+// =================================
 
-const lastSeen =
-Number(
-data.lastSeen
+if(
+data.weather &&
+data.weather.temperature !== undefined
+){
+
+const temperature =
+parseFloat(
+data.weather.temperature
 );
 
+if(!Number.isNaN(temperature)){
 
-if(lastSeen){
+document.getElementById(
+"temperature"
+).textContent =
+temperature.toFixed(1);
 
-const now =
-Date.now();
+}
 
-const age =
-now - lastSeen;
+}
 
 
-console.log(
-"Wind lastSeen:",
-age,
-"ms"
+// =================================
+// الرطوبة
+// =================================
+
+if(
+data.weather &&
+data.weather.humidity !== undefined
+){
+
+const humidity =
+parseFloat(
+data.weather.humidity
 );
 
+if(!Number.isNaN(humidity)){
 
-if(age <= 15000){
+document.getElementById(
+"humidity"
+).textContent =
+humidity.toFixed(1);
+
+}
+
+}
+
+
+// =================================
+// اتصال Firebase
+// =================================
 
 document.getElementById(
 "status"
 ).textContent =
 "متصل";
 
+
 document.getElementById(
 "led"
 ).className =
 "led connected";
 
-}
-
-else{
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
 
 document.getElementById(
 "time"
 ).textContent =
-"آخر قراءة: " +
+"آخر تحديث: " +
 
-new Date(
-lastSeen
-).toLocaleTimeString(
+new Date().toLocaleTimeString(
 "ar-SA",
 {
 hour:"2-digit",
@@ -567,71 +513,9 @@ second:"2-digit"
 }
 );
 
-}
-
-
-// ======================================
-// WEATHER
-// ======================================
-
-if(data.weather){
-
-const weather =
-data.weather;
-
-
-// --------------------------------------
-// Temperature
-// --------------------------------------
-
-if(
-typeof weather.temperature ===
-"number"
-){
-
-document.getElementById(
-"temperature"
-).textContent =
-weather.temperature.toFixed(1);
 
 }
 
-
-// --------------------------------------
-// Humidity
-// --------------------------------------
-
-if(
-typeof weather.humidity ===
-"number"
-){
-
-document.getElementById(
-"humidity"
-).textContent =
-weather.humidity.toFixed(1);
-
-}
-
-
-// --------------------------------------
-// Weather status
-// --------------------------------------
-
-document.getElementById(
-"weatherStatus"
-).textContent =
-"بيانات الطقس محدثة";
-
-}
-
-
-}
-
-
-// ======================================
-// ERROR
-// ======================================
 
 catch(error){
 
@@ -642,16 +526,6 @@ error
 );
 
 
-if(lastRPM !== null){
-
-document.getElementById(
-"speed"
-).textContent =
-lastRPM.toFixed(1);
-
-}
-
-
 document.getElementById(
 "status"
 ).textContent =
@@ -664,30 +538,20 @@ document.getElementById(
 "led error";
 
 
-document.getElementById(
-"weatherStatus"
-).textContent =
-"تعذر قراءة بيانات الطقس";
-
-
 }
 
 }
 
 
-// ======================================
-// تشغيل
-// ======================================
+// أول قراءة
 
-getWindSpeed();
+readFirebase();
 
 
-// ======================================
 // تحديث كل ثانيتين
-// ======================================
 
 setInterval(
-getWindSpeed,
+readFirebase,
 2000
 );
 
