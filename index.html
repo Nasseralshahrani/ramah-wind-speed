@@ -41,269 +41,201 @@ justify-content:center;
 align-items:center;
 
 padding:20px;
-
-transition:background 1s ease;
-
 }
 
-.card{
+.container{
 
 width:100%;
 
-max-width:380px;
-
-padding:30px 20px;
-
-border-radius:25px;
+max-width:500px;
 
 text-align:center;
-
-background:rgba(20,30,45,.85);
-
-backdrop-filter:blur(12px);
-
--webkit-backdrop-filter:blur(12px);
-
-border:1px solid rgba(255,255,255,.12);
-
-box-shadow:0 15px 40px rgba(0,0,0,.5);
-
 }
 
-h1{
+.title{
 
-margin:0 0 8px;
+font-size:30px;
 
-font-size:27px;
+font-weight:bold;
 
+letter-spacing:2px;
+
+margin-bottom:8px;
 }
 
 .subtitle{
 
-font-size:15px;
+font-size:14px;
 
-color:#aebdcc;
-
-margin-bottom:25px;
-
-}
-
-
-/* =========================
-   CONNECTION
-========================= */
-
-.status{
+color:#9fb3c8;
 
 margin-bottom:25px;
-
-font-size:15px;
-
 }
 
-.led{
+.card{
 
-display:inline-block;
+background:rgba(255,255,255,0.08);
 
-width:11px;
+border:1px solid rgba(255,255,255,0.12);
 
-height:11px;
+border-radius:22px;
 
-border-radius:50%;
+padding:25px;
 
-background:#777;
+margin-bottom:15px;
 
-margin-left:7px;
+box-shadow:
+0 10px 35px rgba(0,0,0,0.35);
 
+backdrop-filter:blur(10px);
 }
 
-.connected{
+.wind{
 
-background:#00ff66;
-
-box-shadow:0 0 12px #00ff66;
-
-}
-
-.error{
-
-background:#ff3333;
-
-box-shadow:0 0 12px #ff3333;
-
-}
-
-
-/* =========================
-   VALUES
-========================= */
-
-.values{
-
-display:grid;
-
-grid-template-columns:1fr;
-
-gap:14px;
-
-}
-
-
-.box{
-
-padding:20px 10px;
-
-border-radius:20px;
-
-background:rgba(255,255,255,.05);
-
-border:1px solid rgba(255,255,255,.08);
-
-}
-
-
-.value-row{
-
-display:flex;
-
-align-items:center;
-
-justify-content:center;
-
-gap:8px;
-
-direction:ltr;
-
+border:1px solid rgba(255,140,0,0.35);
 }
 
 .icon{
 
-font-size:35px;
+font-size:45px;
 
-line-height:1;
-
+margin-bottom:8px;
 }
 
+.label{
+
+font-size:15px;
+
+color:#aebfd0;
+
+margin-bottom:8px;
+}
 
 .value{
 
-font-size:48px;
+font-size:42px;
 
 font-weight:bold;
-
-direction:ltr;
-
-margin-top:5px;
-
 }
-
 
 .unit{
 
 font-size:18px;
 
-color:#aebdcc;
+color:#aebfd0;
 
+margin-right:5px;
 }
 
+.temperature{
 
-.label{
+font-size:30px;
 
-margin-top:6px;
-
-font-size:14px;
-
-color:#aebdcc;
-
+font-weight:bold;
 }
 
+.humidity{
 
-/* =========================
-   TIME
-========================= */
+font-size:30px;
 
-.time{
+font-weight:bold;
+}
+
+.status{
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+gap:8px;
 
 margin-top:20px;
 
-font-size:13px;
+font-size:14px;
 
-color:#8fa0b2;
+color:#aaa;
+}
+
+.dot{
+
+width:10px;
+
+height:10px;
+
+border-radius:50%;
+
+background:#777;
 
 }
 
-.info{
+.online{
 
-margin-top:15px;
+background:#00ff66;
+
+box-shadow:
+0 0 10px #00ff66;
+}
+
+.offline{
+
+background:#ff3333;
+
+box-shadow:
+0 0 10px #ff3333;
+}
+
+.time{
+
+margin-top:10px;
 
 font-size:12px;
 
-color:#64748b;
-
+color:#718096;
 }
 
 </style>
 
 </head>
 
-
 <body>
 
+<div class="container">
 
-<div class="card">
-
-
-<h1>
+<div class="title">
 RAMAH WEATHER
-</h1>
-
-
-<div class="subtitle">
-    محطة رماح للطقس مباشر
-</div> 
-
-
-<div class="status">
-
-<span
-id="led"
-class="led">
-</span>
-
-<span id="status">
-جاري الاتصال...
-</span>
-
 </div>
 
-
-<div class="values">
+<div class="subtitle">
+محطة رماح الرقمية
+</div>
 
 
 <!-- سرعة الرياح -->
 
-<div class="box">
-
-<div class="value-row">
-
-<div
-id="wind"
-class="value">
---
-</div>
+<div class="card wind">
 
 <div class="icon">
 🌪️
 </div>
 
-</div>
-
-<div class="unit">
-km/h
-</div>
-
 <div class="label">
 سرعة الرياح
+</div>
+
+<div>
+
+<span
+class="value"
+id="windSpeed">
+0.00
+</span>
+
+<span class="unit">
+km/h
+</span>
+
 </div>
 
 </div>
@@ -311,28 +243,28 @@ km/h
 
 <!-- الحرارة -->
 
-<div class="box">
-
-<div class="value-row">
-
-<div
-id="temperature"
-class="value">
---
-</div>
+<div class="card">
 
 <div class="icon">
 🌡️
 </div>
 
-</div>
-
-<div class="unit">
-°C
-</div>
-
 <div class="label">
 درجة الحرارة
+</div>
+
+<div>
+
+<span
+class="temperature"
+id="temperature">
+-- 
+</span>
+
+<span class="unit">
+°C
+</span>
+
 </div>
 
 </div>
@@ -340,330 +272,11 @@ class="value">
 
 <!-- الرطوبة -->
 
-<div class="box">
-
-<div class="value-row">
-
-<div
-id="humidity"
-class="value">
---
-</div>
+<div class="card">
 
 <div class="icon">
 💧
 </div>
 
-</div>
-
-<div class="unit">
-%
-</div>
-
 <div class="label">
-الرطوبة
-</div>
-
-</div>
-
-
-</div>
-
-
-<div
-id="time"
-class="time">
-
-آخر تحديث: --
-
-</div>
-
-
-<div class="info">
-Firebase Live Data
-</div>
-
-
-</div>
-
-
-<script>
-
-
-const FIREBASE_URL =
-"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-
-// =================================
-// متغيرات اتصال ESP32
-// =================================
-
-let lastESP32Seen = undefined;
-
-let lastESP32Update = undefined;
-
-
-
-async function readFirebase(){
-
-try{
-
-
-const response =
-await fetch(
-
-FIREBASE_URL +
-"/.json?_=" +
-Date.now(),
-
-{
-cache:"no-store"
-}
-
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"HTTP " +
-response.status
-);
-
-}
-
-
-const data =
-await response.json();
-
-
-console.log(
-"Firebase:",
-data
-);
-
-
-// =================================
-// سرعة الرياح
-// =================================
-
-if(
-data.windSpeed !== undefined
-){
-
-const wind =
-parseFloat(
-data.windSpeed
-);
-
-if(!Number.isNaN(wind)){
-
-document.getElementById(
-"wind"
-).textContent =
-wind.toFixed(1);
-
-}
-
-}
-
-
-// =================================
-// الحرارة
-// =================================
-
-if(
-data.weather &&
-data.weather.temperature !== undefined
-){
-
-const temperature =
-parseFloat(
-data.weather.temperature
-);
-
-if(!Number.isNaN(temperature)){
-
-document.getElementById(
-"temperature"
-).textContent =
-temperature.toFixed(1);
-
-}
-
-}
-
-
-// =================================
-// الرطوبة
-// =================================
-
-if(
-data.weather &&
-data.weather.humidity !== undefined
-){
-
-const humidity =
-parseFloat(
-data.weather.humidity
-);
-
-if(!Number.isNaN(humidity)){
-
-document.getElementById(
-"humidity"
-).textContent =
-humidity.toFixed(1);
-
-}
-
-}
-
-
-// =================================
-// اتصال ESP32 الحقيقي
-// =================================
-
-if(
-data.weather &&
-data.weather.lastSeen !== undefined
-){
-
-const currentLastSeen =
-data.weather.lastSeen;
-
-
-// إذا تغيرت قيمة lastSeen
-// فهذا يعني أن ESP32 أرسل بيانات جديدة
-
-if(
-lastESP32Seen === undefined ||
-lastESP32Seen !== currentLastSeen
-){
-
-lastESP32Seen =
-currentLastSeen;
-
-lastESP32Update =
-Date.now();
-
-}
-
-
-// =================================
-// فحص آخر إرسال من ESP32
-// =================================
-
-if(
-lastESP32Update !== undefined &&
-(Date.now() - lastESP32Update) < 7000
-){
-
-document.getElementById(
-"status"
-).textContent =
-"متصل";
-
-document.getElementById(
-"led"
-).className =
-"led connected";
-
-}else{
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
-
-}else{
-
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
-
-// =================================
-// آخر تحديث
-// =================================
-
-document.getElementById(
-"time"
-).textContent =
-"آخر تحديث: " +
-
-new Date().toLocaleTimeString(
-"ar-SA",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
-);
-
-
-}
-
-
-catch(error){
-
-
-console.error(
-"Firebase:",
-error
-);
-
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-
-}
-
-}
-
-
-// أول قراءة
-
-readFirebase();
-
-
-// تحديث كل ثانيتين
-
-setInterval(
-readFirebase,
-2000
-);
-
-
-</script>
-
-
-</body>
-
-</html>
+الر
