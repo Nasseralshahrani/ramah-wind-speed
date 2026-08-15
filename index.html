@@ -8,7 +8,7 @@
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0">
 
-<title>RAMAH WIND SPEED</title>
+<title>RAMAH WEATHER</title>
 
 <style>
 
@@ -46,9 +46,9 @@ transition:background 1s ease;
 
 .card{
 
-width:320px;
+width:350px;
 
-padding:40px 25px;
+padding:30px 25px;
 
 border-radius:25px;
 
@@ -70,7 +70,7 @@ h1{
 
 margin:0 0 8px;
 
-font-size:27px;
+font-size:28px;
 
 }
 
@@ -80,40 +80,77 @@ font-size:16px;
 
 color:#aebdcc;
 
-margin-bottom:30px;
+margin-bottom:25px;
 
 }
 
-.speed{
+.grid{
 
-font-size:70px;
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:12px;
+
+}
+
+.box{
+
+padding:20px 10px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+.label{
+
+font-size:14px;
+
+color:#aebdcc;
+
+margin-bottom:10px;
+
+}
+
+.value{
+
+font-size:35px;
 
 font-weight:bold;
 
-line-height:1;
-
 direction:ltr;
 
+}
+
+.wind{
 color:#ffff00;
+}
 
-text-shadow:
-0 0 10px rgba(255,255,0,.25);
+.temp{
+color:#ff9d42;
+}
 
+.humidity{
+color:#55c7ff;
 }
 
 .unit{
 
-font-size:25px;
+font-size:14px;
 
 color:#bfc8d2;
 
-margin-right:8px;
+margin-right:3px;
 
 }
 
 .status{
 
-margin-top:30px;
+margin-top:25px;
 
 font-size:16px;
 
@@ -139,8 +176,7 @@ margin-left:8px;
 
 background:#00ff66;
 
-box-shadow:
-0 0 12px #00ff66;
+box-shadow:0 0 12px #00ff66;
 
 }
 
@@ -148,8 +184,7 @@ box-shadow:
 
 background:#ff3333;
 
-box-shadow:
-0 0 12px #ff3333;
+box-shadow:0 0 12px #ff3333;
 
 }
 
@@ -159,152 +194,4 @@ margin-top:15px;
 
 font-size:13px;
 
-color:#aebdcc;
-
-}
-
-.info{
-
-margin-top:15px;
-
-font-size:12px;
-
-color:#718096;
-
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<div class="card">
-
-
-<h1>
-RAMAH WIND SPEED
-</h1>
-
-
-<div class="subtitle">
-
-سرعة الرياح الحالية
-
-</div>
-
-
-<div>
-
-<span
-id="speed"
-class="speed">
---
-</span>
-
-<span class="unit">
-km/h
-</span>
-
-</div>
-
-
-<div class="status">
-
-<span
-id="led"
-class="led">
-</span>
-
-<span id="status">
-جاري الاتصال...
-</span>
-
-</div>
-
-
-<div
-id="time"
-class="time">
-
-آخر قراءة: --
-
-</div>
-
-
-<div class="info">
-
-Firebase Live Data
-
-</div>
-
-
-</div>
-
-
-<script>
-
-
-// ======================================
-// Firebase
-// ======================================
-
-const FIREBASE_URL =
-"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
-
-
-// ======================================
-// آخر سرعة صحيحة
-// ======================================
-
-let lastSpeed = null;
-
-
-// ======================================
-// قراءة Firebase
-// ======================================
-
-async function getWindSpeed(){
-
-try{
-
-
-const response =
-await fetch(
-
-FIREBASE_URL +
-"/.json?_=" +
-Date.now(),
-
-{
-method:"GET",
-cache:"no-store"
-}
-
-);
-
-
-if(!response.ok){
-
-throw new Error(
-"HTTP " +
-response.status
-);
-
-}
-
-
-const data =
-await response.json();
-
-
-console.log(
-"Firebase:",
-data
-);
-
-
-// ======================================
-// قراءة سرعة
+color:#aebdcc
