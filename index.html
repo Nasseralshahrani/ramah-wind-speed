@@ -2,11 +2,8 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
 
@@ -39,85 +36,57 @@ transition:background 1s ease;
 }
 
 .card{
-
 width:350px;
-
 padding:30px 25px;
-
 border-radius:25px;
-
 text-align:center;
 
 background:rgba(20,30,45,.82);
 
 backdrop-filter:blur(12px);
-
 -webkit-backdrop-filter:blur(12px);
 
 border:1px solid rgba(255,255,255,.12);
 
 box-shadow:0 15px 40px rgba(0,0,0,.5);
-
 }
 
 h1{
-
 margin:0 0 8px;
-
 font-size:28px;
-
 }
 
 .subtitle{
-
 font-size:16px;
-
 color:#aebdcc;
-
 margin-bottom:25px;
-
 }
 
 .grid{
-
 display:grid;
-
 grid-template-columns:1fr 1fr;
-
 gap:12px;
-
 }
 
 .box{
-
 padding:20px 8px;
-
 border-radius:18px;
 
 background:rgba(255,255,255,.06);
 
 border:1px solid rgba(255,255,255,.08);
-
 }
 
 .label{
-
 font-size:14px;
-
 color:#aebdcc;
-
 margin-bottom:10px;
-
 }
 
 .value{
-
 font-size:34px;
-
 font-weight:bold;
-
 direction:ltr;
-
 }
 
 .wind{
@@ -133,103 +102,66 @@ color:#55c7ff;
 }
 
 .connection{
-color:#00ff66;
-font-size:22px;
+font-size:20px;
 }
 
 .unit{
-
 font-size:14px;
-
 color:#bfc8d2;
-
 }
 
 .status{
-
 margin-top:25px;
-
 font-size:16px;
-
 }
 
 .led{
-
 display:inline-block;
-
 width:12px;
-
 height:12px;
-
 border-radius:50%;
-
 background:#777;
-
 margin-left:8px;
-
 }
 
 .connected{
-
 background:#00ff66;
-
 box-shadow:0 0 12px #00ff66;
-
 }
 
 .error{
-
 background:#ff3333;
-
 box-shadow:0 0 12px #ff3333;
-
 }
 
 .time{
-
 margin-top:15px;
-
 font-size:13px;
-
 color:#aebdcc;
-
 }
 
 .info{
-
 margin-top:15px;
-
 font-size:12px;
-
 color:#718096;
-
 }
 
 </style>
-
 </head>
-
 
 <body>
 
-
 <div class="card">
 
-
-<h1>
-RAMAH WEATHER
-</h1>
-
+<h1>RAMAH WEATHER</h1>
 
 <div class="subtitle">
 محطة رماح للطقس
 </div>
 
-
 <div class="grid">
 
-
-<!-- سرعة الرياح -->
+<!-- WIND -->
 
 <div class="box">
 
@@ -240,7 +172,7 @@ RAMAH WEATHER
 <div>
 
 <span
-id="windSpeed"
+id="wind"
 class="value wind">
 --
 </span>
@@ -254,7 +186,7 @@ km/h
 </div>
 
 
-<!-- الحرارة -->
+<!-- TEMPERATURE -->
 
 <div class="box">
 
@@ -279,7 +211,7 @@ class="value temp">
 </div>
 
 
-<!-- الرطوبة -->
+<!-- HUMIDITY -->
 
 <div class="box">
 
@@ -304,7 +236,7 @@ class="value humidity">
 </div>
 
 
-<!-- الاتصال -->
+<!-- CONNECTION -->
 
 <div class="box">
 
@@ -316,17 +248,14 @@ class="value humidity">
 id="connection"
 class="value connection">
 
---
+جاري...
 
 </div>
 
 </div>
 
-
 </div>
 
-
-<!-- حالة الاتصال -->
 
 <div class="status">
 
@@ -342,8 +271,6 @@ class="led">
 </div>
 
 
-<!-- آخر قراءة -->
-
 <div
 id="time"
 class="time">
@@ -357,7 +284,6 @@ class="time">
 Firebase Live Data
 </div>
 
-
 </div>
 
 
@@ -367,87 +293,92 @@ Firebase Live Data
 // Firebase
 // ======================================
 
-const FIREBASE_URL =
+const FIREBASE =
 "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 
 // ======================================
-// قراءة البيانات
+// قراءة قيمة من Firebase
 // ======================================
 
-async function getWeather(){
-
-try{
+async function readFirebase(path){
 
 const response =
 await fetch(
-
-FIREBASE_URL +
-"/.json?_=" +
-Date.now(),
-
+FIREBASE + path + ".json?_=" + Date.now(),
 {
-method:"GET",
 cache:"no-store"
 }
-
 );
-
 
 if(!response.ok){
 
 throw new Error(
-"HTTP " +
-response.status
+"HTTP " + response.status
 );
 
 }
 
+return await response.json();
 
-const data =
-await response.json();
+}
 
 
-console.log(
-"Firebase DATA:",
-data
+// ======================================
+// تحديث الصفحة
+// ======================================
+
+async function updatePage(){
+
+try{
+
+// ====================================
+// سرعة الرياح
+// /windSpeed
+// ====================================
+
+const windData =
+await readFirebase(
+"/windSpeed"
 );
 
-
-// ======================================
-// سرعة الرياح
-// ======================================
+if(
+windData !== null &&
+windData !== undefined
+){
 
 const wind =
-parseFloat(
-data.windSpeed
-);
-
+parseFloat(windData);
 
 if(!Number.isNaN(wind)){
 
 document.getElementById(
-"windSpeed"
+"wind"
 ).textContent =
 wind.toFixed(2);
 
 }
 
+}
 
-// ======================================
+
+// ====================================
 // الحرارة
-// ======================================
+// /weather/temperature
+// ====================================
+
+const temperatureData =
+await readFirebase(
+"/weather/temperature"
+);
 
 if(
-data.weather &&
-data.weather.temperature !== undefined
+temperatureData !== null &&
+temperatureData !== undefined
 ){
 
 const temperature =
-parseFloat(
-data.weather.temperature
-);
-
+parseFloat(temperatureData);
 
 if(!Number.isNaN(temperature)){
 
@@ -461,20 +392,23 @@ temperature.toFixed(1);
 }
 
 
-// ======================================
+// ====================================
 // الرطوبة
-// ======================================
+// /weather/humidity
+// ====================================
+
+const humidityData =
+await readFirebase(
+"/weather/humidity"
+);
 
 if(
-data.weather &&
-data.weather.humidity !== undefined
+humidityData !== null &&
+humidityData !== undefined
 ){
 
 const humidity =
-parseFloat(
-data.weather.humidity
-);
-
+parseFloat(humidityData);
 
 if(!Number.isNaN(humidity)){
 
@@ -488,19 +422,18 @@ humidity.toFixed(1);
 }
 
 
-// ======================================
-// آخر قراءة
-// ======================================
+// ====================================
+// lastSeen
+// ====================================
 
 const lastSeen =
-Number(
-data.lastSeen
+await readFirebase(
+"/lastSeen"
 );
 
-
 if(
-!lastSeen ||
-lastSeen <= 0
+lastSeen === null ||
+lastSeen === undefined
 ){
 
 throw new Error(
@@ -510,24 +443,18 @@ throw new Error(
 }
 
 
-// ======================================
-// عمر الاتصال
-// ======================================
+// ====================================
+// عمر البيانات
+// ====================================
 
 const age =
 Date.now() -
-lastSeen;
+Number(lastSeen);
 
 
-console.log(
-"Connection age:",
-age
-);
-
-
-// ======================================
-// حالة الاتصال
-// ======================================
+// ====================================
+// الاتصال
+// ====================================
 
 if(age <= 15000){
 
@@ -578,18 +505,17 @@ document.getElementById(
 }
 
 
-// ======================================
+// ====================================
 // وقت آخر قراءة
-// ======================================
+// ====================================
 
 document.getElementById(
 "time"
 ).textContent =
-
 "آخر قراءة: " +
 
 new Date(
-lastSeen
+Number(lastSeen)
 ).toLocaleTimeString(
 "ar-SA",
 {
@@ -599,14 +525,58 @@ second:"2-digit"
 }
 );
 
+}
+
+catch(error){
+
+console.error(
+"Firebase ERROR:",
+error
+);
+
+document.getElementById(
+"status"
+).textContent =
+"خطأ في الاتصال";
+
+document.getElementById(
+"connection"
+).textContent =
+"خطأ";
+
+document.getElementById(
+"connection"
+).style.color =
+"#ff3333";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+}
+
 
 // ======================================
-// الخلفية حسب سرعة الرياح
+// تشغيل
 // ======================================
 
-if(!Number.isNaN(wind)){
+updatePage();
 
-if(wind <= 10){
 
-document.body.style.background =
-"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100
+// ======================================
+// تحديث كل ثانيتين
+// ======================================
+
+setInterval(
+updatePage,
+2000
+);
+
+</script>
+
+</body>
+
+</html>
