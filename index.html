@@ -6,8 +6,7 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-
-  content="width=device-width, initial-scale=1.0">
+content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
 
@@ -41,7 +40,7 @@ justify-content:center;
 
 align-items:flex-start;
 
-padding-top:25px;
+padding-top:15px;
 
 transition:background 1s ease;
 
@@ -71,9 +70,9 @@ box-shadow:0 15px 40px rgba(0,0,0,.5);
 
 h1{
 
-margin:0 0 8px;
+margin:0 0 6px;
 
-font-size:22px;
+font-size:18px;
 
 }
 
@@ -149,7 +148,7 @@ color:#55c7ff;
 
 .connection{
 
-font-size:18px;
+font-size:14px;
 
 font-weight:bold;
 
@@ -179,9 +178,9 @@ color:#bfc8d2;
 
 .status{
 
-margin-top:25px;
+margin-top:20px;
 
-font-size:16px;
+font-size:13px;
 
 }
 
@@ -189,15 +188,15 @@ font-size:16px;
 
 display:inline-block;
 
-width:12px;
+width:9px;
 
-height:12px;
+height:9px;
 
 border-radius:50%;
 
 background:#777;
 
-margin-left:8px;
+margin-left:6px;
 
 }
 
@@ -205,7 +204,7 @@ margin-left:8px;
 
 background:#00ff66;
 
-box-shadow:0 0 12px #00ff66;
+box-shadow:0 0 9px #00ff66;
 
 }
 
@@ -213,7 +212,7 @@ box-shadow:0 0 12px #00ff66;
 
 background:#ff3333;
 
-box-shadow:0 0 12px #ff3333;
+box-shadow:0 0 9px #ff3333;
 
 }
 
@@ -238,9 +237,9 @@ color:#718096;
 }
 
 
-/* ============================= */
+/* ================================= */
 /* توقعات الطقس */
-/* ============================= */
+/* ================================= */
 
 #ramahForecast{
 
@@ -274,11 +273,19 @@ display:flex;
 
 flex-direction:row;
 
-gap:4px;
+gap:3px;
 
 width:100%;
 
 overflow-x:auto;
+
+scrollbar-width:none;
+
+}
+
+#forecastDays::-webkit-scrollbar{
+
+display:none;
 
 }
 
@@ -286,7 +293,7 @@ overflow-x:auto;
 
 flex:1;
 
-min-width:65px;
+min-width:70px;
 
 text-align:center;
 
@@ -298,7 +305,7 @@ white-space:nowrap;
 
 display:block;
 
-font-size:9px;
+font-size:11px;
 
 font-weight:bold;
 
@@ -308,9 +315,9 @@ font-weight:bold;
 
 display:block;
 
-font-size:18px;
+font-size:22px;
 
-margin:3px 0;
+margin:4px 0;
 
 }
 
@@ -318,7 +325,7 @@ margin:3px 0;
 
 display:block;
 
-font-size:10px;
+font-size:13px;
 
 font-weight:bold;
 
@@ -328,9 +335,21 @@ font-weight:bold;
 
 display:block;
 
-font-size:7px;
+font-size:10px;
 
 color:#bfc8d2;
+
+margin-top:4px;
+
+}
+
+.forecast-gust{
+
+display:block;
+
+font-size:10px;
+
+color:#ffffff;
 
 margin-top:3px;
 
@@ -485,9 +504,9 @@ Firebase Live Data
 </div>
 
 
-<!-- ============================= -->
+<!-- ================================= -->
 <!-- توقعات الطقس -->
-<!-- ============================= -->
+<!-- ================================= -->
 
 <div id="ramahForecast">
 
@@ -906,7 +925,6 @@ updateWeather,
 
 // ======================================
 // توقعات الطقس
-// Open-Meteo
 // ======================================
 
 async function loadForecast(){
@@ -921,7 +939,7 @@ const longitude =
 const url =
 
 `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
-`&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max` +
+`&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max` +
 `&timezone=Asia%2FRiyadh`;
 
 
@@ -996,6 +1014,12 @@ data.daily.wind_speed_10m_max[i]
 );
 
 
+const gust =
+Math.round(
+data.daily.wind_gusts_10m_max[i]
+);
+
+
 const icon =
 weatherIcon(
 data.daily.weather_code[i]
@@ -1020,6 +1044,10 @@ ${max}° / ${min}°
 
 <span class="forecast-wind">
 🌪️ ${wind} km/h
+</span>
+
+<span class="forecast-gust">
+هبات ${gust} km/h
 </span>
 
 </div>
@@ -1077,26 +1105,20 @@ return "🌤️";
 }
 
 
+// ======================================
 // تشغيل التوقعات
+// ======================================
 
 loadForecast();
-  
-// تشغيل التوقعات
 
-loadForecast();
 
 // تحديث التوقعات كل ساعة
 
 setInterval(
-  loadForecast,
-  60 * 60 * 1000
+loadForecast,
+60 * 60 * 1000
 );
 
-</script>
-
-</body>
-
-</html>
 </script>
 
 
