@@ -8,7 +8,7 @@
 <meta name="viewport"
       content="width=device-width, initial-scale=1.0">
 
-<title>RAMAH WEATHER</title>
+<title>RAMAH WIND SPEED</title>
 
 <style>
 
@@ -106,25 +106,14 @@ body {
 
     background: #00e676;
 
-    box-shadow:
-        0 0 10px #00e676;
+    box-shadow: 0 0 10px #00e676;
 }
 
 .dot.offline {
 
     background: #ff1744;
 
-    box-shadow:
-        0 0 10px #ff1744;
-}
-
-.cards {
-
-    display: grid;
-
-    grid-template-columns: 1fr;
-
-    gap: 16px;
+    box-shadow: 0 0 10px #ff1744;
 }
 
 .card {
@@ -138,9 +127,9 @@ body {
 
     border: 1px solid rgba(255,255,255,0.10);
 
-    border-radius: 22px;
+    border-radius: 25px;
 
-    padding: 25px 20px;
+    padding: 35px 20px;
 
     box-shadow:
         0 15px 35px rgba(0,0,0,0.30);
@@ -150,60 +139,50 @@ body {
 
 .icon {
 
-    font-size: 38px;
+    font-size: 60px;
 
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .label {
 
     color: #aebfd0;
 
-    font-size: 16px;
+    font-size: 19px;
 
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .value {
 
-    font-size: 48px;
+    font-size: 72px;
 
     font-weight: bold;
 
     line-height: 1.1;
-}
-
-.unit {
-
-    font-size: 18px;
-
-    color: #9fb3c8;
-
-    margin-top: 8px;
-}
-
-.wind .value {
 
     color: #ff9800;
 
     text-shadow:
-        0 0 15px rgba(255,152,0,0.35);
+        0 0 20px rgba(255,152,0,0.35);
 }
 
-.temperature .value {
+.unit {
 
-    color: #ff5252;
+    font-size: 20px;
 
-    text-shadow:
-        0 0 15px rgba(255,82,82,0.30);
+    color: #9fb3c8;
+
+    margin-top: 10px;
 }
 
-.humidity .value {
+.last {
 
-    color: #42a5f5;
+    margin-top: 22px;
 
-    text-shadow:
-        0 0 15px rgba(66,165,245,0.30);
+    color: #71859a;
+
+    font-size: 13px;
 }
 
 .footer {
@@ -215,26 +194,6 @@ body {
     font-size: 12px;
 }
 
-@media (min-width: 550px) {
-
-    .cards {
-
-        grid-template-columns:
-            repeat(3, 1fr);
-    }
-
-    .card {
-
-        padding: 22px 10px;
-    }
-
-    .value {
-
-        font-size: 38px;
-    }
-
-}
-
 </style>
 
 </head>
@@ -242,16 +201,23 @@ body {
 
 <body>
 
+
 <div class="container">
 
+
     <div class="title">
-        RAMAH WEATHER
+        RAMAH WIND SPEED
     </div>
+
 
     <div class="subtitle">
-        محطة رماح للطقس
+        محطة رماح لقياس سرعة الرياح
     </div>
 
+
+    <!-- ============================== -->
+    <!-- STATUS -->
+    <!-- ============================== -->
 
     <div class="status">
 
@@ -267,40 +233,106 @@ body {
     </div>
 
 
-    <div class="cards">
+    <!-- ============================== -->
+    <!-- WIND CARD -->
+    <!-- ============================== -->
+
+    <div class="card">
 
 
-        <!-- ===================== -->
-        <!-- WIND -->
-        <!-- ===================== -->
+        <div class="icon">
+            🌪️
+        </div>
 
-        <div class="card wind">
 
-            <div class="icon">
-                🌪️
-            </div>
+        <div class="label">
+            سرعة الرياح
+        </div>
 
-            <div class="label">
-                سرعة الرياح
-            </div>
 
-            <div
-                id="windSpeed"
-                class="value">
-                -- 
-            </div>
+        <div
+            id="windSpeed"
+            class="value">
+            0.00
+        </div>
 
-            <div class="unit">
-                km/h
-            </div>
+
+        <div class="unit">
+            km/h
+        </div>
+
+
+        <div class="last">
+
+            آخر تحديث:
+            
+            <span id="lastUpdate">
+                --
+            </span>
 
         </div>
 
 
-        <!-- ===================== -->
-        <!-- TEMPERATURE -->
-        <!-- ===================== -->
+    </div>
 
-        <div class="card temperature">
 
-            <div
+    <div class="footer">
+        RAMAH WIND SPEED
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+// ======================================
+// Firebase
+// ======================================
+
+const FIREBASE_URL =
+"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app/weather.json";
+
+
+// ======================================
+// عناصر الصفحة
+// ======================================
+
+const windSpeedElement =
+    document.getElementById("windSpeed");
+
+const statusDot =
+    document.getElementById("statusDot");
+
+const statusText =
+    document.getElementById("statusText");
+
+const lastUpdateElement =
+    document.getElementById("lastUpdate");
+
+
+// ======================================
+// قراءة Firebase
+// ======================================
+
+async function getWindSpeed() {
+
+    try {
+
+
+        const response = await fetch(
+            FIREBASE_URL + "?t=" + Date.now(),
+            {
+                method: "GET",
+                cache: "no-store"
+            }
+        );
+
+
+        // ------------------------------
+        // فحص الاتصال
+        // ------------------------------
+
+       
