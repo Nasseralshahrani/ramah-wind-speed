@@ -46,11 +46,6 @@ transition:background 1s ease;
 
 }
 
-
-/* ======================================
-   البطاقة الرئيسية
-====================================== */
-
 .card{
 
 width:350px;
@@ -73,11 +68,6 @@ box-shadow:0 15px 40px rgba(0,0,0,.5);
 
 }
 
-
-/* ======================================
-   العنوان
-====================================== */
-
 h1{
 
 margin:0 0 8px;
@@ -96,11 +86,6 @@ margin-bottom:25px;
 
 }
 
-
-/* ======================================
-   المربعات
-====================================== */
-
 .grid{
 
 display:grid;
@@ -110,7 +95,6 @@ grid-template-columns:1fr 1fr;
 gap:12px;
 
 }
-
 
 .box{
 
@@ -124,11 +108,6 @@ border:1px solid rgba(255,255,255,.08);
 
 }
 
-
-/* ======================================
-   العناوين داخل المربعات
-====================================== */
-
 .label{
 
 font-size:14px;
@@ -138,11 +117,6 @@ color:#aebdcc;
 margin-bottom:10px;
 
 }
-
-
-/* ======================================
-   القيم
-====================================== */
 
 .value{
 
@@ -154,13 +128,11 @@ direction:ltr;
 
 }
 
-
 .wind{
 
 color:#ffff00;
 
 }
-
 
 .temp{
 
@@ -168,13 +140,33 @@ color:#ff9d42;
 
 }
 
-
 .humidity{
 
 color:#55c7ff;
 
 }
 
+.connection{
+
+font-size:18px;
+
+font-weight:bold;
+
+}
+
+.datetime{
+
+font-size:17px;
+
+font-weight:bold;
+
+line-height:1.8;
+
+color:white;
+
+direction:ltr;
+
+}
 
 .unit{
 
@@ -184,29 +176,45 @@ color:#bfc8d2;
 
 }
 
+.status{
 
-/* ======================================
-   التاريخ والوقت
-====================================== */
+margin-top:25px;
 
-.datetime{
-
-font-size:18px;
-
-font-weight:bold;
-
-line-height:1.8;
-
-color:white;
-
-direction:rtl;
+font-size:16px;
 
 }
 
+.led{
 
-/* ======================================
-   آخر قراءة
-====================================== */
+display:inline-block;
+
+width:12px;
+
+height:12px;
+
+border-radius:50%;
+
+background:#777;
+
+margin-left:8px;
+
+}
+
+.connected{
+
+background:#00ff66;
+
+box-shadow:0 0 12px #00ff66;
+
+}
+
+.error{
+
+background:#ff3333;
+
+box-shadow:0 0 12px #ff3333;
+
+}
 
 .time{
 
@@ -217,11 +225,6 @@ font-size:13px;
 color:#aebdcc;
 
 }
-
-
-/* ======================================
-   معلومات
-====================================== */
 
 .info{
 
@@ -237,29 +240,22 @@ color:#718096;
 
 </head>
 
-
 <body>
 
-
 <div class="card">
-
 
 <h1>
 RAMAH WEATHER
 </h1>
 
-
 <div class="subtitle">
 محطة رماح للطقس
 </div>
 
-
 <div class="grid">
 
 
-<!-- ==================================
-     سرعة الرياح
-================================== -->
+<!-- سرعة الرياح -->
 
 <div class="box">
 
@@ -272,9 +268,7 @@ RAMAH WEATHER
 <span
 id="wind"
 class="value wind">
-
 --
-
 </span>
 
 <span class="unit">
@@ -286,9 +280,7 @@ km/h
 </div>
 
 
-<!-- ==================================
-     الحرارة
-================================== -->
+<!-- الحرارة -->
 
 <div class="box">
 
@@ -301,9 +293,7 @@ km/h
 <span
 id="temperature"
 class="value temp">
-
 --
-
 </span>
 
 <span class="unit">
@@ -315,9 +305,7 @@ class="value temp">
 </div>
 
 
-<!-- ==================================
-     الرطوبة
-================================== -->
+<!-- الرطوبة -->
 
 <div class="box">
 
@@ -330,9 +318,7 @@ class="value temp">
 <span
 id="humidity"
 class="value humidity">
-
 --
-
 </span>
 
 <span class="unit">
@@ -344,9 +330,7 @@ class="value humidity">
 </div>
 
 
-<!-- ==================================
-     التاريخ والوقت
-================================== -->
+<!-- التاريخ والوقت -->
 
 <div class="box">
 
@@ -368,9 +352,23 @@ class="datetime">
 </div>
 
 
-<!-- ==================================
-     آخر قراءة
-================================== -->
+<!-- الاتصال -->
+
+<div class="status">
+
+<span
+id="led"
+class="led">
+</span>
+
+<span id="status">
+جاري الاتصال...
+</span>
+
+</div>
+
+
+<!-- آخر قراءة -->
 
 <div
 id="time"
@@ -382,17 +380,13 @@ class="time">
 
 
 <div class="info">
-
 Firebase Live Data
-
 </div>
-
 
 </div>
 
 
 <script>
-
 
 // ======================================
 // Firebase
@@ -437,8 +431,8 @@ return await response.json();
 
 
 // ======================================
-// تحديث التاريخ والوقت
-// مستقل تمامًا عن Firebase
+// التاريخ والوقت
+// الأرقام إنجليزية
 // ======================================
 
 function updateDateTime(){
@@ -447,47 +441,85 @@ const now =
 new Date();
 
 
-const dateText =
-now.toLocaleDateString(
-"ar-SA",
-{
-year:"numeric",
-month:"2-digit",
-day:"2-digit"
-}
+// التاريخ
+
+const day =
+String(
+now.getDate()
+).padStart(
+2,
+"0"
+);
+
+const month =
+String(
+now.getMonth() + 1
+).padStart(
+2,
+"0"
+);
+
+const year =
+now.getFullYear();
+
+
+// الوقت
+
+const hours =
+String(
+now.getHours()
+).padStart(
+2,
+"0"
+);
+
+const minutes =
+String(
+now.getMinutes()
+).padStart(
+2,
+"0"
+);
+
+const seconds =
+String(
+now.getSeconds()
+).padStart(
+2,
+"0"
 );
 
 
-const timeText =
-now.toLocaleTimeString(
-"ar-SA",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
-);
-
+// عرض التاريخ والوقت
 
 document.getElementById(
 "datetime"
 ).innerHTML =
 
-dateText +
+day +
+"/" +
+month +
+"/" +
+year +
+
 "<br>" +
-timeText;
+
+hours +
+":" +
+minutes +
+":" +
+seconds;
 
 }
 
 
 // ======================================
-// تحديث البيانات
+// تحديث بيانات الطقس
 // ======================================
 
 async function updateWeather(){
 
 try{
-
 
 // ====================================
 // سرعة الرياح
@@ -498,7 +530,6 @@ await readFirebase(
 "/windSpeed"
 );
 
-
 if(
 windData !== null &&
 windData !== undefined
@@ -508,7 +539,6 @@ const wind =
 parseFloat(
 windData
 );
-
 
 if(
 !Number.isNaN(wind)
@@ -533,7 +563,6 @@ await readFirebase(
 "/weather/temperature"
 );
 
-
 if(
 temperatureData !== null &&
 temperatureData !== undefined
@@ -543,7 +572,6 @@ const temperature =
 parseFloat(
 temperatureData
 );
-
 
 if(
 !Number.isNaN(temperature)
@@ -568,7 +596,6 @@ await readFirebase(
 "/weather/humidity"
 );
 
-
 if(
 humidityData !== null &&
 humidityData !== undefined
@@ -578,7 +605,6 @@ const humidity =
 parseFloat(
 humidityData
 );
-
 
 if(
 !Number.isNaN(humidity)
@@ -595,7 +621,7 @@ humidity.toFixed(1);
 
 
 // ====================================
-// آخر قراءة
+// lastSeen
 // ====================================
 
 const lastSeen =
@@ -603,11 +629,92 @@ await readFirebase(
 "/lastSeen"
 );
 
-
 if(
-lastSeen !== null &&
-lastSeen !== undefined
+lastSeen === null ||
+lastSeen === undefined
 ){
+
+throw new Error(
+"lastSeen غير موجود"
+);
+
+}
+
+
+// ====================================
+// الاتصال
+// ====================================
+
+const age =
+Date.now() -
+Number(lastSeen);
+
+
+if(age <= 15000){
+
+document.getElementById(
+"status"
+).textContent =
+"متصل";
+
+document.getElementById(
+"led"
+).className =
+"led connected";
+
+}
+
+else{
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+
+// ====================================
+// آخر قراءة
+// ====================================
+
+const lastDate =
+new Date(
+Number(lastSeen)
+);
+
+
+// أرقام إنجليزية
+
+const lastHours =
+String(
+lastDate.getHours()
+).padStart(
+2,
+"0"
+);
+
+const lastMinutes =
+String(
+lastDate.getMinutes()
+).padStart(
+2,
+"0"
+);
+
+const lastSeconds =
+String(
+lastDate.getSeconds()
+).padStart(
+2,
+"0"
+);
+
 
 document.getElementById(
 "time"
@@ -615,21 +722,58 @@ document.getElementById(
 
 "آخر قراءة: " +
 
-new Date(
-Number(lastSeen)
-).toLocaleTimeString(
-"ar-SA",
-{
-hour:"2-digit",
-minute:"2-digit",
-second:"2-digit"
-}
+lastHours +
+":" +
+lastMinutes +
+":" +
+lastSeconds;
+
+
+// ====================================
+// الخلفية حسب سرعة الرياح
+// ====================================
+
+const wind =
+parseFloat(
+windData
 );
 
+if(
+!Number.isNaN(wind)
+){
+
+if(wind <= 10){
+
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
+
 }
 
+else if(wind <= 30){
+
+document.body.style.background =
+"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
 
 }
+
+else if(wind <= 60){
+
+document.body.style.background =
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
+
+}
+
+else{
+
+document.body.style.background =
+"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+
+}
+
+}
+
+}
+
 catch(error){
 
 console.error(
@@ -637,13 +781,23 @@ console.error(
 error
 );
 
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
 }
 
 }
 
 
 // ======================================
-// تشغيل أول مرة
+// تشغيل
 // ======================================
 
 updateDateTime();
@@ -652,7 +806,7 @@ updateWeather();
 
 
 // ======================================
-// الساعة والتاريخ
+// تحديث التاريخ والوقت
 // كل ثانية
 // ======================================
 
@@ -663,7 +817,7 @@ updateDateTime,
 
 
 // ======================================
-// Firebase
+// تحديث Firebase
 // كل ثانيتين
 // ======================================
 
@@ -672,9 +826,7 @@ updateWeather,
 2000
 );
 
-
 </script>
-
 
 </body>
 
