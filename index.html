@@ -17,11 +17,8 @@ box-sizing:border-box;
 }
 
 body{
-
 margin:0;
-
 min-height:100vh;
-
 font-family:Arial,sans-serif;
 
 background:
@@ -35,13 +32,10 @@ circle at top,
 color:white;
 
 display:flex;
-
 justify-content:center;
-
 align-items:center;
 
 transition:background 1s ease;
-
 }
 
 .card{
@@ -96,7 +90,7 @@ gap:12px;
 
 .box{
 
-padding:20px 10px;
+padding:20px 8px;
 
 border-radius:18px;
 
@@ -118,7 +112,7 @@ margin-bottom:10px;
 
 .value{
 
-font-size:35px;
+font-size:34px;
 
 font-weight:bold;
 
@@ -138,13 +132,16 @@ color:#ff9d42;
 color:#55c7ff;
 }
 
+.connection{
+color:#00ff66;
+font-size:22px;
+}
+
 .unit{
 
 font-size:14px;
 
 color:#bfc8d2;
-
-margin-right:3px;
 
 }
 
@@ -194,4 +191,422 @@ margin-top:15px;
 
 font-size:13px;
 
-color:#aebdcc
+color:#aebdcc;
+
+}
+
+.info{
+
+margin-top:15px;
+
+font-size:12px;
+
+color:#718096;
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="card">
+
+
+<h1>
+RAMAH WEATHER
+</h1>
+
+
+<div class="subtitle">
+محطة رماح للطقس
+</div>
+
+
+<div class="grid">
+
+
+<!-- سرعة الرياح -->
+
+<div class="box">
+
+<div class="label">
+🌪️ سرعة الرياح
+</div>
+
+<div>
+
+<span
+id="windSpeed"
+class="value wind">
+--
+</span>
+
+<span class="unit">
+km/h
+</span>
+
+</div>
+
+</div>
+
+
+<!-- الحرارة -->
+
+<div class="box">
+
+<div class="label">
+🌡️ الحرارة
+</div>
+
+<div>
+
+<span
+id="temperature"
+class="value temp">
+--
+</span>
+
+<span class="unit">
+°C
+</span>
+
+</div>
+
+</div>
+
+
+<!-- الرطوبة -->
+
+<div class="box">
+
+<div class="label">
+💧 الرطوبة
+</div>
+
+<div>
+
+<span
+id="humidity"
+class="value humidity">
+--
+</span>
+
+<span class="unit">
+%
+</span>
+
+</div>
+
+</div>
+
+
+<!-- الاتصال -->
+
+<div class="box">
+
+<div class="label">
+📡 الاتصال
+</div>
+
+<div
+id="connection"
+class="value connection">
+
+--
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- حالة الاتصال -->
+
+<div class="status">
+
+<span
+id="led"
+class="led">
+</span>
+
+<span id="status">
+جاري الاتصال...
+</span>
+
+</div>
+
+
+<!-- آخر قراءة -->
+
+<div
+id="time"
+class="time">
+
+آخر قراءة: --
+
+</div>
+
+
+<div class="info">
+Firebase Live Data
+</div>
+
+
+</div>
+
+
+<script>
+
+// ======================================
+// Firebase
+// ======================================
+
+const FIREBASE_URL =
+"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
+
+
+// ======================================
+// قراءة البيانات
+// ======================================
+
+async function getWeather(){
+
+try{
+
+const response =
+await fetch(
+
+FIREBASE_URL +
+"/.json?_=" +
+Date.now(),
+
+{
+method:"GET",
+cache:"no-store"
+}
+
+);
+
+
+if(!response.ok){
+
+throw new Error(
+"HTTP " +
+response.status
+);
+
+}
+
+
+const data =
+await response.json();
+
+
+console.log(
+"Firebase DATA:",
+data
+);
+
+
+// ======================================
+// سرعة الرياح
+// ======================================
+
+const wind =
+parseFloat(
+data.windSpeed
+);
+
+
+if(!Number.isNaN(wind)){
+
+document.getElementById(
+"windSpeed"
+).textContent =
+wind.toFixed(2);
+
+}
+
+
+// ======================================
+// الحرارة
+// ======================================
+
+if(
+data.weather &&
+data.weather.temperature !== undefined
+){
+
+const temperature =
+parseFloat(
+data.weather.temperature
+);
+
+
+if(!Number.isNaN(temperature)){
+
+document.getElementById(
+"temperature"
+).textContent =
+temperature.toFixed(1);
+
+}
+
+}
+
+
+// ======================================
+// الرطوبة
+// ======================================
+
+if(
+data.weather &&
+data.weather.humidity !== undefined
+){
+
+const humidity =
+parseFloat(
+data.weather.humidity
+);
+
+
+if(!Number.isNaN(humidity)){
+
+document.getElementById(
+"humidity"
+).textContent =
+humidity.toFixed(1);
+
+}
+
+}
+
+
+// ======================================
+// آخر قراءة
+// ======================================
+
+const lastSeen =
+Number(
+data.lastSeen
+);
+
+
+if(
+!lastSeen ||
+lastSeen <= 0
+){
+
+throw new Error(
+"lastSeen غير موجود"
+);
+
+}
+
+
+// ======================================
+// عمر الاتصال
+// ======================================
+
+const age =
+Date.now() -
+lastSeen;
+
+
+console.log(
+"Connection age:",
+age
+);
+
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+if(age <= 15000){
+
+document.getElementById(
+"status"
+).textContent =
+"متصل";
+
+document.getElementById(
+"connection"
+).textContent =
+"متصل";
+
+document.getElementById(
+"connection"
+).style.color =
+"#00ff66";
+
+document.getElementById(
+"led"
+).className =
+"led connected";
+
+}
+
+else{
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"connection"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"connection"
+).style.color =
+"#ff3333";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+
+// ======================================
+// وقت آخر قراءة
+// ======================================
+
+document.getElementById(
+"time"
+).textContent =
+
+"آخر قراءة: " +
+
+new Date(
+lastSeen
+).toLocaleTimeString(
+"ar-SA",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+
+// ======================================
+// الخلفية حسب سرعة الرياح
+// ======================================
+
+if(!Number.isNaN(wind)){
+
+if(wind <= 10){
+
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100
