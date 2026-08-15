@@ -239,7 +239,83 @@ color:#718096;
 </style>
 
 </head>
+<script>
 
+async function loadForecast() {
+
+  const latitude = 25.5828380;
+  const longitude = 47.1852031;
+
+  const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max` +
+    `&timezone=Asia%2FRiyadh`;
+
+  try {
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const container = document.getElementById("forecastDays");
+
+    container.innerHTML = "";
+
+    const days = [
+      "الأحد",
+      "الاثنين",
+      "الثلاثاء",
+      "الأربعاء",
+      "الخميس",
+      "الجمعة",
+      "السبت"
+    ];
+
+    for (let i = 0; i < 7; i++) {
+
+      const date = new Date(data.daily.time[i] + "T00:00:00");
+
+      const dayName = days[date.getDay()];
+
+      const max = Math.round(data.daily.temperature_2m_max[i]);
+      const min = Math.round(data.daily.temperature_2m_min[i]);
+      const wind = Math.round(data.daily.wind_speed_10m_max[i]);
+
+      container.innerHTML += `
+        <div class="forecast-day">
+          <div class="forecast-name">${dayName}</div>
+          <div class="forecast-icon">${weatherIcon(data.daily.weather_code[i])}</div>
+          <div class="forecast-temp">${max}° / ${min}°</div>
+          <div class="forecast-wind">🌪️ ${wind} km/h</div>
+        </div>
+      `;
+    }
+
+  } catch (error) {
+
+    console.log("خطأ في التوقعات:", error);
+
+  }
+}
+
+
+function weatherIcon(code) {
+
+  if (code === 0) return "☀️";
+  if (code === 1 || code === 2) return "🌤️";
+  if (code === 3) return "☁️";
+  if (code >= 45 && code <= 48) return "🌫️";
+  if (code >= 51 && code <= 67) return "🌧️";
+  if (code >= 71 && code <= 77) return "❄️";
+  if (code >= 80 && code <= 82) return "🌦️";
+  if (code >= 95) return "⛈️";
+
+  return "🌤️";
+}
+
+
+loadForecast();
+
+</script>
 <body>
 
 <div class="card">
