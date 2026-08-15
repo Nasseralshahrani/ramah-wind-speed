@@ -249,7 +249,7 @@ RUMAH WEATHER LIVE
 </h1>
 
 <div class="subtitle">
- مباشر محطة 🪂 رماح للطقس
+ مباشر محطة رماح للطقس
 </div>
 
 <div class="grid">
@@ -348,108 +348,9 @@ class="datetime">
 
 </div>
 
-</div>
-
- 
- <!-- RAMAH WEATHER FORECAST -->
-
-<div id="ramahForecast">
-
-  <div class="forecast-day">
-    <b>اليوم</b>
-    ⛈️ 32°
-    <small>عاصفة</small>
-    <small>🌪️ 18 km/h</small>
-    <small>هبات 27</small>
-  </div>
-
-  <div class="forecast-day">
-    <b>غداً</b>
-    🌤️ 34°
-    <small>مشمس جزئياً</small>
-    <small>🌪️ 21 km/h</small>
-    <small>هبات 30</small>
-  </div>
-
-  <div class="forecast-day">
-    <b>الأحد</b>
-    ☁️ 33°
-    <small>غائم</small>
-    <small>🌪️ 16 km/h</small>
-    <small>هبات 25</small>
-  </div>
-
-  <div class="forecast-day">
-    <b>الاثنين</b>
-    🌧️ 31°
-    <small>ممطر</small>
-    <small>🌪️ 14 km/h</small>
-    <small>هبات 22</small>
-  </div>
 
 </div>
 
-<style>
-
-#ramahForecast{
-  width:100%;
-  height:62px;
-  margin:20px 0;
-  padding:4px;
-
-  background:rgba(255,255,255,.06);
-
-  border:1px solid rgba(255,255,255,.08);
-  border-radius:18px;
-
-  color:white;
-  font-family:Arial,sans-serif;
-  direction:rtl;
-
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-
-  box-sizing:border-box;
-}
-
-.forecast-day{
-  flex:1;
-  text-align:center;
-  font-size:13px;
-  line-height:15px;
-  white-space:nowrap;
-}
-
-.forecast-day b{
-  display:block;
-  font-size:8px;
-}
-
-.forecast-day small{
-  display:block;
-  font-size:10px;
-  line-height:12px;
-}
-
-@media(max-width:600px){
-
-  #ramahForecast{
-    width:100%;
-    height:62px;
-  }
-
-  .forecast-day b{
-    font-size:7px;
-  }
-
-  .forecast-day small{
-    font-size:5px;
-  }
-
-}
-
-</style>
 
 <!-- الاتصال -->
 
@@ -928,5 +829,122 @@ updateWeather,
 </script>
 
 </body>
+<script>
 
+async function loadForecast() {
+
+  // إحداثيات رماح
+  const latitude = 25.5828380;
+  const longitude = 47.1852031;
+
+  const url =
+    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+    `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max` +
+    `&timezone=Asia%2FRiyadh`;
+
+  try {
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const container = document.getElementById("forecastDays");
+
+    container.innerHTML = "";
+
+    const days = [
+      "الأحد",
+      "الاثنين",
+      "الثلاثاء",
+      "الأربعاء",
+      "الخميس",
+      "الجمعة",
+      "السبت"
+    ];
+
+    for (let i = 0; i < 7; i++) {
+
+      const date = new Date(data.daily.time[i] + "T00:00:00");
+
+      const dayName = days[date.getDay()];
+
+      const max = Math.round(
+        data.daily.temperature_2m_max[i]
+      );
+
+      const min = Math.round(
+        data.daily.temperature_2m_min[i]
+      );
+
+      const wind = Math.round(
+        data.daily.wind_speed_10m_max[i]
+      );
+
+      const icon = weatherIcon(
+        data.daily.weather_code[i]
+      );
+
+      container.innerHTML += `
+        <div class="forecast-day">
+
+          <div class="forecast-name">
+            ${dayName}
+          </div>
+
+          <div class="forecast-icon">
+            ${icon}
+          </div>
+
+          <div class="forecast-temp">
+            ${max}° / ${min}°
+          </div>
+
+          <div class="forecast-wind">
+            🌪️ ${wind} km/h
+          </div>
+
+        </div>
+      `;
+    }
+
+  } catch (error) {
+
+    console.log("خطأ في جلب التوقعات:", error);
+
+  }
+}
+
+
+function weatherIcon(code) {
+
+  if (code === 0)
+    return "☀️";
+
+  if (code === 1 || code === 2)
+    return "🌤️";
+
+  if (code === 3)
+    return "☁️";
+
+  if (code >= 45 && code <= 48)
+    return "🌫️";
+
+  if (code >= 51 && code <= 67)
+    return "🌧️";
+
+  if (code >= 71 && code <= 77)
+    return "❄️";
+
+  if (code >= 80 && code <= 82)
+    return "🌦️";
+
+  if (code >= 95)
+    return "⛈️";
+
+  return "🌤️";
+}
+
+
+loadForecast();
+
+</script>
 </html>
