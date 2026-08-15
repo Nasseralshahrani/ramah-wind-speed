@@ -9,186 +9,13 @@
 content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
-#ramahForecast{
-  margin-top:20px;
-  padding:15px;
-  border-radius:18px;
-  background:rgba(255,255,255,.08);
-}
 
-.forecast-title{
-  text-align:center;
-  font-size:20px;
-  font-weight:bold;
-  margin-bottom:15px;
-}
-
-#forecastDays{
-  display:flex;
-  flex-direction:row;
-  gap:8px;
-  width:100%;
-  overflow-x:auto;
-}
-
-.forecast-day{
-  flex:0 0 80px;
-  min-width:80px;
-  padding:10px 6px;
-  text-align:center;
-  border-radius:14px;
-  background:rgba(255,255,255,.08);
-}
-
-.forecast-name{
-  font-weight:bold;
-}
-
-.forecast-icon{
-  font-size:28px;
-  margin:6px 0;
-}
-
-.forecast-temp{
-  font-size:14px;
-}
-
-.forecast-wind{
-  font-size:12px;
-  margin-top:6px;
-}
 <style>
 
 *{
 box-sizing:border-box;
 }
-<script>
 
-async function loadForecast() {
-
-  // إحداثيات رماح
-  const latitude = 25.5828380;
-  const longitude = 47.1852031;
-
-  const url =
-    `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
-    `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max` +
-    `&timezone=Asia%2FRiyadh`;
-
-  try {
-
-    const response = await fetch(url);
-    const data = await response.json();
-
-    const container = document.getElementById("forecastDays");
-
-    container.innerHTML = "";
-
-    const days = [
-      "الأحد",
-      "الاثنين",
-      "الثلاثاء",
-      "الأربعاء",
-      "الخميس",
-      "الجمعة",
-      "السبت"
-    ];
-
-    for (let i = 0; i < 7; i++) {
-
-      const date = new Date(data.daily.time[i] + "T00:00:00");
-
-      const dayName = days[date.getDay()];
-
-      const max = Math.round(
-        data.daily.temperature_2m_max[i]
-      );
-
-      const min = Math.round(
-        data.daily.temperature_2m_min[i]
-      );
-
-      const wind = Math.round(
-        data.daily.wind_speed_10m_max[i]
-      );
-
-      const icon = weatherIcon(
-        data.daily.weather_code[i]
-      );
-
-      container.innerHTML += `
-        <div class="forecast-day">
-
-          <div class="forecast-name">
-            ${dayName}
-          </div>
-
-          <div class="forecast-icon">
-            ${icon}
-          </div>
-
-          <div class="forecast-temp">
-            ${max}° / ${min}°
-          </div>
-
-          <div class="forecast-wind">
-            🌪️ ${wind} km/h
-          </div>
-
-        </div>
-      `;
-    }
-
-  } catch (error) {
-
-    console.log("خطأ في جلب التوقعات:", error);
-
-  }
-}
-
-
-function weatherIcon(code) {
-
-  if (code === 0)
-    return "☀️";
-
-  if (code === 1 || code === 2)
-    return "🌤️";
-
-  if (code === 3)
-    return "☁️";
-
-  if (code >= 45 && code <= 48)
-    return "🌫️";
-
-  if (code >= 51 && code <= 67)
-    return "🌧️";
-
-  if (code >= 71 && code <= 77)
-    return "❄️";
-
-  if (code >= 80 && code <= 82)
-    return "🌦️";
-
-  if (code >= 95)
-    return "⛈️";
-
-  return "🌤️";
-}
-
-
-loadForecast();
-
-</script>
-  <div id="ramahForecast">
-
-  <div class="forecast-title">
-    🌤️ توقعات الطقس
-  </div>
-
-  <div id="forecastDays"></div>
-
-</div>
 body{
 
 margin:0;
@@ -409,6 +236,105 @@ color:#718096;
 
 }
 
+
+/* ============================= */
+/* توقعات الطقس */
+/* ============================= */
+
+#ramahForecast{
+
+margin-top:20px;
+
+padding:10px 5px;
+
+width:100%;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.08);
+
+border-radius:18px;
+
+}
+
+.forecast-title{
+
+font-size:15px;
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+}
+
+#forecastDays{
+
+display:flex;
+
+flex-direction:row;
+
+gap:4px;
+
+width:100%;
+
+overflow-x:auto;
+
+}
+
+.forecast-day{
+
+flex:1;
+
+min-width:65px;
+
+text-align:center;
+
+white-space:nowrap;
+
+}
+
+.forecast-name{
+
+display:block;
+
+font-size:9px;
+
+font-weight:bold;
+
+}
+
+.forecast-icon{
+
+display:block;
+
+font-size:18px;
+
+margin:3px 0;
+
+}
+
+.forecast-temp{
+
+display:block;
+
+font-size:10px;
+
+font-weight:bold;
+
+}
+
+.forecast-wind{
+
+display:block;
+
+font-size:7px;
+
+color:#bfc8d2;
+
+margin-top:3px;
+
+}
+
 </style>
 
 </head>
@@ -422,8 +348,9 @@ RUMAH WEATHER LIVE
 </h1>
 
 <div class="subtitle">
- مباشر محطة رماح للطقس
+مباشر محطة رماح للطقس
 </div>
+
 
 <div class="grid">
 
@@ -511,8 +438,7 @@ class="value humidity">
 📅 التاريخ والوقت
 </div>
 
-<div id
-  
+<div
 id="datetime"
 class="datetime">
 
@@ -556,6 +482,22 @@ class="time">
 <div class="info">
 Firebase Live Data
 </div>
+
+
+<!-- ============================= -->
+<!-- توقعات الطقس -->
+<!-- ============================= -->
+
+<div id="ramahForecast">
+
+<div class="forecast-title">
+🌤️ توقعات الطقس لرماح
+</div>
+
+<div id="forecastDays"></div>
+
+</div>
+
 
 </div>
 
@@ -606,16 +548,12 @@ return await response.json();
 
 // ======================================
 // التاريخ والوقت
-// الأرقام إنجليزية
 // ======================================
 
 function updateDateTime(){
 
 const now =
 new Date();
-
-
-// التاريخ
 
 const day =
 String(
@@ -635,9 +573,6 @@ now.getMonth() + 1
 
 const year =
 now.getFullYear();
-
-
-// الوقت
 
 const hours =
 String(
@@ -662,9 +597,6 @@ now.getSeconds()
 2,
 "0"
 );
-
-
-// عرض التاريخ والوقت
 
 document.getElementById(
 "datetime"
@@ -695,9 +627,8 @@ async function updateWeather(){
 
 try{
 
-// ====================================
+
 // سرعة الرياح
-// ====================================
 
 const windData =
 await readFirebase(
@@ -728,9 +659,7 @@ wind.toFixed(2);
 }
 
 
-// ====================================
 // الحرارة
-// ====================================
 
 const temperatureData =
 await readFirebase(
@@ -761,9 +690,7 @@ temperature.toFixed(1);
 }
 
 
-// ====================================
 // الرطوبة
-// ====================================
 
 const humidityData =
 await readFirebase(
@@ -794,9 +721,7 @@ humidity.toFixed(1);
 }
 
 
-// ====================================
 // lastSeen
-// ====================================
 
 const lastSeen =
 await readFirebase(
@@ -815,14 +740,11 @@ throw new Error(
 }
 
 
-// ====================================
 // الاتصال
-// ====================================
 
 const age =
 Date.now() -
 Number(lastSeen);
-
 
 if(age <= 10000){
 
@@ -853,17 +775,12 @@ document.getElementById(
 }
 
 
-// ====================================
 // آخر قراءة
-// ====================================
 
 const lastDate =
 new Date(
 Number(lastSeen)
 );
-
-
-// أرقام إنجليزية
 
 const lastHours =
 String(
@@ -889,7 +806,6 @@ lastDate.getSeconds()
 "0"
 );
 
-
 document.getElementById(
 "time"
 ).textContent =
@@ -903,9 +819,7 @@ lastMinutes +
 lastSeconds;
 
 
-// ====================================
 // الخلفية حسب سرعة الرياح
-// ====================================
 
 const wind =
 parseFloat(
@@ -971,36 +885,203 @@ document.getElementById(
 
 
 // ======================================
-// تشغيل
+// تشغيل Firebase
 // ======================================
 
 updateDateTime();
 
 updateWeather();
 
-
-// ======================================
-// تحديث التاريخ والوقت
-// كل ثانية
-// ======================================
-
 setInterval(
 updateDateTime,
 1000
 );
-
-
-// ======================================
-// تحديث Firebase
-// كل ثانيتين
-// ======================================
 
 setInterval(
 updateWeather,
 2000
 );
 
+
+// ======================================
+// توقعات الطقس
+// Open-Meteo
+// ======================================
+
+async function loadForecast(){
+
+const latitude =
+25.5828380;
+
+const longitude =
+47.1852031;
+
+
+const url =
+
+`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+`&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max` +
+`&timezone=Asia%2FRiyadh`;
+
+
+try{
+
+const response =
+await fetch(url);
+
+if(!response.ok){
+
+throw new Error(
+"Forecast HTTP " +
+response.status
+);
+
+}
+
+const data =
+await response.json();
+
+
+const container =
+document.getElementById(
+"forecastDays"
+);
+
+
+const days = [
+
+"الأحد",
+"الاثنين",
+"الثلاثاء",
+"الأربعاء",
+"الخميس",
+"الجمعة",
+"السبت"
+
+];
+
+
+container.innerHTML = "";
+
+
+for(
+let i = 0;
+i < 7;
+i++
+){
+
+const date =
+new Date(
+data.daily.time[i] +
+"T00:00:00"
+);
+
+
+const max =
+Math.round(
+data.daily.temperature_2m_max[i]
+);
+
+
+const min =
+Math.round(
+data.daily.temperature_2m_min[i]
+);
+
+
+const wind =
+Math.round(
+data.daily.wind_speed_10m_max[i]
+);
+
+
+const icon =
+weatherIcon(
+data.daily.weather_code[i]
+);
+
+
+container.innerHTML += `
+
+<div class="forecast-day">
+
+<span class="forecast-name">
+${days[date.getDay()]}
+</span>
+
+<span class="forecast-icon">
+${icon}
+</span>
+
+<span class="forecast-temp">
+${max}° / ${min}°
+</span>
+
+<span class="forecast-wind">
+🌪️ ${wind} km/h
+</span>
+
+</div>
+
+`;
+
+}
+
+}
+
+catch(error){
+
+console.error(
+"خطأ في توقعات الطقس:",
+error
+);
+
+}
+
+}
+
+
+// ======================================
+// أيقونات الطقس
+// ======================================
+
+function weatherIcon(code){
+
+if(code === 0)
+return "☀️";
+
+if(code === 1 || code === 2)
+return "🌤️";
+
+if(code === 3)
+return "☁️";
+
+if(code >= 45 && code <= 48)
+return "🌫️";
+
+if(code >= 51 && code <= 67)
+return "🌧️";
+
+if(code >= 71 && code <= 77)
+return "❄️";
+
+if(code >= 80 && code <= 82)
+return "🌦️";
+
+if(code >= 95)
+return "⛈️";
+
+return "🌤️";
+
+}
+
+
+// تشغيل التوقعات
+
+loadForecast();
+
 </script>
+
 
 </body>
 
