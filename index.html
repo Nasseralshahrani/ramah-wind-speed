@@ -1,338 +1,443 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<!DOCTYPE html>  <html lang="ar" dir="rtl">  <head>  <meta charset="UTF-8">  <meta name="viewport"    content="width=device-width, initial-scale=1.0">
 
-<head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
-<title>RAMAH WIND SPEED</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
+<title>RAMAH WIND SPEED</title>  <style>    *{
+box-sizing:border-box;
 }
 
-body {
+body{
 
-    margin: 0;
+margin:0;
 
-    min-height: 100vh;
+min-height:100vh;
 
-    font-family: Arial, sans-serif;
+font-family:Arial,sans-serif;
 
-    background:
-        radial-gradient(
-            circle at top,
-            #173554 0%,
-            #08111f 45%,
-            #040912 100%
-        );
+background:
+radial-gradient(
+circle at top,
+#173554 0%,
+#08111f 45%,
+#040912 100%
+);
 
-    color: white;
+color:white;
 
-    display: flex;
+display:flex;
 
-    justify-content: center;
+justify-content:center;
 
-    align-items: center;
+align-items:center;
 
-    padding: 20px;
+transition:background 1s ease;
+
 }
 
-.container {
+.card{
 
-    width: 100%;
+width:320px;
 
-    max-width: 600px;
+padding:40px 25px;
 
-    text-align: center;
+border-radius:25px;
+
+text-align:center;
+
+background:rgba(20,30,45,.82);
+
+backdrop-filter:blur(12px);
+
+-webkit-backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.12);
+
+box-shadow:0 15px 40px rgba(0,0,0,.5);
+
 }
 
-.title {
+h1{
 
-    font-size: 34px;
+margin:0 0 8px;
 
-    font-weight: bold;
+font-size:27px;
 
-    letter-spacing: 2px;
-
-    margin-bottom: 8px;
 }
 
-.subtitle {
+.subtitle{
 
-    color: #9fb3c8;
+font-size:16px;
 
-    font-size: 15px;
+color:#aebdcc;
 
-    margin-bottom: 25px;
+margin-bottom:30px;
+
 }
 
-.status {
+.speed{
 
-    display: inline-flex;
+font-size:70px;
 
-    align-items: center;
+font-weight:bold;
 
-    gap: 8px;
+line-height:1;
 
-    background: rgba(0,0,0,0.25);
+direction:ltr;
 
-    padding: 8px 16px;
+color:#ffff00;
 
-    border-radius: 30px;
+text-shadow:0 0 10px rgba(255,255,0,.25);
 
-    margin-bottom: 20px;
-
-    font-size: 14px;
 }
 
-.dot {
+.unit{
 
-    width: 10px;
+font-size:25px;
 
-    height: 10px;
+color:#bfc8d2;
 
-    border-radius: 50%;
+margin-right:8px;
 
-    background: #777;
 }
 
-.dot.online {
+.status{
 
-    background: #00e676;
+margin-top:30px;
 
-    box-shadow: 0 0 10px #00e676;
+font-size:16px;
+
 }
 
-.dot.offline {
+.led{
 
-    background: #ff1744;
+display:inline-block;
 
-    box-shadow: 0 0 10px #ff1744;
+width:12px;
+
+height:12px;
+
+border-radius:50%;
+
+background:#777;
+
+margin-left:8px;
+
 }
 
-.card {
+.connected{
 
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.10),
-            rgba(255,255,255,0.04)
-        );
+background:#00ff66;
 
-    border: 1px solid rgba(255,255,255,0.10);
+box-shadow:0 0 12px #00ff66;
 
-    border-radius: 25px;
-
-    padding: 35px 20px;
-
-    box-shadow:
-        0 15px 35px rgba(0,0,0,0.30);
-
-    backdrop-filter: blur(10px);
 }
 
-.icon {
+.error{
 
-    font-size: 60px;
+background:#ff3333;
 
-    margin-bottom: 10px;
+box-shadow:0 0 12px #ff3333;
+
 }
 
-.label {
+.time{
 
-    color: #aebfd0;
+margin-top:15px;
 
-    font-size: 19px;
+font-size:13px;
 
-    margin-bottom: 12px;
+color:#aebdcc;
+
 }
 
-.value {
+.info{
 
-    font-size: 72px;
+margin-top:15px;
 
-    font-weight: bold;
+font-size:12px;
 
-    line-height: 1.1;
+color:#718096;
 
-    color: #ff9800;
-
-    text-shadow:
-        0 0 20px rgba(255,152,0,0.35);
 }
 
-.unit {
+</style>  </head>  <body>  <div class="card">  <h1>
+RAMAH WIND SPEED
 
-    font-size: 20px;
+</h1>  <div class="subtitle">    
+سرعة الرياح الحالية    
+</div>  <div>  <span    
+id="speed"    
+class="speed">  </span>   <span class="unit">
+km/h
+</span>
+</span>  </div>  <div class="status">  <span    
+id="led"    
+class="led">
+</span>
 
-    color: #9fb3c8;
-
-    margin-top: 10px;
-}
-
-.last {
-
-    margin-top: 22px;
-
-    color: #71859a;
-
-    font-size: 13px;
-}
-
-.footer {
-
-    margin-top: 25px;
-
-    color: #71859a;
-
-    font-size: 12px;
-}
-
-</style>
-
-</head>
-
-
-<body>
-
-
-<div class="container">
-
-
-    <div class="title">
-        RAMAH WIND SPEED
-    </div>
-
-
-    <div class="subtitle">
-        محطة رماح لقياس سرعة الرياح
-    </div>
-
-
-    <!-- ============================== -->
-    <!-- STATUS -->
-    <!-- ============================== -->
-
-    <div class="status">
-
-        <span
-            id="statusDot"
-            class="dot">
-        </span>
-
-        <span id="statusText">
-            جاري الاتصال...
-        </span>
-
-    </div>
-
-
-    <!-- ============================== -->
-    <!-- WIND CARD -->
-    <!-- ============================== -->
-
-    <div class="card">
-
-
-        <div class="icon">
-            🌪️
-        </div>
-
-
-        <div class="label">
-            سرعة الرياح
-        </div>
-
-
-        <div
-            id="windSpeed"
-            class="value">
-            0.00
-        </div>
-
-
-        <div class="unit">
-            km/h
-        </div>
-
-
-        <div class="last">
-
-            آخر تحديث:
-            
-            <span id="lastUpdate">
-                --
-            </span>
-
-        </div>
-
-
-    </div>
-
-
-    <div class="footer">
-        RAMAH WIND SPEED
-    </div>
-
-
-</div>
-
-
-
-<script>
-
-
-// ======================================
+<span id="status">    
+جاري الاتصال...    
+</span>  </div>  <div    
+id="time"    
+class="time">    
+آخر قراءة: --    
+</div>  <div class="info">    
+Firebase Live Data    
+</div>  </div>  <script>    // ======================================
 // Firebase
 // ======================================
 
 const FIREBASE_URL =
-"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app/weather.json";
-
+"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
 
 // ======================================
-// عناصر الصفحة
+// آخر قراءة
 // ======================================
 
-const windSpeedElement =
-    document.getElementById("windSpeed");
-
-const statusDot =
-    document.getElementById("statusDot");
-
-const statusText =
-    document.getElementById("statusText");
-
-const lastUpdateElement =
-    document.getElementById("lastUpdate");
-
+let lastRPM = null;
 
 // ======================================
 // قراءة Firebase
 // ======================================
 
-async function getWindSpeed() {
+async function getWindSpeed(){
 
-    try {
+try{
 
+const response =
+await fetch(
+FIREBASE_URL + "/.json?_=" + Date.now(),
+{
+method:"GET",
+cache:"no-store"
+}
+);
 
-        const response = await fetch(
-            FIREBASE_URL + "?t=" + Date.now(),
-            {
-                method: "GET",
-                cache: "no-store"
-            }
-        );
+if(!response.ok){
 
+throw new Error(
+"HTTP " + response.status
+);
 
-        // ------------------------------
-        // فحص الاتصال
-        // ------------------------------
+}
 
-       
+const data =
+await response.json();
+
+console.log(
+"Firebase:",
+data
+);
+
+// ======================================
+// قراءة WIND SPEED
+// ======================================
+
+const rpm =
+parseFloat(
+data.windSpeed
+);
+
+if(Number.isNaN(rpm)){
+
+throw new Error(
+"windSpeed غير موجود"
+);
+
+}
+
+// ======================================
+// حفظ آخر قراءة
+// ======================================
+
+lastRPM = rpm;
+
+// ======================================
+// عرض السرعة
+// ======================================
+
+document.getElementById(
+"speed"
+).textContent =
+rpm.toFixed(1);
+
+// ======================================
+// قراءة lastSeen
+// ======================================
+
+const lastSeen =
+Number(
+data.lastSeen
+);
+
+if(!lastSeen){
+
+throw new Error(
+"lastSeen غير موجود"
+);
+
+}
+
+// ======================================
+// حساب عمر الاتصال
+// ======================================
+
+const now =
+Date.now();
+
+const age =
+now - lastSeen;
+
+console.log(
+"lastSeen age:",
+age,
+"ms"
+);
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+if(age <= 15000){
+
+// ==================================
+// متصل
+// ==================================
+
+document.getElementById(
+"status"
+).textContent =
+"متصل";
+
+document.getElementById(
+"led"
+).className =
+"led connected";
+
+}
+
+else{
+
+// ==================================
+// غير متصل
+// ==================================
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+// ======================================
+// وقت آخر قراءة
+// ======================================
+
+document.getElementById(
+"time"
+).textContent =
+"آخر قراءة: " +
+new Date(
+lastSeen
+).toLocaleTimeString(
+"ar-SA",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+// ======================================
+// تغيير الخلفية حسب السرعة
+// ======================================
+
+if(rpm <= 10){
+
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
+
+}
+
+else if(rpm <= 30){
+
+document.body.style.background =
+"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
+
+}
+
+else if(rpm <= 60){
+
+document.body.style.background =
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
+
+}
+
+else{
+
+document.body.style.background =
+"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+
+}
+
+}
+
+// ======================================
+// خطأ في الاتصال
+// ======================================
+
+catch(error){
+
+console.error(
+"Firebase:",
+error
+);
+
+// لا نمسح آخر قراءة
+
+if(lastRPM !== null){
+
+document.getElementById(
+"speed"
+).textContent =
+lastRPM.toFixed(1);
+
+}
+
+// ======================================
+// حالة الاتصال
+// ======================================
+
+document.getElementById(
+"status"
+).textContent =
+"غير متصل";
+
+document.getElementById(
+"led"
+).className =
+"led error";
+
+}
+
+}
+
+// ======================================
+// تشغيل أول مرة
+// ======================================
+
+getWindSpeed();
+
+// ======================================
+// تحديث كل ثانيتين
+// ======================================
+
+setInterval(
+getWindSpeed,
+2000
+);
+
+</script>  </body>  </html>
