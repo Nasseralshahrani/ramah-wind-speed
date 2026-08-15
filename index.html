@@ -6,277 +6,301 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
 
 <style>
 
-*{
-box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-body{
+body {
 
-margin:0;
+    margin: 0;
 
-min-height:100vh;
+    min-height: 100vh;
 
-font-family:Arial,sans-serif;
+    font-family: Arial, sans-serif;
 
-background:
-radial-gradient(
-circle at top,
-#173554 0%,
-#08111f 45%,
-#040912 100%
-);
+    background:
+        radial-gradient(
+            circle at top,
+            #173554 0%,
+            #08111f 45%,
+            #040912 100%
+        );
 
-color:white;
+    color: white;
 
-display:flex;
+    display: flex;
 
-justify-content:center;
+    justify-content: center;
 
-align-items:center;
+    align-items: center;
 
-padding:20px;
+    padding: 20px;
 }
 
-.container{
+.container {
 
-width:100%;
+    width: 100%;
 
-max-width:500px;
+    max-width: 600px;
 
-text-align:center;
+    text-align: center;
 }
 
-.title{
+.title {
 
-font-size:30px;
+    font-size: 34px;
 
-font-weight:bold;
+    font-weight: bold;
 
-letter-spacing:2px;
+    letter-spacing: 2px;
 
-margin-bottom:8px;
+    margin-bottom: 8px;
 }
 
-.subtitle{
+.subtitle {
 
-font-size:14px;
+    color: #9fb3c8;
 
-color:#9fb3c8;
+    font-size: 15px;
 
-margin-bottom:25px;
+    margin-bottom: 25px;
 }
 
-.card{
+.status {
 
-background:rgba(255,255,255,0.08);
+    display: inline-flex;
 
-border:1px solid rgba(255,255,255,0.12);
+    align-items: center;
 
-border-radius:22px;
+    gap: 8px;
 
-padding:25px;
+    background: rgba(0,0,0,0.25);
 
-margin-bottom:15px;
+    padding: 8px 16px;
 
-box-shadow:
-0 10px 35px rgba(0,0,0,0.35);
+    border-radius: 30px;
 
-backdrop-filter:blur(10px);
+    margin-bottom: 20px;
+
+    font-size: 14px;
 }
 
-.wind{
+.dot {
 
-border:1px solid rgba(255,140,0,0.35);
+    width: 10px;
+
+    height: 10px;
+
+    border-radius: 50%;
+
+    background: #777;
 }
 
-.icon{
+.dot.online {
 
-font-size:45px;
+    background: #00e676;
 
-margin-bottom:8px;
+    box-shadow:
+        0 0 10px #00e676;
 }
 
-.label{
+.dot.offline {
 
-font-size:15px;
+    background: #ff1744;
 
-color:#aebfd0;
-
-margin-bottom:8px;
+    box-shadow:
+        0 0 10px #ff1744;
 }
 
-.value{
+.cards {
 
-font-size:42px;
+    display: grid;
 
-font-weight:bold;
+    grid-template-columns: 1fr;
+
+    gap: 16px;
 }
 
-.unit{
+.card {
 
-font-size:18px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.10),
+            rgba(255,255,255,0.04)
+        );
 
-color:#aebfd0;
+    border: 1px solid rgba(255,255,255,0.10);
 
-margin-right:5px;
+    border-radius: 22px;
+
+    padding: 25px 20px;
+
+    box-shadow:
+        0 15px 35px rgba(0,0,0,0.30);
+
+    backdrop-filter: blur(10px);
 }
 
-.temperature{
+.icon {
 
-font-size:30px;
+    font-size: 38px;
 
-font-weight:bold;
+    margin-bottom: 8px;
 }
 
-.humidity{
+.label {
 
-font-size:30px;
+    color: #aebfd0;
 
-font-weight:bold;
+    font-size: 16px;
+
+    margin-bottom: 8px;
 }
 
-.status{
+.value {
 
-display:flex;
+    font-size: 48px;
 
-justify-content:center;
+    font-weight: bold;
 
-align-items:center;
-
-gap:8px;
-
-margin-top:20px;
-
-font-size:14px;
-
-color:#aaa;
+    line-height: 1.1;
 }
 
-.dot{
+.unit {
 
-width:10px;
+    font-size: 18px;
 
-height:10px;
+    color: #9fb3c8;
 
-border-radius:50%;
-
-background:#777;
-
+    margin-top: 8px;
 }
 
-.online{
+.wind .value {
 
-background:#00ff66;
+    color: #ff9800;
 
-box-shadow:
-0 0 10px #00ff66;
+    text-shadow:
+        0 0 15px rgba(255,152,0,0.35);
 }
 
-.offline{
+.temperature .value {
 
-background:#ff3333;
+    color: #ff5252;
 
-box-shadow:
-0 0 10px #ff3333;
+    text-shadow:
+        0 0 15px rgba(255,82,82,0.30);
 }
 
-.time{
+.humidity .value {
 
-margin-top:10px;
+    color: #42a5f5;
 
-font-size:12px;
+    text-shadow:
+        0 0 15px rgba(66,165,245,0.30);
+}
 
-color:#718096;
+.footer {
+
+    margin-top: 25px;
+
+    color: #71859a;
+
+    font-size: 12px;
+}
+
+@media (min-width: 550px) {
+
+    .cards {
+
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+    .card {
+
+        padding: 22px 10px;
+    }
+
+    .value {
+
+        font-size: 38px;
+    }
+
 }
 
 </style>
 
 </head>
 
+
 <body>
 
 <div class="container">
 
-<div class="title">
-RAMAH WEATHER
-</div>
+    <div class="title">
+        RAMAH WEATHER
+    </div>
 
-<div class="subtitle">
-محطة رماح الرقمية
-</div>
-
-
-<!-- سرعة الرياح -->
-
-<div class="card wind">
-
-<div class="icon">
-🌪️
-</div>
-
-<div class="label">
-سرعة الرياح
-</div>
-
-<div>
-
-<span
-class="value"
-id="windSpeed">
-0.00
-</span>
-
-<span class="unit">
-km/h
-</span>
-
-</div>
-
-</div>
+    <div class="subtitle">
+        محطة رماح للطقس
+    </div>
 
 
-<!-- الحرارة -->
+    <div class="status">
 
-<div class="card">
+        <span
+            id="statusDot"
+            class="dot">
+        </span>
 
-<div class="icon">
-🌡️
-</div>
+        <span id="statusText">
+            جاري الاتصال...
+        </span>
 
-<div class="label">
-درجة الحرارة
-</div>
-
-<div>
-
-<span
-class="temperature"
-id="temperature">
--- 
-</span>
-
-<span class="unit">
-°C
-</span>
-
-</div>
-
-</div>
+    </div>
 
 
-<!-- الرطوبة -->
+    <div class="cards">
 
-<div class="card">
 
-<div class="icon">
-💧
-</div>
+        <!-- ===================== -->
+        <!-- WIND -->
+        <!-- ===================== -->
 
-<div class="label">
-الر
+        <div class="card wind">
+
+            <div class="icon">
+                🌪️
+            </div>
+
+            <div class="label">
+                سرعة الرياح
+            </div>
+
+            <div
+                id="windSpeed"
+                class="value">
+                -- 
+            </div>
+
+            <div class="unit">
+                km/h
+            </div>
+
+        </div>
+
+
+        <!-- ===================== -->
+        <!-- TEMPERATURE -->
+        <!-- ===================== -->
+
+        <div class="card temperature">
+
+            <div
