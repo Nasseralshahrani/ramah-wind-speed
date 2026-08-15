@@ -2,8 +2,11 @@
 <html lang="ar" dir="rtl">
 
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
 
@@ -14,8 +17,11 @@ box-sizing:border-box;
 }
 
 body{
+
 margin:0;
+
 min-height:100vh;
+
 font-family:Arial,sans-serif;
 
 background:
@@ -29,139 +35,231 @@ circle at top,
 color:white;
 
 display:flex;
+
 justify-content:center;
-align-items:center;
+
+align-items:flex-start;
+
+padding-top:25px;
 
 transition:background 1s ease;
+
 }
 
+
+/* ======================================
+   البطاقة الرئيسية
+====================================== */
+
 .card{
+
 width:350px;
-padding:30px 25px;
+
+padding:20px 25px 30px;
+
 border-radius:25px;
+
 text-align:center;
 
 background:rgba(20,30,45,.82);
 
 backdrop-filter:blur(12px);
+
 -webkit-backdrop-filter:blur(12px);
 
 border:1px solid rgba(255,255,255,.12);
 
 box-shadow:0 15px 40px rgba(0,0,0,.5);
+
 }
 
+
+/* ======================================
+   العنوان
+====================================== */
+
 h1{
+
 margin:0 0 8px;
+
 font-size:28px;
+
 }
 
 .subtitle{
+
 font-size:16px;
+
 color:#aebdcc;
+
 margin-bottom:25px;
+
 }
+
+
+/* ======================================
+   المربعات
+====================================== */
 
 .grid{
+
 display:grid;
+
 grid-template-columns:1fr 1fr;
+
 gap:12px;
+
 }
 
+
 .box{
+
 padding:20px 8px;
+
 border-radius:18px;
 
 background:rgba(255,255,255,.06);
 
 border:1px solid rgba(255,255,255,.08);
+
 }
+
+
+/* ======================================
+   العناوين داخل المربعات
+====================================== */
 
 .label{
+
 font-size:14px;
+
 color:#aebdcc;
+
 margin-bottom:10px;
+
 }
+
+
+/* ======================================
+   القيم
+====================================== */
 
 .value{
+
 font-size:34px;
+
 font-weight:bold;
+
 direction:ltr;
+
 }
+
 
 .wind{
+
 color:#ffff00;
+
 }
+
 
 .temp{
+
 color:#ff9d42;
+
 }
+
 
 .humidity{
+
 color:#55c7ff;
+
 }
 
-.connection{
-font-size:20px;
-}
 
 .unit{
+
 font-size:14px;
+
 color:#bfc8d2;
+
 }
 
-.status{
-margin-top:25px;
-font-size:16px;
+
+/* ======================================
+   التاريخ والوقت
+====================================== */
+
+.datetime{
+
+font-size:18px;
+
+font-weight:bold;
+
+line-height:1.8;
+
+color:white;
+
+direction:rtl;
+
 }
 
-.led{
-display:inline-block;
-width:12px;
-height:12px;
-border-radius:50%;
-background:#777;
-margin-left:8px;
-}
 
-.connected{
-background:#00ff66;
-box-shadow:0 0 12px #00ff66;
-}
-
-.error{
-background:#ff3333;
-box-shadow:0 0 12px #ff3333;
-}
+/* ======================================
+   آخر قراءة
+====================================== */
 
 .time{
+
 margin-top:15px;
+
 font-size:13px;
+
 color:#aebdcc;
+
 }
 
+
+/* ======================================
+   معلومات
+====================================== */
+
 .info{
+
 margin-top:15px;
+
 font-size:12px;
+
 color:#718096;
+
 }
 
 </style>
+
 </head>
+
 
 <body>
 
+
 <div class="card">
 
-<h1>RAMAH WEATHER</h1>
+
+<h1>
+RAMAH WEATHER
+</h1>
+
 
 <div class="subtitle">
 محطة رماح للطقس
 </div>
 
+
 <div class="grid">
 
-<!-- WIND -->
+
+<!-- ==================================
+     سرعة الرياح
+================================== -->
 
 <div class="box">
 
@@ -174,7 +272,9 @@ color:#718096;
 <span
 id="wind"
 class="value wind">
+
 --
+
 </span>
 
 <span class="unit">
@@ -186,7 +286,9 @@ km/h
 </div>
 
 
-<!-- TEMPERATURE -->
+<!-- ==================================
+     الحرارة
+================================== -->
 
 <div class="box">
 
@@ -199,7 +301,9 @@ km/h
 <span
 id="temperature"
 class="value temp">
+
 --
+
 </span>
 
 <span class="unit">
@@ -211,7 +315,9 @@ class="value temp">
 </div>
 
 
-<!-- HUMIDITY -->
+<!-- ==================================
+     الرطوبة
+================================== -->
 
 <div class="box">
 
@@ -224,7 +330,9 @@ class="value temp">
 <span
 id="humidity"
 class="value humidity">
+
 --
+
 </span>
 
 <span class="unit">
@@ -236,40 +344,33 @@ class="value humidity">
 </div>
 
 
-<!-- CONNECTION -->
+<!-- ==================================
+     التاريخ والوقت
+================================== -->
 
 <div class="box">
 
 <div class="label">
-📡 الاتصال
+📅 التاريخ والوقت
 </div>
 
 <div
-id="connection"
-class="value connection">
+id="datetime"
+class="datetime">
 
-جاري...
-
-</div>
+--
 
 </div>
 
 </div>
 
 
-<div class="status">
-
-<span
-id="led"
-class="led">
-</span>
-
-<span id="status">
-جاري الاتصال...
-</span>
-
 </div>
 
+
+<!-- ==================================
+     آخر قراءة
+================================== -->
 
 <div
 id="time"
@@ -281,13 +382,17 @@ class="time">
 
 
 <div class="info">
+
 Firebase Live Data
+
 </div>
+
 
 </div>
 
 
 <script>
+
 
 // ======================================
 // Firebase
@@ -298,23 +403,30 @@ const FIREBASE =
 
 
 // ======================================
-// قراءة قيمة من Firebase
+// قراءة Firebase
 // ======================================
 
 async function readFirebase(path){
 
 const response =
 await fetch(
-FIREBASE + path + ".json?_=" + Date.now(),
+
+FIREBASE +
+path +
+".json?_=" +
+Date.now(),
+
 {
 cache:"no-store"
 }
+
 );
 
 if(!response.ok){
 
 throw new Error(
-"HTTP " + response.status
+"HTTP " +
+response.status
 );
 
 }
@@ -325,16 +437,60 @@ return await response.json();
 
 
 // ======================================
-// تحديث الصفحة
+// تحديث التاريخ والوقت
+// مستقل تمامًا عن Firebase
 // ======================================
 
-async function updatePage(){
+function updateDateTime(){
+
+const now =
+new Date();
+
+
+const dateText =
+now.toLocaleDateString(
+"ar-SA",
+{
+year:"numeric",
+month:"2-digit",
+day:"2-digit"
+}
+);
+
+
+const timeText =
+now.toLocaleTimeString(
+"ar-SA",
+{
+hour:"2-digit",
+minute:"2-digit",
+second:"2-digit"
+}
+);
+
+
+document.getElementById(
+"datetime"
+).innerHTML =
+
+dateText +
+"<br>" +
+timeText;
+
+}
+
+
+// ======================================
+// تحديث البيانات
+// ======================================
+
+async function updateWeather(){
 
 try{
 
+
 // ====================================
 // سرعة الرياح
-// /windSpeed
 // ====================================
 
 const windData =
@@ -342,15 +498,21 @@ await readFirebase(
 "/windSpeed"
 );
 
+
 if(
 windData !== null &&
 windData !== undefined
 ){
 
 const wind =
-parseFloat(windData);
+parseFloat(
+windData
+);
 
-if(!Number.isNaN(wind)){
+
+if(
+!Number.isNaN(wind)
+){
 
 document.getElementById(
 "wind"
@@ -364,7 +526,6 @@ wind.toFixed(2);
 
 // ====================================
 // الحرارة
-// /weather/temperature
 // ====================================
 
 const temperatureData =
@@ -372,15 +533,21 @@ await readFirebase(
 "/weather/temperature"
 );
 
+
 if(
 temperatureData !== null &&
 temperatureData !== undefined
 ){
 
 const temperature =
-parseFloat(temperatureData);
+parseFloat(
+temperatureData
+);
 
-if(!Number.isNaN(temperature)){
+
+if(
+!Number.isNaN(temperature)
+){
 
 document.getElementById(
 "temperature"
@@ -394,7 +561,6 @@ temperature.toFixed(1);
 
 // ====================================
 // الرطوبة
-// /weather/humidity
 // ====================================
 
 const humidityData =
@@ -402,15 +568,21 @@ await readFirebase(
 "/weather/humidity"
 );
 
+
 if(
 humidityData !== null &&
 humidityData !== undefined
 ){
 
 const humidity =
-parseFloat(humidityData);
+parseFloat(
+humidityData
+);
 
-if(!Number.isNaN(humidity)){
+
+if(
+!Number.isNaN(humidity)
+){
 
 document.getElementById(
 "humidity"
@@ -423,7 +595,7 @@ humidity.toFixed(1);
 
 
 // ====================================
-// lastSeen
+// آخر قراءة
 // ====================================
 
 const lastSeen =
@@ -431,87 +603,16 @@ await readFirebase(
 "/lastSeen"
 );
 
+
 if(
-lastSeen === null ||
-lastSeen === undefined
+lastSeen !== null &&
+lastSeen !== undefined
 ){
-
-throw new Error(
-"lastSeen غير موجود"
-);
-
-}
-
-
-// ====================================
-// عمر البيانات
-// ====================================
-
-const age =
-Date.now() -
-Number(lastSeen);
-
-
-// ====================================
-// الاتصال
-// ====================================
-
-if(age <= 15000){
-
-document.getElementById(
-"status"
-).textContent =
-"متصل";
-
-document.getElementById(
-"connection"
-).textContent =
-"متصل";
-
-document.getElementById(
-"connection"
-).style.color =
-"#00ff66";
-
-document.getElementById(
-"led"
-).className =
-"led connected";
-
-}
-
-else{
-
-document.getElementById(
-"status"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"connection"
-).textContent =
-"غير متصل";
-
-document.getElementById(
-"connection"
-).style.color =
-"#ff3333";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
-}
-
-
-// ====================================
-// وقت آخر قراءة
-// ====================================
 
 document.getElementById(
 "time"
 ).textContent =
+
 "آخر قراءة: " +
 
 new Date(
@@ -527,6 +628,8 @@ second:"2-digit"
 
 }
 
+
+}
 catch(error){
 
 console.error(
@@ -534,48 +637,44 @@ console.error(
 error
 );
 
-document.getElementById(
-"status"
-).textContent =
-"خطأ في الاتصال";
-
-document.getElementById(
-"connection"
-).textContent =
-"خطأ";
-
-document.getElementById(
-"connection"
-).style.color =
-"#ff3333";
-
-document.getElementById(
-"led"
-).className =
-"led error";
-
 }
 
 }
 
 
 // ======================================
-// تشغيل
+// تشغيل أول مرة
 // ======================================
 
-updatePage();
+updateDateTime();
+
+updateWeather();
 
 
 // ======================================
-// تحديث كل ثانيتين
+// الساعة والتاريخ
+// كل ثانية
 // ======================================
 
 setInterval(
-updatePage,
+updateDateTime,
+1000
+);
+
+
+// ======================================
+// Firebase
+// كل ثانيتين
+// ======================================
+
+setInterval(
+updateWeather,
 2000
 );
 
+
 </script>
+
 
 </body>
 
