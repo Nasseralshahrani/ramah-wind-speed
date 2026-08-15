@@ -6,7 +6,8 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+
+  content="width=device-width, initial-scale=1.0">
 
 <title>RAMAH WEATHER</title>
 
@@ -1079,7 +1080,23 @@ return "🌤️";
 // تشغيل التوقعات
 
 loadForecast();
+  
+// تشغيل التوقعات
 
+loadForecast();
+
+// تحديث التوقعات كل ساعة
+
+setInterval(
+  loadForecast,
+  60 * 60 * 1000
+);
+
+</script>
+
+</body>
+
+</html>
 </script>
 
 
