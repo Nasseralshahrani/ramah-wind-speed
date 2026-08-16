@@ -1,418 +1,727 @@
-#include <Arduino.h>
-#include <WiFi.h>
-#include <WiFiClientSecure.h>
-#include <HTTPClient.h>
-#include <DHT.h>
-#include <U8g2lib.h>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 
-// =====================================================
-// RAMAH WEATHER
-// ESP32-C3
-// ST7920 128x64
-// DHT11 + WIND + FIREBASE (REALTIME FAST UPDATE)
-// =====================================================
+<head>
 
+<meta charset="UTF-8">
 
-// =====================================================
-// WIFI
-// =====================================================
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const char* WIFI_SSID = "naser1";
-const char* WIFI_PASSWORD = "00000000";
+<title>RAMAH WEATHER</title>
 
+<style>
 
-// =====================================================
-// ST7920 LCD
-// =====================================================
+*{
+box-sizing:border-box;
+}
 
-#define LCD_DATA 7
-#define LCD_CS   6
-#define LCD_CLK  10
+body{
 
-U8G2_ST7920_128X64_F_SW_SPI lcd(
-  U8G2_R0,
-  LCD_CLK,
-  LCD_DATA,
-  LCD_CS,
-  U8X8_PIN_NONE
+margin:0;
+
+min-height:100vh;
+
+font-family:Arial,sans-serif;
+
+background:
+radial-gradient(
+circle at top,
+#173554 0%,
+#08111f 45%,
+#040912 100%
 );
 
+color:white;
 
-// =====================================================
-// DHT11
-// =====================================================
+display:flex;
 
-#define DHT_PIN  0
-#define DHT_TYPE DHT11
+justify-content:center;
 
-DHT dht(
-  DHT_PIN,
-  DHT_TYPE
-);
+align-items:flex-start;
 
-// معايرة الحرارة
-const float CALIBRATION_OFFSET = 4.0;
+padding-top:15px;
+
+transition:background 1s ease;
+
+}
+
+.card{
+
+width:350px;
+
+padding:20px 25px 30px;
+
+border-radius:25px;
+
+text-align:center;
+
+background:rgba(20,30,45,.82);
+
+backdrop-filter:blur(12px);
+
+-webkit-backdrop-filter:blur(12px);
+
+border:1px solid rgba(255,255,255,.12);
+
+box-shadow:0 15px 40px rgba(0,0,0,.5);
+
+}
+
+h1{
+
+margin:0 0 6px;
+
+font-size:18px;
+
+}
+
+.subtitle{
+
+font-size:16px;
+
+color:#aebdcc;
+
+margin-bottom:25px;
+
+}
+
+.grid{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:12px;
+
+}
+
+.box{
+
+padding:20px 8px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.08);
+
+}
+
+.label{
+
+font-size:14px;
+
+color:#aebdcc;
+
+margin-bottom:10px;
+
+}
+
+.value{
+
+font-size:34px;
+
+font-weight:bold;
+
+direction:ltr;
+
+}
+
+.wind{
+
+color:#ffff00;
+
+}
+
+.temp{
+
+color:#ff9d42;
+
+}
+
+.humidity{
+
+color:#55c7ff;
+
+}
+
+.connection{
+
+font-size:14px;
+
+font-weight:bold;
+
+}
+
+.datetime{
+
+font-size:17px;
+
+font-weight:bold;
+
+line-height:1.8;
+
+color:white;
+
+direction:ltr;
+
+}
+
+.unit{
+
+font-size:14px;
+
+color:#bfc8d2;
+
+}
+
+.status{
+
+margin-top:20px;
+
+font-size:13px;
+
+}
+
+.led{
+
+display:inline-block;
+
+width:9px;
+
+height:9px;
+
+border-radius:50%;
+
+background:#777;
+
+margin-left:6px;
+
+}
+
+.connected{
+
+background:#00ff66;
+
+box-shadow:0 0 9px #00ff66;
+
+}
+
+.error{
+
+background:#ff3333;
+
+box-shadow:0 0 9px #ff3333;
+
+}
+
+.time{
+
+margin-top:15px;
+
+font-size:13px;
+
+color:#aebdcc;
+
+}
+
+.info{
+
+margin-top:15px;
+
+font-size:12px;
+
+color:#718096;
+
+}
 
 
-// =====================================================
-// WIND SENSOR
-// =====================================================
+/* ================================= */
+/* توقعات الطقس */
+/* ================================= */
 
-#define WIND_CLK_PIN 4
-#define WIND_DT_PIN  5
+#ramahForecast{
 
-const int TICKS_PER_REVOLUTION = 20;
+margin-top:20px;
 
-// نصف القطر 2.5 سم
-const float RPM_TO_KMH = 0.00942;
+padding:10px 5px;
+
+width:100%;
+
+background:rgba(255,255,255,.06);
+
+border:1px solid rgba(255,255,255,.08);
+
+border-radius:18px;
+
+}
+
+.forecast-title{
+
+font-size:15px;
+
+font-weight:bold;
+
+margin-bottom:10px;
+
+}
+
+#forecastDays{
+
+display:flex;
+
+flex-direction:row;
+
+gap:3px;
+
+width:100%;
+
+overflow-x:auto;
+
+scrollbar-width:none;
+
+}
+
+#forecastDays::-webkit-scrollbar{
+
+display:none;
+
+}
+
+.forecast-day{
+
+flex:1;
+
+min-width:70px;
+
+text-align:center;
+
+white-space:nowrap;
+
+}
+
+.forecast-name{
+
+display:block;
+
+font-size:11px;
+
+font-weight:bold;
+
+}
+
+.forecast-icon{
+
+display:block;
+
+font-size:22px;
+
+margin:4px 0;
+
+}
+
+.forecast-temp{
+
+display:block;
+
+font-size:13px;
+
+font-weight:bold;
+
+}
+
+.forecast-wind{
+
+display:block;
+
+font-size:10px;
+
+color:#bfc8d2;
+
+margin-top:4px;
+
+}
+
+.forecast-gust{
+
+display:block;
+
+font-size:10px;
+
+color:#ffffff;
+
+margin-top:3px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h1>
+RUMAH WEATHER LIVE
+</h1>
+
+<div class="subtitle">
+مباشر محطة رماح للطقس
+</div>
 
 
-// =====================================================
-// TIMING
-// =====================================================
-
-// تحديث سرعة الرياح والشاشة كل 250 ملي ثانية
-const unsigned long WIND_UPDATE_MS = 250;
-
-// DHT11 كل ثانيتين
-const unsigned long DHT_UPDATE_MS = 2000;
-
-// Firebase / Web (تم تقليلها إلى 300 ملي ثانية للتحديث اللحظي)
-const unsigned long FIREBASE_UPDATE_MS = 300;
+<div class="grid">
 
 
-// =====================================================
-// FIREBASE
-// =====================================================
+<!-- سرعة الرياح -->
 
-const char* FIREBASE_URL =
-  "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app";
+<div class="box">
 
+<div class="label">
+🌪️ سرعة الرياح
+</div>
 
-// =====================================================
-// GLOBAL HTTP CLIENT (KEEP-ALIVE FOR FAST SENDING)
-// =====================================================
+<div>
 
-WiFiClientSecure firebaseClient;
-HTTPClient https;
-bool isHttpsBegun = false;
+<span id="wind" class="value wind">
+--
+</span>
 
+<span class="unit">
+km/h
+</span>
 
-// =====================================================
-// VARIABLES
-// =====================================================
+</div>
 
-volatile unsigned long tickCount = 0;
-volatile int lastCLKState = HIGH;
-
-float temperature = 0.0;
-float humidity = 0.0;
-
-float rpm = 0.0;
-float windSpeed = 0.0;
-
-bool dhtOK = false;
-
-unsigned long lastWindUpdate = 0;
-unsigned long lastDHTUpdate = 0;
-unsigned long lastFirebaseUpdate = 0;
+</div>
 
 
-// =====================================================
-// WIND INTERRUPT
-// =====================================================
+<!-- الحرارة -->
 
-void IRAM_ATTR encoderISR() {
-  int clkState = digitalRead(WIND_CLK_PIN);
+<div class="box">
 
-  if (clkState != lastCLKState) {
-    if (digitalRead(WIND_DT_PIN) != clkState) {
-      tickCount++;
+<div class="label">
+🌡️ الحرارة
+</div>
+
+<div>
+
+<span id="temperature" class="value temp">
+--
+</span>
+
+<span class="unit">
+°C
+</span>
+
+</div>
+
+</div>
+
+
+<!-- الرطوبة -->
+
+<div class="box">
+
+<div class="label">
+💧 الرطوبة
+</div>
+
+<div>
+
+<span id="humidity" class="value humidity">
+--
+</span>
+
+<span class="unit">
+%
+</span>
+
+</div>
+
+</div>
+
+
+<!-- التاريخ والوقت -->
+
+<div class="box">
+
+<div class="label">
+📅 التاريخ والوقت
+</div>
+
+<div id="datetime" class="datetime">
+
+--
+
+</div>
+
+</div>
+
+
+</div>
+
+
+<!-- الاتصال -->
+
+<div class="status">
+
+<span id="led" class="led">
+</span>
+
+<span id="status">
+جاري الاتصال...
+</span>
+
+</div>
+
+
+<!-- آخر قراءة -->
+
+<div id="time" class="time">
+
+آخر قراءة: --
+
+</div>
+
+
+<div class="info">
+Firebase Live Data
+</div>
+
+
+<!-- ================================= -->
+<!-- توقعات الطقس -->
+<!-- ================================= -->
+
+<div id="ramahForecast">
+
+<div class="forecast-title">
+🌤️ توقعات الطقس لرماح
+</div>
+
+<div id="forecastDays"></div>
+
+</div>
+
+
+</div>
+
+
+<!-- ====================================== -->
+<!-- السكربت المباشر (Firebase Realtime) -->
+<!-- ====================================== -->
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+// إعداد الاتصال بقاعدة البيانات
+const firebaseConfig = {
+  databaseURL: "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const weatherRef = ref(db, '/');
+
+// متغير لحفظ التنبيه عند انقطاع الأجهزة
+let connectionCheckInterval = null;
+
+// الاستقبال اللحظي المباشر بـ (0 ملي ثانية تأخير)
+onValue(weatherRef, (snapshot) => {
+  const data = snapshot.val();
+  if (!data) return;
+
+  // 1. تحديث سرعة الرياح
+  if (data.windSpeed !== undefined && data.windSpeed !== null) {
+    const wind = parseFloat(data.windSpeed);
+    if (!isNaN(wind)) {
+      document.getElementById("wind").textContent = wind.toFixed(2);
+
+      // تغيير الخلفية حسب حركة الرياح
+      if (wind <= 10) {
+        document.body.style.background = "radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
+      } else if (wind <= 30) {
+        document.body.style.background = "radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
+      } else if (wind <= 60) {
+        document.body.style.background = "radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
+      } else {
+        document.body.style.background = "radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+      }
     }
-    lastCLKState = clkState;
-  }
-}
-
-
-// =====================================================
-// DRAW LCD
-// =====================================================
-
-void drawDisplay() {
-  lcd.clearBuffer();
-
-  // Header
-  lcd.setFont(u8g2_font_6x10_tf);
-  lcd.drawStr(0, 9, "RAMAH WEATHER");
-  lcd.drawHLine(0, 12, 128);
-
-  // Temperature
-  lcd.setFont(u8g2_font_6x10_tf);
-  lcd.drawStr(0, 25, "Temperature:");
-  lcd.setFont(u8g2_font_7x13B_tf);
-
-  char tempText[20];
-  if (dhtOK) {
-    snprintf(tempText, sizeof(tempText), "%.1f C", temperature);
-  } else {
-    strcpy(tempText, "--.- C");
-  }
-  lcd.drawStr(78, 25, tempText);
-
-  // Humidity
-  lcd.setFont(u8g2_font_6x10_tf);
-  lcd.drawStr(0, 39, "Humidity:");
-  lcd.setFont(u8g2_font_7x13B_tf);
-
-  char humidityText[20];
-  if (dhtOK) {
-    snprintf(humidityText, sizeof(humidityText), "%.0f %%", humidity);
-  } else {
-    strcpy(humidityText, "-- %");
-  }
-  lcd.drawStr(78, 39, humidityText);
-
-  // Wind
-  lcd.setFont(u8g2_font_6x10_tf);
-  lcd.drawStr(0, 54, "Wind:");
-  lcd.setFont(u8g2_font_7x13B_tf);
-
-  char windText[24];
-  snprintf(windText, sizeof(windText), "%.1f km/h", windSpeed);
-  lcd.drawStr(55, 54, windText);
-
-  // WiFi status
-  lcd.setFont(u8g2_font_5x8_tf);
-  if (WiFi.status() == WL_CONNECTED) {
-    lcd.drawStr(0, 63, "WiFi OK");
-  } else {
-    lcd.drawStr(0, 63, "WiFi OFF");
   }
 
-  lcd.sendBuffer();
-}
+  // 2. تحديث درجة الحرارة والرطوبة
+  if (data.weather) {
+    if (data.weather.temperature !== undefined && data.weather.temperature !== null) {
+      const temp = parseFloat(data.weather.temperature);
+      if (!isNaN(temp)) {
+        document.getElementById("temperature").textContent = temp.toFixed(1);
+      }
+    }
 
-
-// =====================================================
-// READ DHT11
-// =====================================================
-
-void readDHT() {
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-
-  if (isnan(h) || isnan(t)) {
-    Serial.println("DHT11 ERROR");
-    dhtOK = false;
-    return;
-  }
-
-  temperature = t + CALIBRATION_OFFSET;
-  humidity = h;
-  dhtOK = true;
-
-  Serial.print("Temperature: ");
-  Serial.print(temperature, 1);
-  Serial.println(" C");
-
-  Serial.print("Humidity: ");
-  Serial.print(humidity, 0);
-  Serial.println(" %");
-}
-
-
-// =====================================================
-// CALCULATE WIND
-// =====================================================
-
-void calculateWind() {
-  unsigned long ticks;
-
-  noInterrupts();
-  ticks = tickCount;
-  tickCount = 0;
-  interrupts();
-
-  float revolutions = (float)ticks / (float)TICKS_PER_REVOLUTION;
-  rpm = revolutions * 240.0;
-  windSpeed = rpm * RPM_TO_KMH;
-
-  Serial.print("Ticks: ");
-  Serial.print(ticks);
-  Serial.print(" | RPM: ");
-  Serial.print(rpm, 1);
-  Serial.print(" | Wind Speed: ");
-  Serial.print(windSpeed, 1);
-  Serial.println(" km/h");
-}
-
-
-// =====================================================
-// SEND ALL DATA TO FIREBASE (FAST OPTIMIZED)
-// =====================================================
-
-bool sendAllToFirebase() {
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("Firebase: WiFi OFF");
-    isHttpsBegun = false;
-    return false;
-  }
-
-  String url = String(FIREBASE_URL) + "/.json";
-
-  // إعداد الاتصال لأول مرة مع تفعيل إعادة استخدام الاتصال (Keep-Alive)
-  if (!isHttpsBegun) {
-    firebaseClient.setInsecure();
-    https.setReuse(true); 
-    if (https.begin(firebaseClient, url)) {
-      isHttpsBegun = true;
-    } else {
-      Serial.println("Firebase: Begin failed");
-      return false;
+    if (data.weather.humidity !== undefined && data.weather.humidity !== null) {
+      const hum = parseFloat(data.weather.humidity);
+      if (!isNaN(hum)) {
+        document.getElementById("humidity").textContent = hum.toFixed(1);
+      }
     }
   }
 
-  https.addHeader("Content-Type", "application/json");
+  // 3. تحديث حالة الاتصال ووقت آخر قراءة
+  if (data.lastSeen) {
+    const lastSeenTime = Number(data.lastSeen);
+    
+    // دالة فحص اتصال الجهاز مع الفراغ الزمني
+    const checkStatus = () => {
+      const age = Date.now() - lastSeenTime;
+      if (age <= 10000) {
+        document.getElementById("status").textContent = "متصل";
+        document.getElementById("led").className = "led connected";
+      } else {
+        document.getElementById("status").textContent = "غير متصل";
+        document.getElementById("led").className = "led error";
+      }
+    };
 
-  // تجهيز نص JSON
-  String json = "{";
-  json += "\"windSpeed\":" + String(windSpeed, 2);
-  json += ",\"lastSeen\":{\".sv\":\"timestamp\"}";
-  json += ",\"weather\":{";
-  json += "\"temperature\":" + String(temperature, 1);
-  json += ",\"humidity\":" + String(humidity, 1);
-  json += "}}";
+    checkStatus();
 
-  int httpCode = https.PATCH(json);
+    if (connectionCheckInterval) clearInterval(connectionCheckInterval);
+    connectionCheckInterval = setInterval(checkStatus, 2000);
 
-  if (httpCode >= 200 && httpCode < 300) {
-    Serial.println("Firebase: OK");
-    return true;
-  } else {
-    Serial.print("Firebase HTTP Error: ");
-    Serial.println(httpCode);
-    // عند حدوث خطأ نغلق الاتصال لإعادة فتحه في المحاولة القادمة
-    https.end();
-    isHttpsBegun = false;
-    return false;
+    // تحويل الوقت
+    const lastDate = new Date(lastSeenTime);
+    const lastHours = String(lastDate.getHours()).padStart(2, "0");
+    const lastMinutes = String(lastDate.getMinutes()).padStart(2, "0");
+    const lastSeconds = String(lastDate.getSeconds()).padStart(2, "0");
+
+    document.getElementById("time").textContent =
+      "آخر قراءة: " + lastHours + ":" + lastMinutes + ":" + lastSeconds;
   }
+});
+
+</script>
+
+
+<script>
+
+// ======================================
+// التاريخ والوقت المحلي
+// ======================================
+
+function updateDateTime(){
+
+const now = new Date();
+
+const day = String(now.getDate()).padStart(2, "0");
+const month = String(now.getMonth() + 1).padStart(2, "0");
+const year = now.getFullYear();
+
+const hours = String(now.getHours()).padStart(2, "0");
+const minutes = String(now.getMinutes()).padStart(2, "0");
+const seconds = String(now.getSeconds()).padStart(2, "0");
+
+document.getElementById("datetime").innerHTML =
+day + "/" + month + "/" + year + "<br>" + hours + ":" + minutes + ":" + seconds;
+
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+
+
+// ======================================
+// توقعات الطقس
+// ======================================
+
+async function loadForecast(){
+
+const latitude = 25.5828380;
+const longitude = 47.1852031;
+
+const url =
+`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+`&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max` +
+`&timezone=Asia%2FRiyadh`;
+
+try{
+
+const response = await fetch(url);
+
+if(!response.ok){
+throw new Error("Forecast HTTP " + response.status);
+}
+
+const data = await response.json();
+const container = document.getElementById("forecastDays");
+
+const days = [
+"الأحد",
+"الاثنين",
+"الثلاثاء",
+"الأربعاء",
+"الخميس",
+"الجمعة",
+"السبت"
+];
+
+container.innerHTML = "";
+
+for(let i = 0; i < 7; i++){
+
+const date = new Date(data.daily.time[i] + "T00:00:00");
+const max = Math.round(data.daily.temperature_2m_max[i]);
+const min = Math.round(data.daily.temperature_2m_min[i]);
+const wind = Math.round(data.daily.wind_speed_10m_max[i]);
+const gust = Math.round(data.daily.wind_gusts_10m_max[i]);
+const icon = weatherIcon(data.daily.weather_code[i]);
+
+container.innerHTML += `
+<div class="forecast-day">
+<span class="forecast-name">${days[date.getDay()]}</span>
+<span class="forecast-icon">${icon}</span>
+<span class="forecast-temp">${max}° / ${min}°</span>
+<span class="forecast-wind">🌪️ ${wind} km/h</span>
+<span class="forecast-gust">هبات ${gust} km/h</span>
+</div>
+`;
+
+}
+
+}catch(error){
+console.error("خطأ في توقعات الطقس:", error);
+}
+
 }
 
 
-// =====================================================
-// CONNECT WIFI
-// =====================================================
+// ======================================
+// أيقونات الطقس
+// ======================================
 
-bool connectWiFi() {
-  if (WiFi.status() == WL_CONNECTED) {
-    return true;
-  }
+function weatherIcon(code){
 
-  Serial.println();
-  Serial.print("Connecting WiFi: ");
-  Serial.println(WIFI_SSID);
+if(code === 0) return "☀️";
+if(code === 1 || code === 2) return "🌤️";
+if(code === 3) return "☁️";
+if(code >= 45 && code <= 48) return "🌫️";
+if(code >= 51 && code <= 67) return "🌧️";
+if(code >= 71 && code <= 77) return "❄️";
+if(code >= 80 && code <= 82) return "🌦️";
+if(code >= 95) return "⛈️";
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+return "🌤️";
 
-  unsigned long startTime = millis();
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(250);
-    Serial.print(".");
-
-    if (millis() - startTime >= 15000) {
-      Serial.println();
-      Serial.println("WiFi connection failed");
-      return false;
-    }
-  }
-
-  Serial.println();
-  Serial.println("WiFi connected");
-  Serial.print("IP: ");
-  Serial.println(WiFi.localIP());
-
-  return true;
 }
 
+loadForecast();
+setInterval(loadForecast, 60 * 60 * 1000);
 
-// =====================================================
-// SETUP
-// =====================================================
+</script>
 
-void setup() {
-  Serial.begin(115200);
-  delay(1000);
+</body>
 
-  Serial.println();
-  Serial.println("================================");
-  Serial.println("       RAMAH WEATHER");
-  Serial.println("================================");
-
-  // LCD
-  lcd.begin();
-  lcd.clearBuffer();
-  lcd.setFont(u8g2_font_6x10_tf);
-  lcd.drawStr(25, 25, "RAMAH WEATHER");
-  lcd.drawStr(35, 42, "STARTING...");
-  lcd.sendBuffer();
-
-  // DHT
-  dht.begin();
-
-  // WIND
-  pinMode(WIND_CLK_PIN, INPUT_PULLUP);
-  pinMode(WIND_DT_PIN, INPUT_PULLUP);
-  lastCLKState = digitalRead(WIND_CLK_PIN);
-
-  attachInterrupt(
-    digitalPinToInterrupt(WIND_CLK_PIN),
-    encoderISR,
-    CHANGE
-  );
-
-  // WIFI
-  connectWiFi();
-
-  delay(1500);
-  readDHT();
-  drawDisplay();
-
-  lastWindUpdate = millis();
-  lastDHTUpdate = millis();
-  lastFirebaseUpdate = millis();
-
-  Serial.println("SYSTEM READY");
-}
-
-
-// =====================================================
-// LOOP
-// =====================================================
-
-void loop() {
-  unsigned long now = millis();
-
-  // WIND + LCD
-  if (now - lastWindUpdate >= WIND_UPDATE_MS) {
-    lastWindUpdate = now;
-    calculateWind();
-    drawDisplay();
-  }
-
-  // DHT11 + LCD
-  if (now - lastDHTUpdate >= DHT_UPDATE_MS) {
-    lastDHTUpdate = now;
-    readDHT();
-    drawDisplay();
-  }
-
-  // FIREBASE / WEB (كل 300 ملي ثانية)
-  if (now - lastFirebaseUpdate >= FIREBASE_UPDATE_MS) {
-    lastFirebaseUpdate = now;
-    sendAllToFirebase();
-  }
-
-  delay(1);
-}
+</html>
