@@ -510,7 +510,7 @@ Firebase Live Data
 
 
 <!-- ====================================== -->
-<!-- السكربت المباشر Firebase Realtime -->
+<!-- Firebase Realtime Database -->
 <!-- ====================================== -->
 
 <script type="module">
@@ -547,6 +547,10 @@ ref(db, '/');
 let connectionCheckInterval = null;
 
 
+// ======================================
+// استقبال بيانات Firebase
+// ======================================
+
 onValue(weatherRef, (snapshot) => {
 
 const data = snapshot.val();
@@ -573,7 +577,9 @@ document.getElementById("wind")
 wind.toFixed(2);
 
 
-// تغيير الخلفية حسب الرياح
+// ======================================
+// تغيير الخلفية حسب سرعة الرياح
+// ======================================
 
 if (wind <= 10) {
 
@@ -655,7 +661,7 @@ hum.toFixed(1);
 
 
 // ======================================
-// الاتصال وآخر قراءة
+// حالة الاتصال
 // ======================================
 
 if (data.lastSeen) {
@@ -700,8 +706,13 @@ document.getElementById("led")
 checkStatus();
 
 
-if (connectionCheckInterval)
-clearInterval(connectionCheckInterval);
+if (connectionCheckInterval) {
+
+clearInterval(
+connectionCheckInterval
+);
+
+}
 
 
 connectionCheckInterval =
@@ -712,7 +723,7 @@ checkStatus,
 
 
 // ======================================
-// وقت آخر قراءة
+// آخر قراءة
 // ======================================
 
 const lastDate =
@@ -736,6 +747,7 @@ lastDate.getSeconds()
 
 document.getElementById("time")
 .textContent =
+
 "آخر قراءة: " +
 lastHours +
 ":" +
@@ -761,28 +773,34 @@ function updateDateTime(){
 const now =
 new Date();
 
+
 const day =
 String(
 now.getDate()
 ).padStart(2,"0");
+
 
 const month =
 String(
 now.getMonth() + 1
 ).padStart(2,"0");
 
+
 const year =
 now.getFullYear();
+
 
 const hours =
 String(
 now.getHours()
 ).padStart(2,"0");
 
+
 const minutes =
 String(
 now.getMinutes()
 ).padStart(2,"0");
+
 
 const seconds =
 String(
@@ -893,20 +911,24 @@ Math.round(
 data.daily.temperature_2m_max[i]
 );
 
+
 const min =
 Math.round(
 data.daily.temperature_2m_min[i]
 );
+
 
 const wind =
 Math.round(
 data.daily.wind_speed_10m_max[i]
 );
 
+
 const gust =
 Math.round(
 data.daily.wind_gusts_10m_max[i]
 );
+
 
 const icon =
 weatherIcon(
@@ -992,6 +1014,10 @@ return "🌤️";
 
 }
 
+
+// ======================================
+// تشغيل التوقعات
+// ======================================
 
 loadForecast();
 
