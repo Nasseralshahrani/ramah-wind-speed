@@ -4,6 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>RAMAH WEATHER</title>
 
 <style>
@@ -23,6 +24,7 @@ body{
 body{
     font-family:Arial,Tahoma,sans-serif;
     color:#fff;
+
     background:
         radial-gradient(
             circle at 50% -10%,
@@ -31,6 +33,7 @@ body{
             #031b27 65%,
             #02131c 100%
         );
+
     transition:background 1s ease;
 }
 
@@ -42,9 +45,9 @@ body{
 }
 
 
-/* ==============================
+/* =================================
    HEADER
-============================== */
+================================= */
 
 .header{
     display:flex;
@@ -74,19 +77,25 @@ body{
     width:78px;
     height:78px;
     border-radius:50%;
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     font-size:48px;
+
     background:rgba(4,37,53,.8);
+
     border:2px solid #157ba0;
-    box-shadow:0 0 22px rgba(0,160,210,.18);
+
+    box-shadow:
+        0 0 22px rgba(0,160,210,.18);
 }
 
 
-/* ==============================
+/* =================================
    CONTROLS
-============================== */
+================================= */
 
 .controls{
     display:flex;
@@ -98,12 +107,19 @@ body{
 .circle-button{
     width:66px;
     height:66px;
+
     flex-shrink:0;
+
     border-radius:50%;
+
     border:2px solid rgba(80,180,210,.28);
+
     background:rgba(5,43,58,.75);
+
     color:#71cde5;
+
     font-size:29px;
+
     display:flex;
     align-items:center;
     justify-content:center;
@@ -111,36 +127,50 @@ body{
 
 .pin-button{
     height:66px;
+
     padding:0 28px;
+
     border:0;
+
     border-radius:38px;
+
     background:#55c6e4;
+
     color:#062333;
+
     font-size:19px;
     font-weight:bold;
 }
 
 
-/* ==============================
+/* =================================
    WARNING
-============================== */
+================================= */
 
 .warning{
     display:flex;
     align-items:center;
     justify-content:space-between;
+
     min-height:94px;
+
     padding:15px 18px;
+
     margin-bottom:18px;
+
     border-radius:24px;
+
     background:
         linear-gradient(
             90deg,
             #633200,
             #704000
         );
+
     border:2px solid rgba(218,151,54,.5);
-    box-shadow:0 5px 20px rgba(0,0,0,.2);
+
+    box-shadow:
+        0 5px 20px rgba(0,0,0,.2);
 }
 
 .warning-text{
@@ -163,25 +193,36 @@ body{
 .warning-icon{
     width:58px;
     height:58px;
+
+    flex-shrink:0;
+
     border-radius:50%;
+
     background:rgba(255,220,160,.12);
+
     display:flex;
     align-items:center;
     justify-content:center;
+
     font-size:31px;
+
     margin-right:12px;
 }
 
 
-/* ==============================
-   MAIN WEATHER CARD
-============================== */
+/* =================================
+   MAIN WEATHER
+================================= */
 
 .main-weather{
     position:relative;
+
     overflow:hidden;
+
     min-height:405px;
+
     border-radius:45px;
+
     background:
         linear-gradient(
             135deg,
@@ -189,15 +230,24 @@ body{
             #dce8dc 48%,
             #c4d9d5 100%
         );
+
     color:#062536;
+
     border:1px solid rgba(255,255,255,.35);
-    box-shadow:0 12px 35px rgba(0,0,0,.25);
+
+    box-shadow:
+        0 12px 35px rgba(0,0,0,.25);
+
     margin-bottom:22px;
 }
 
 .main-top{
     display:flex;
+
     justify-content:space-between;
+
+    align-items:center;
+
     padding:35px 28px 10px;
 }
 
@@ -208,122 +258,1847 @@ body{
 
 .main-status{
     display:inline-flex;
+
     align-items:center;
+
     gap:8px;
+
     padding:8px 17px;
+
     border-radius:25px;
+
     background:#ffd2ce;
+
     color:#a32828;
+
     font-size:17px;
+
     font-weight:bold;
 }
 
 .status-dot{
     width:13px;
     height:13px;
+
     border-radius:50%;
+
     background:#ff3030;
+}
+
+.main-status.online{
+    background:#c9f6d7;
+    color:#087333;
+}
+
+.main-status.online .status-dot{
+    background:#00c853;
+
+    box-shadow:
+        0 0 10px #00c853;
 }
 
 .main-content{
     display:flex;
+
     justify-content:space-between;
+
     align-items:center;
-    padding:10px 35px 35px;
+
+    padding:10px 35px 80px;
 }
 
 .weather-symbol{
     font-size:105px;
+
     width:42%;
+
     text-align:center;
 }
 
 .main-info{
     width:55%;
+
     text-align:right;
 }
 
 .big-temperature{
     font-size:105px;
+
     font-weight:bold;
+
     line-height:.95;
+
     color:#062b3d;
 }
 
 .degree{
     font-size:32px;
+
     vertical-align:top;
 }
 
 .weather-description{
     font-size:31px;
+
     font-weight:bold;
+
     margin-top:12px;
 }
 
 .feels{
     font-size:18px;
+
     color:#526d78;
+
     margin-top:8px;
 }
 
 .main-date{
     font-size:21px;
+
     font-weight:bold;
+
     margin-top:23px;
 }
 
 .wind-strip{
     position:absolute;
+
     bottom:0;
+
     left:0;
     right:0;
+
     height:69px;
+
     background:#27647a;
+
     color:#fff;
+
     display:flex;
+
     align-items:center;
+
     justify-content:flex-start;
+
     gap:15px;
+
     padding:0 25px;
+
     font-size:19px;
+
     font-weight:bold;
 }
 
 .wind-direction{
     width:47px;
     height:47px;
+
+    flex-shrink:0;
+
     border-radius:50%;
+
     background:#8fd3e7;
+
     color:#092d40;
+
     display:flex;
+
     align-items:center;
+
     justify-content:center;
+
     font-size:22px;
 }
 
 
-/* ==============================
+/* =================================
    SENSOR CARDS
-============================== */
+================================= */
 
 .sensor-grid{
     display:grid;
+
     grid-template-columns:1fr 1fr;
+
     gap:14px;
+
     margin-bottom:15px;
 }
 
 .sensor-card{
     min-height:165px;
+
     border-radius:25px;
+
     border:2px solid rgba(80,174,205,.16);
+
     background:rgba(5,40,54,.78);
+
     padding:18px;
+
     display:flex;
+
     align-items:center;
+
     justify-content:space-between;
 }
 
 .sensor-info{
-   
+    text-align:right;
+
+    flex:1;
+}
+
+.sensor-title{
+    color:#8fb9c6;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+}
+
+.sensor-value{
+    font-size:43px;
+
+    font-weight:bold;
+
+    line-height:1.1;
+}
+
+.sensor-unit{
+    font-size:16px;
+
+    color:#91aab4;
+
+    margin-right:5px;
+}
+
+.wind-value{
+    color:#fff;
+}
+
+.temp-value{
+    color:#fff;
+}
+
+.sensor-sub{
+    color:#88a4af;
+
+    font-size:14px;
+
+    margin-top:8px;
+}
+
+.sensor-icon{
+    width:82px;
+    height:82px;
+
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    border:8px solid rgba(120,200,220,.16);
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:42px;
+
+    margin-left:10px;
+}
+
+.wind-icon{
+    border-top-color:#43b7d8;
+    color:#55c6e4;
+}
+
+.temp-icon{
+    border-top-color:#ff9d42;
+    color:#ff9d42;
+}
+
+
+/* =================================
+   QUICK DATA
+================================= */
+
+.quick-grid{
+    display:grid;
+
+    grid-template-columns:1fr 1fr 1fr;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    margin-bottom:20px;
+
+    border:2px solid rgba(80,174,205,.16);
+
+    background:rgba(5,40,54,.78);
+}
+
+.quick-item{
+    min-height:72px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:10px;
+
+    color:#9bc4d0;
+
+    font-size:15px;
+}
+
+.quick-item:not(:last-child){
+    border-left:2px solid rgba(80,174,205,.12);
+}
+
+.quick-value{
+    display:block;
+
+    color:#fff;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    margin-top:4px;
+}
+
+
+/* =================================
+   FORECAST
+================================= */
+
+.forecast{
+    border-radius:28px;
+
+    border:2px solid rgba(80,174,205,.16);
+
+    background:rgba(5,40,54,.78);
+
+    padding:20px;
+
+    margin-bottom:20px;
+}
+
+.forecast-title{
+    font-size:25px;
+
+    font-weight:bold;
+
+    margin-bottom:20px;
+
+    text-align:right;
+}
+
+.forecast-days{
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:8px;
+}
+
+.forecast-day{
+    text-align:center;
+
+    min-width:0;
+
+    padding:12px 5px;
+
+    border-radius:16px;
+
+    background:rgba(255,255,255,.025);
+}
+
+.forecast-name{
+    display:block;
+
+    font-size:17px;
+
+    font-weight:bold;
+
+    color:#fff;
+
+    margin-bottom:10px;
+}
+
+.forecast-icon{
+    display:block;
+
+    font-size:42px;
+
+    line-height:1;
+
+    margin:8px 0 12px;
+}
+
+.forecast-temp{
+    display:block;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    color:#fff;
+}
+
+.forecast-rain{
+    display:block;
+
+    font-size:13px;
+
+    color:#62c9e5;
+
+    margin-top:7px;
+}
+
+.forecast-wind{
+    display:block;
+
+    font-size:13px;
+
+    color:#b7c8cf;
+
+    margin-top:5px;
+}
+
+
+/* =================================
+   LAST UPDATE
+================================= */
+
+.last-update{
+    text-align:center;
+
+    color:#7f9ba6;
+
+    font-size:14px;
+
+    margin-top:5px;
+}
+
+.footer{
+    text-align:center;
+
+    color:#58727e;
+
+    font-size:13px;
+
+    margin-top:20px;
+}
+
+
+/* =================================
+   MOBILE
+================================= */
+
+@media(max-width:600px){
+
+    .page{
+        padding:
+            16px 14px 30px;
+    }
+
+    .header-small{
+        font-size:17px;
+    }
+
+    .header-city{
+        font-size:39px;
+    }
+
+    .weather-logo{
+        width:68px;
+        height:68px;
+        font-size:40px;
+    }
+
+    .controls{
+        gap:8px;
+    }
+
+    .circle-button{
+        width:58px;
+        height:58px;
+    }
+
+    .pin-button{
+        height:58px;
+        padding:0 22px;
+    }
+
+    .warning{
+        min-height:88px;
+    }
+
+    .warning-title{
+        font-size:21px;
+    }
+
+    .warning-subtitle{
+        font-size:13px;
+    }
+
+    .main-weather{
+        min-height:400px;
+        border-radius:38px;
+    }
+
+    .main-top{
+        padding:
+            28px 20px 8px;
+    }
+
+    .main-location{
+        font-size:18px;
+    }
+
+    .main-status{
+        font-size:14px;
+        padding:7px 12px;
+    }
+
+    .main-content{
+        padding:
+            5px 20px 75px;
+    }
+
+    .weather-symbol{
+        font-size:78px;
+    }
+
+    .big-temperature{
+        font-size:76px;
+    }
+
+    .degree{
+        font-size:24px;
+    }
+
+    .weather-description{
+        font-size:25px;
+    }
+
+    .feels{
+        font-size:15px;
+    }
+
+    .main-date{
+        font-size:17px;
+    }
+
+    .wind-strip{
+        height:62px;
+        padding:0 18px;
+        font-size:16px;
+    }
+
+    .wind-direction{
+        width:43px;
+        height:43px;
+    }
+
+    .sensor-card{
+        min-height:150px;
+        padding:14px;
+    }
+
+    .sensor-icon{
+        width:62px;
+        height:62px;
+        border-width:6px;
+        font-size:32px;
+    }
+
+    .sensor-title{
+        font-size:15px;
+    }
+
+    .sensor-value{
+        font-size:32px;
+    }
+
+    .sensor-sub{
+        font-size:12px;
+    }
+
+    .quick-item{
+        font-size:13px;
+        padding:8px 4px;
+    }
+
+    .quick-value{
+        font-size:15px;
+    }
+
+    .forecast{
+        padding:15px 10px;
+    }
+
+    .forecast-title{
+        font-size:21px;
+    }
+
+    .forecast-days{
+        grid-template-columns:
+            repeat(4,1fr);
+        gap:3px;
+    }
+
+    .forecast-day{
+        padding:8px 2px;
+    }
+
+    .forecast-name{
+        font-size:13px;
+    }
+
+    .forecast-icon{
+        font-size:31px;
+    }
+
+    .forecast-temp{
+        font-size:14px;
+    }
+
+    .forecast-rain,
+    .forecast-wind{
+        font-size:10px;
+    }
+}
+
+
+/* =================================
+   VERY SMALL SCREENS
+================================= */
+
+@media(max-width:380px){
+
+    .sensor-grid{
+        gap:8px;
+    }
+
+    .sensor-card{
+        padding:10px;
+    }
+
+    .sensor-icon{
+        width:50px;
+        height:50px;
+        font-size:27px;
+        margin-left:5px;
+    }
+
+    .sensor-value{
+        font-size:28px;
+    }
+
+    .forecast-name{
+        font-size:11px;
+    }
+
+    .forecast-icon{
+        font-size:27px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+<!-- =================================
+     HEADER
+================================= -->
+
+<header class="header">
+
+    <div class="header-right">
+
+        <div class="header-small">
+            الطقس المحلي
+        </div>
+
+        <div class="header-city">
+            رماح
+        </div>
+
+    </div>
+
+    <div class="weather-logo">
+        🌤️
+    </div>
+
+</header>
+
+
+<!-- =================================
+     CONTROLS
+================================= -->
+
+<div class="controls">
+
+    <button
+        class="circle-button"
+        onclick="location.reload()"
+        title="تحديث">
+        ↻
+    </button>
+
+    <button
+        class="circle-button"
+        onclick="changeTheme()"
+        title="الوضع">
+        ☼
+    </button>
+
+    <button
+        class="pin-button"
+        onclick="scrollToForecast()">
+        تثبيت ↓
+    </button>
+
+</div>
+
+
+<!-- =================================
+     WARNING
+================================= -->
+
+<div class="warning">
+
+    <div class="warning-text">
+
+        <div class="warning-title">
+            تنبيه غبار وأتربة
+        </div>
+
+        <div class="warning-subtitle">
+            الرؤية قد تقل، انتبه أثناء القيادة.
+        </div>
+
+    </div>
+
+    <div class="warning-icon">
+        ⚠️
+    </div>
+
+</div>
+
+
+<!-- =================================
+     MAIN WEATHER CARD
+================================= -->
+
+<section class="main-weather">
+
+    <div class="main-top">
+
+        <div class="main-location">
+            📍 منطقة الرياض
+        </div>
+
+        <div
+            id="mainStatus"
+            class="main-status">
+
+            <span class="status-dot"></span>
+
+            <span id="mainStatusText">
+                المحطة منقطعة
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="main-content">
+
+        <div
+            id="weatherSymbol"
+            class="weather-symbol">
+            ☀️
+        </div>
+
+
+        <div class="main-info">
+
+            <div>
+
+                <span
+                    id="mainTemperature"
+                    class="big-temperature">
+                    --
+                </span>
+
+                <span class="degree">
+                    °
+                </span>
+
+            </div>
+
+
+            <div
+                id="weatherDescription"
+                class="weather-description">
+                سماء صافية
+            </div>
+
+
+            <div class="feels">
+
+                المحسوسة
+                <span id="feelsTemperature">
+                    --
+                </span>
+                °
+
+            </div>
+
+
+            <div
+                id="mainDate"
+                class="main-date">
+                --
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="wind-strip">
+
+        <div
+            id="windDirection"
+            class="wind-direction">
+            ↑
+        </div>
+
+        <span>
+            رياح
+            <span id="mainWind">
+                --
+            </span>
+            كم/س
+        </span>
+
+    </div>
+
+</section>
+
+
+<!-- =================================
+     SENSOR CARDS
+================================= -->
+
+<div class="sensor-grid">
+
+
+    <!-- WIND -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-info">
+
+            <div class="sensor-title">
+                🌪️ حساس السرعة
+            </div>
+
+            <div>
+
+                <span
+                    id="windValue"
+                    class="sensor-value wind-value">
+                    --
+                </span>
+
+                <span class="sensor-unit">
+                    كم/س
+                </span>
+
+            </div>
+
+            <div class="sensor-sub">
+
+                هبات
+                <span id="gustValue">
+                    --
+                </span>
+                كم/س
+
+            </div>
+
+        </div>
+
+        <div class="sensor-icon wind-icon">
+            ≋
+        </div>
+
+    </div>
+
+
+    <!-- TEMPERATURE -->
+
+    <div class="sensor-card">
+
+        <div class="sensor-info">
+
+            <div class="sensor-title">
+                🌡️ حساس الحرارة
+            </div>
+
+            <div>
+
+                <span
+                    id="tempValue"
+                    class="sensor-value temp-value">
+                    --
+                </span>
+
+                <span class="sensor-unit">
+                    °
+                </span>
+
+            </div>
+
+            <div class="sensor-sub">
+                بيانات الرصد الحالية
+            </div>
+
+        </div>
+
+        <div class="sensor-icon temp-icon">
+            🌡️
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================
+     QUICK DATA
+================================= -->
+
+<div class="quick-grid">
+
+
+    <div class="quick-item">
+
+        💧
+
+        <div>
+
+            الرطوبة
+
+            <span
+                id="humidityValue"
+                class="quick-value">
+                -- %
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-item">
+
+        ☔
+
+        <div>
+
+            المطر
+
+            <span class="quick-value">
+                0%
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="quick-item">
+
+        👁️
+
+        <div>
+
+            الرؤية
+
+            <span class="quick-value">
+                16 كم
+            </span>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================
+     FORECAST
+================================= -->
+
+<section
+    id="forecast"
+    class="forecast">
+
+    <div class="forecast-title">
+        القادم
+    </div>
+
+    <div
+        id="forecastDays"
+        class="forecast-days">
+
+        جاري تحميل التوقعات...
+
+    </div>
+
+</section>
+
+
+<!-- =================================
+     LAST UPDATE
+================================= -->
+
+<div class="last-update">
+
+    آخر تحديث:
+    <span id="lastUpdate">
+        --
+    </span>
+
+</div>
+
+
+<div class="footer">
+    RAMAH WEATHER LIVE
+</div>
+
+
+</div>
+
+
+<!-- =================================
+     FIREBASE
+================================= -->
+
+<script type="module">
+
+import {
+    initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+
+import {
+    getDatabase,
+    ref,
+    onValue
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
+/* =================================
+   FIREBASE CONFIG
+================================= */
+
+const firebaseConfig = {
+
+    databaseURL:
+        "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const db =
+    getDatabase(app);
+
+const weatherRef =
+    ref(db, "/");
+
+
+/* =================================
+   VARIABLES
+================================= */
+
+let lastSeen = 0;
+
+let currentWind = 0;
+
+let currentTemperature = null;
+
+let currentHumidity = null;
+
+
+/* =================================
+   ELEMENTS
+================================= */
+
+const mainTemperature =
+    document.getElementById("mainTemperature");
+
+const tempValue =
+    document.getElementById("tempValue");
+
+const humidityValue =
+    document.getElementById("humidityValue");
+
+const windValue =
+    document.getElementById("windValue");
+
+const mainWind =
+    document.getElementById("mainWind");
+
+const mainDate =
+    document.getElementById("mainDate");
+
+const lastUpdate =
+    document.getElementById("lastUpdate");
+
+const mainStatus =
+    document.getElementById("mainStatus");
+
+const mainStatusText =
+    document.getElementById("mainStatusText");
+
+const weatherDescription =
+    document.getElementById("weatherDescription");
+
+const weatherSymbol =
+    document.getElementById("weatherSymbol");
+
+const feelsTemperature =
+    document.getElementById("feelsTemperature");
+
+const gustValue =
+    document.getElementById("gustValue");
+
+const windDirection =
+    document.getElementById("windDirection");
+
+
+/* =================================
+   WEATHER DESCRIPTION
+================================= */
+
+function getWeatherDescription(
+    temperature,
+    humidity,
+    wind
+){
+
+    if(wind >= 60){
+        return "رياح قوية";
+    }
+
+    if(wind >= 35){
+        return "رياح نشطة";
+    }
+
+    if(temperature >= 45){
+        return "أجواء شديدة الحرارة";
+    }
+
+    if(temperature >= 35){
+        return "أجواء حارة";
+    }
+
+    if(temperature <= 10){
+        return "أجواء باردة";
+    }
+
+    if(humidity >= 80){
+        return "رطوبة مرتفعة";
+    }
+
+    return "سماء صافية";
+}
+
+
+/* =================================
+   WEATHER ICON
+================================= */
+
+function getWeatherIcon(
+    temperature,
+    humidity,
+    wind
+){
+
+    if(wind >= 60){
+        return "🌪️";
+    }
+
+    if(wind >= 35){
+        return "💨";
+    }
+
+    if(humidity >= 80){
+        return "🌧️";
+    }
+
+    if(temperature >= 40){
+        return "☀️";
+    }
+
+    if(temperature <= 15){
+        return "🌤️";
+    }
+
+    return "☀️";
+}
+
+
+/* =================================
+   WIND DIRECTION
+================================= */
+
+function updateWindDirection(){
+
+    if(currentWind >= 60){
+
+        windDirection.textContent = "→";
+
+    }
+
+    else if(currentWind >= 35){
+
+        windDirection.textContent = "↗";
+
+    }
+
+    else{
+
+        windDirection.textContent = "↑";
+
+    }
+
+}
+
+
+/* =================================
+   FIREBASE LIVE DATA
+================================= */
+
+onValue(
+    weatherRef,
+    (snapshot) => {
+
+        const data =
+            snapshot.val();
+
+        if(!data){
+
+            setOffline();
+
+            return;
+        }
+
+
+        /* -------------------------
+           WIND
+        ------------------------- */
+
+        if(
+            data.windSpeed !== undefined &&
+            data.windSpeed !== null
+        ){
+
+            const wind =
+                parseFloat(data.windSpeed);
+
+            if(!isNaN(wind)){
+
+                currentWind = wind;
+
+                windValue.textContent =
+                    wind.toFixed(1);
+
+                mainWind.textContent =
+                    wind.toFixed(1);
+
+                /* تقدير الهبات */
+
+                gustValue.textContent =
+                    Math.round(
+                        wind * 1.35
+                    );
+
+            }
+
+        }
+
+
+        /* -------------------------
+           WEATHER
+        ------------------------- */
+
+        if(data.weather){
+
+            if(
+                data.weather.temperature !== undefined &&
+                data.weather.temperature !== null
+            ){
+
+                const temp =
+                    parseFloat(
+                        data.weather.temperature
+                    );
+
+                if(!isNaN(temp)){
+
+                    currentTemperature =
+                        temp;
+
+                    mainTemperature.textContent =
+                        temp.toFixed(0);
+
+                    tempValue.textContent =
+                        temp.toFixed(0);
+
+                    feelsTemperature.textContent =
+                        temp.toFixed(0);
+
+                }
+
+            }
+
+
+            if(
+                data.weather.humidity !== undefined &&
+                data.weather.humidity !== null
+            ){
+
+                const hum =
+                    parseFloat(
+                        data.weather.humidity
+                    );
+
+                if(!isNaN(hum)){
+
+                    currentHumidity =
+                        hum;
+
+                    humidityValue.textContent =
+                        hum.toFixed(0) + " %";
+
+                }
+
+            }
+
+        }
+
+
+        /* -------------------------
+           WEATHER DISPLAY
+        ------------------------- */
+
+        if(currentTemperature !== null){
+
+            weatherDescription.textContent =
+                getWeatherDescription(
+                    currentTemperature,
+                    currentHumidity || 0,
+                    currentWind
+                );
+
+            weatherSymbol.textContent =
+                getWeatherIcon(
+                    currentTemperature,
+                    currentHumidity || 0,
+                    currentWind
+                );
+
+        }
+
+
+        updateWindDirection();
+
+
+        /* -------------------------
+           LAST SEEN
+        ------------------------- */
+
+        if(data.lastSeen){
+
+            lastSeen =
+                Number(data.lastSeen);
+
+            const date =
+                new Date(lastSeen);
+
+            mainDate.textContent =
+                formatArabicDate(date);
+
+            lastUpdate.textContent =
+                formatTime(date);
+
+        }
+
+
+        checkConnection();
+
+    },
+
+    (error) => {
+
+        console.error(
+            "Firebase error:",
+            error
+        );
+
+        setOffline();
+
+    }
+
+);
+
+
+/* =================================
+   CONNECTION CHECK
+================================= */
+
+function checkConnection(){
+
+    if(!lastSeen){
+
+        setOffline();
+
+        return;
+    }
+
+
+    const age =
+        Date.now() - lastSeen;
+
+
+    if(age <= 10000){
+
+        mainStatus.classList.add("online");
+
+        mainStatusText.textContent =
+            "المحطة متصلة";
+
+    }
+
+    else{
+
+        mainStatus.classList.remove("online");
+
+        mainStatusText.textContent =
+            "المحطة منقطعة";
+
+    }
+
+}
+
+
+/* =================================
+   OFFLINE
+================================= */
+
+function setOffline(){
+
+    mainStatus.classList.remove("online");
+
+    mainStatusText.textContent =
+        "المحطة منقطعة";
+
+}
+
+
+/* =================================
+   TIME CHECK
+================================= */
+
+setInterval(
+    checkConnection,
+    2000
+);
+
+
+/* =================================
+   DATE
+================================= */
+
+function formatArabicDate(date){
+
+    const days = [
+        "الأحد",
+        "الاثنين",
+        "الثلاثاء",
+        "الأربعاء",
+        "الخميس",
+        "الجمعة",
+        "السبت"
+    ];
+
+    const months = [
+        "يناير",
+        "فبراير",
+        "مارس",
+        "أبريل",
+        "مايو",
+        "يونيو",
+        "يوليو",
+        "أغسطس",
+        "سبتمبر",
+        "أكتوبر",
+        "نوفمبر",
+        "ديسمبر"
+    ];
+
+    return (
+        days[date.getDay()] +
+        "، " +
+        date.getDate() +
+        " " +
+        months[date.getMonth()]
+    );
+
+}
+
+
+function formatTime(date){
+
+    const h =
+        String(
+            date.getHours()
+        ).padStart(2,"0");
+
+    const m =
+        String(
+            date.getMinutes()
+        ).padStart(2,"0");
+
+    const s =
+        String(
+            date.getSeconds()
+        ).padStart(2,"0");
+
+    return h + ":" + m + ":" + s;
+
+}
+
+
+/* =================================
+   PAGE CLOCK
+================================= */
+
+setInterval(
+    () => {
+
+        if(lastSeen){
+
+            const date =
+                new Date(lastSeen);
+
+            lastUpdate.textContent =
+                formatTime(date);
+
+        }
+
+    },
+    1000
+);
+
+
+/* =================================
+   THEME BUTTON
+================================= */
+
+window.changeTheme = function(){
+
+    document.body.style.background =
+        "radial-gradient(circle at 50% -10%, #174e61 0%, #073445 35%, #031b27 70%, #02131c 100%)";
+
+    setTimeout(
+        () => {
+
+            document.body.style.background =
+                "radial-gradient(circle at 50% -10%, #0d4355 0%, #062b3a 30%, #031b27 65%, #02131c 100%)";
+
+        },
+        1200
+    );
+
+};
+
+
+/* =================================
+   SCROLL
+================================= */
+
+window.scrollToForecast = function(){
+
+    document
+        .getElementById("forecast")
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+};
+
+</script>
+
+
+<!-- =================================
+     FORECAST SCRIPT
+================================= -->
+
+<script>
+
+const latitude =
+    25.5828380;
+
+const longitude =
+    47.1852031;
+
+
+/* =================================
+   LOAD FORECAST
+================================= */
+
+async function loadForecast(){
+
+    const container =
+        document.getElementById(
+            "forecastDays"
+        );
+
+
+    const url =
+        "https://api.open-meteo.com/v1/forecast" +
+        "?latitude=" + latitude +
+        "&longitude=" + longitude +
+        "&daily=" +
+        "weather_code," +
+        "temperature_2m_max," +
+        "temperature_2m_min," +
+        "wind_speed_10m_max," +
+        "wind_gusts_10m_max," +
+        "precipitation_probability_max" +
+        "&timezone=Asia%2FRiyadh";
+
+
+    try{
+
+        const response =
+            await fetch(url);
+
+
+        if(!response.ok){
+
+            throw new Error(
+                "Forecast HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const days = [
+            "الأحد",
+            "الاثنين",
+            "الثلاثاء",
+            "الأربعاء",
+            "الخميس",
+            "الجمعة",
+            "السبت"
+        ];
+
+
+        container.innerHTML = "";
+
+
+        const count =
+            Math.min(
+                7,
+                data.daily.time.length
+            );
+
+
+        for(
+            let i = 0;
+            i < count;
+            i++
+        ){
+
+            const date =
+                new Date(
+                    data.daily.time[i] +
+                    "T00:00:00"
+                );
+
+
+            const max =
+                Math.round(
+                    data.daily.temperature_2m_max[i]
+                );
+
+
+            const min =
+                Math.round(
+                    data.daily.temperature_2m_min[i]
+                );
+
+
+            const wind =
+                Math.round(
+                    data.daily.wind_speed_10m_max[i]
+                );
+
+
+            const gust =
+                Math.round(
+                    data.daily.wind_gusts_10m_max[i]
+                );
+
+
+            const rain =
+                Math.round(
+                    data.daily.precipitation_probability_max[i]
+                );
+
+
+            const icon =
+                weatherIcon(
+                    data.daily.weather_code[i]
+                );
+
+
+            const day =
+                document.createElement("div");
+
+            day.className =
+                "forecast-day";
+
+
+            day.innerHTML = `
+
+                <span class="forecast-name">
+                    ${days[date.getDay()]}
+                </span>
+
+                <span class="forecast-icon">
+                    ${icon}
+                </span>
+
+                <span class="forecast-temp">
+                    ${max}° / ${min}°
+                </span>
+
+                <span class="forecast-rain">
+                    💧 ${rain}%
+                </span>
+
+                <span class="forecast-wind">
+                    🌪️ ${wind} كم/س
+                </span>
+
+                <span class="forecast-wind">
+                    هبات ${gust} كم/س
+                </span>
+
+            `;
+
+
+            container.appendChild(day);
+
+        }
+
+    }
+
+    catch(error){
+
+        console.error(
+            "خطأ في توقعات الطقس:",
+            error
+        );
+
+        container.innerHTML =
+            "تعذر تحميل توقعات الطقس";
+
+    }
+
+}
+
+
+/* =================================
+   WEATHER ICON
+================================= */
+
+function weatherIcon(code){
+
+    if(code === 0)
+        return "☀️";
+
+    if(code === 1 || code === 2)
+        return "🌤️";
+
+    if(code === 3)
+        return "☁️";
+
+    if(code >= 45 && code <= 48)
+        return "🌫️";
+
+    if(code >= 51 && code <= 67)
+        return "🌧️";
+
+    if(code >= 71 && code <= 77)
+        return "❄️";
+
+    if(code >= 80 && code <= 82)
+        return "🌦️";
+
+    if(code >= 95)
+        return "⛈️";
+
+    return "🌤️";
+
+}
+
+
+loadForecast();
+
+
+setInterval(
+    loadForecast,
+    60 * 60 * 1000
+);
+
+</script>
+
+</body>
+</html>
