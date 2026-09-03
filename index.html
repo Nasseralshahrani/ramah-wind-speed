@@ -510,97 +510,241 @@ Firebase Live Data
 
 
 <!-- ====================================== -->
-<!-- السكربت المباشر (Firebase Realtime) -->
+<!-- السكربت المباشر Firebase Realtime -->
 <!-- ====================================== -->
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import {
+initializeApp
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
-// إعداد الاتصال بقاعدة البيانات
+import {
+getDatabase,
+ref,
+onValue
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+
 const firebaseConfig = {
-  databaseURL: "https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+databaseURL:
+"https://rumah-wind-default-rtdb.asia-southeast1.firebasedatabase.app"
+
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const weatherRef = ref(db, '/');
 
-// متغير لحفظ التنبيه عند انقطاع الأجهزة
+const app =
+initializeApp(firebaseConfig);
+
+const db =
+getDatabase(app);
+
+const weatherRef =
+ref(db, '/');
+
+
 let connectionCheckInterval = null;
 
-// الاستقبال اللحظي المباشر بـ (0 ملي ثانية تأخير)
+
 onValue(weatherRef, (snapshot) => {
-  const data = snapshot.val();
-  if (!data) return;
 
-  // 1. تحديث سرعة الرياح
-  if (data.windSpeed !== undefined && data.windSpeed !== null) {
-    const wind = parseFloat(data.windSpeed);
-    if (!isNaN(wind)) {
-      document.getElementById("wind").textContent = wind.toFixed(2);
+const data = snapshot.val();
 
-      // تغيير الخلفية حسب حركة الرياح
-      if (wind <= 10) {
-        document.body.style.background = "radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
-      } else if (wind <= 30) {
-        document.body.style.background = "radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
-      } else if (wind <= 60) {
-        document.body.style.background = "radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
-      } else {
-        document.body.style.background = "radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
-      }
-    }
-  }
+if (!data) return;
 
-  // 2. تحديث درجة الحرارة والرطوبة
-  if (data.weather) {
-    if (data.weather.temperature !== undefined && data.weather.temperature !== null) {
-      const temp = parseFloat(data.weather.temperature);
-      if (!isNaN(temp)) {
-        document.getElementById("temperature").textContent = temp.toFixed(1);
-      }
-    }
 
-    if (data.weather.humidity !== undefined && data.weather.humidity !== null) {
-      const hum = parseFloat(data.weather.humidity);
-      if (!isNaN(hum)) {
-        document.getElementById("humidity").textContent = hum.toFixed(1);
-      }
-    }
-  }
+// ======================================
+// سرعة الرياح
+// ======================================
 
-  // 3. تحديث حالة الاتصال ووقت آخر قراءة
-  if (data.lastSeen) {
-    const lastSeenTime = Number(data.lastSeen);
-    
-    // دالة فحص اتصال الجهاز مع الفراغ الزمني
-    const checkStatus = () => {
-      const age = Date.now() - lastSeenTime;
-      if (age <= 10000) {
-        document.getElementById("status").textContent = "متصل";
-        document.getElementById("led").className = "led connected";
-      } else {
-        document.getElementById("status").textContent = "غير متصل";
-        document.getElementById("led").className = "led error";
-      }
-    };
+if (
+data.windSpeed !== undefined &&
+data.windSpeed !== null
+) {
 
-    checkStatus();
+const wind =
+parseFloat(data.windSpeed);
 
-    if (connectionCheckInterval) clearInterval(connectionCheckInterval);
-    connectionCheckInterval = setInterval(checkStatus, 2000);
+if (!isNaN(wind)) {
 
-    // تحويل الوقت
-    const lastDate = new Date(lastSeenTime);
-    const lastHours = String(lastDate.getHours()).padStart(2, "0");
-    const lastMinutes = String(lastDate.getMinutes()).padStart(2, "0");
-    const lastSeconds = String(lastDate.getSeconds()).padStart(2, "0");
+document.getElementById("wind")
+.textContent =
+wind.toFixed(2);
 
-    document.getElementById("time").textContent =
-      "آخر قراءة: " + lastHours + ":" + lastMinutes + ":" + lastSeconds;
-  }
+
+// تغيير الخلفية حسب الرياح
+
+if (wind <= 10) {
+
+document.body.style.background =
+"radial-gradient(circle at top,#173554 0%,#08111f 45%,#040912 100%)";
+
+}
+
+else if (wind <= 30) {
+
+document.body.style.background =
+"radial-gradient(circle at top,#14532d 0%,#071a12 50%,#030806 100%)";
+
+}
+
+else if (wind <= 60) {
+
+document.body.style.background =
+"radial-gradient(circle at top,#7c431c 0%,#241206 50%,#080402 100%)";
+
+}
+
+else {
+
+document.body.style.background =
+"radial-gradient(circle at top,#7f1d1d 0%,#250606 50%,#080101 100%)";
+
+}
+
+}
+
+}
+
+
+// ======================================
+// الحرارة والرطوبة
+// ======================================
+
+if (data.weather) {
+
+if (
+data.weather.temperature !== undefined &&
+data.weather.temperature !== null
+) {
+
+const temp =
+parseFloat(data.weather.temperature);
+
+if (!isNaN(temp)) {
+
+document.getElementById("temperature")
+.textContent =
+temp.toFixed(1);
+
+}
+
+}
+
+
+if (
+data.weather.humidity !== undefined &&
+data.weather.humidity !== null
+) {
+
+const hum =
+parseFloat(data.weather.humidity);
+
+if (!isNaN(hum)) {
+
+document.getElementById("humidity")
+.textContent =
+hum.toFixed(1);
+
+}
+
+}
+
+}
+
+
+// ======================================
+// الاتصال وآخر قراءة
+// ======================================
+
+if (data.lastSeen) {
+
+const lastSeenTime =
+Number(data.lastSeen);
+
+
+const checkStatus = () => {
+
+const age =
+Date.now() - lastSeenTime;
+
+
+if (age <= 10000) {
+
+document.getElementById("status")
+.textContent =
+"متصل";
+
+document.getElementById("led")
+.className =
+"led connected";
+
+}
+
+else {
+
+document.getElementById("status")
+.textContent =
+"غير متصل";
+
+document.getElementById("led")
+.className =
+"led error";
+
+}
+
+};
+
+
+checkStatus();
+
+
+if (connectionCheckInterval)
+clearInterval(connectionCheckInterval);
+
+
+connectionCheckInterval =
+setInterval(
+checkStatus,
+2000
+);
+
+
+// ======================================
+// وقت آخر قراءة
+// ======================================
+
+const lastDate =
+new Date(lastSeenTime);
+
+const lastHours =
+String(
+lastDate.getHours()
+).padStart(2,"0");
+
+const lastMinutes =
+String(
+lastDate.getMinutes()
+).padStart(2,"0");
+
+const lastSeconds =
+String(
+lastDate.getSeconds()
+).padStart(2,"0");
+
+
+document.getElementById("time")
+.textContent =
+"آخر قراءة: " +
+lastHours +
+":" +
+lastMinutes +
+":" +
+lastSeconds;
+
+}
+
 });
 
 </script>
@@ -614,23 +758,61 @@ onValue(weatherRef, (snapshot) => {
 
 function updateDateTime(){
 
-const now = new Date();
+const now =
+new Date();
 
-const day = String(now.getDate()).padStart(2, "0");
-const month = String(now.getMonth() + 1).padStart(2, "0");
-const year = now.getFullYear();
+const day =
+String(
+now.getDate()
+).padStart(2,"0");
 
-const hours = String(now.getHours()).padStart(2, "0");
-const minutes = String(now.getMinutes()).padStart(2, "0");
-const seconds = String(now.getSeconds()).padStart(2, "0");
+const month =
+String(
+now.getMonth() + 1
+).padStart(2,"0");
+
+const year =
+now.getFullYear();
+
+const hours =
+String(
+now.getHours()
+).padStart(2,"0");
+
+const minutes =
+String(
+now.getMinutes()
+).padStart(2,"0");
+
+const seconds =
+String(
+now.getSeconds()
+).padStart(2,"0");
+
 
 document.getElementById("datetime").innerHTML =
-day + "/" + month + "/" + year + "<br>" + hours + ":" + minutes + ":" + seconds;
+
+day +
+"/" +
+month +
+"/" +
+year +
+"<br>" +
+hours +
+":" +
+minutes +
+":" +
+seconds;
 
 }
 
+
 updateDateTime();
-setInterval(updateDateTime, 1000);
+
+setInterval(
+updateDateTime,
+1000
+);
 
 
 // ======================================
@@ -639,26 +821,50 @@ setInterval(updateDateTime, 1000);
 
 async function loadForecast(){
 
-const latitude = 25.5828380;
-const longitude = 47.1852031;
+const latitude =
+25.5828380;
+
+const longitude =
+47.1852031;
+
 
 const url =
+
 `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}` +
+
 `&daily=weather_code,temperature_2m_max,temperature_2m_min,wind_speed_10m_max,wind_gusts_10m_max` +
+
 `&timezone=Asia%2FRiyadh`;
+
 
 try{
 
-const response = await fetch(url);
+const response =
+await fetch(url);
+
 
 if(!response.ok){
-throw new Error("Forecast HTTP " + response.status);
+
+throw new Error(
+"Forecast HTTP " +
+response.status
+);
+
 }
 
-const data = await response.json();
-const container = document.getElementById("forecastDays");
+
+const data =
+await response.json();
+
+
+const container =
+document.getElementById(
+"forecastDays"
+);
+
 
 const days = [
+
 "الأحد",
 "الاثنين",
 "الثلاثاء",
@@ -666,33 +872,87 @@ const days = [
 "الخميس",
 "الجمعة",
 "السبت"
+
 ];
+
 
 container.innerHTML = "";
 
+
 for(let i = 0; i < 7; i++){
 
-const date = new Date(data.daily.time[i] + "T00:00:00");
-const max = Math.round(data.daily.temperature_2m_max[i]);
-const min = Math.round(data.daily.temperature_2m_min[i]);
-const wind = Math.round(data.daily.wind_speed_10m_max[i]);
-const gust = Math.round(data.daily.wind_gusts_10m_max[i]);
-const icon = weatherIcon(data.daily.weather_code[i]);
+const date =
+new Date(
+data.daily.time[i] +
+"T00:00:00"
+);
+
+
+const max =
+Math.round(
+data.daily.temperature_2m_max[i]
+);
+
+const min =
+Math.round(
+data.daily.temperature_2m_min[i]
+);
+
+const wind =
+Math.round(
+data.daily.wind_speed_10m_max[i]
+);
+
+const gust =
+Math.round(
+data.daily.wind_gusts_10m_max[i]
+);
+
+const icon =
+weatherIcon(
+data.daily.weather_code[i]
+);
+
 
 container.innerHTML += `
+
 <div class="forecast-day">
-<span class="forecast-name">${days[date.getDay()]}</span>
-<span class="forecast-icon">${icon}</span>
-<span class="forecast-temp">${max}° / ${min}°</span>
-<span class="forecast-wind">🌪️ ${wind} km/h</span>
-<span class="forecast-gust">هبات ${gust} km/h</span>
+
+<span class="forecast-name">
+${days[date.getDay()]}
+</span>
+
+<span class="forecast-icon">
+${icon}
+</span>
+
+<span class="forecast-temp">
+${max}° / ${min}°
+</span>
+
+<span class="forecast-wind">
+🌪️ ${wind} km/h
+</span>
+
+<span class="forecast-gust">
+هبات ${gust} km/h
+</span>
+
 </div>
+
 `;
 
 }
 
-}catch(error){
-console.error("خطأ في توقعات الطقس:", error);
+}
+
+catch(error){
+
+console.error(
+"خطأ في توقعات الطقس:",
+error
+);
+
 }
 
 }
@@ -704,21 +964,41 @@ console.error("خطأ في توقعات الطقس:", error);
 
 function weatherIcon(code){
 
-if(code === 0) return "☀️";
-if(code === 1 || code === 2) return "🌤️";
-if(code === 3) return "☁️";
-if(code >= 45 && code <= 48) return "🌫️";
-if(code >= 51 && code <= 67) return "🌧️";
-if(code >= 71 && code <= 77) return "❄️";
-if(code >= 80 && code <= 82) return "🌦️";
-if(code >= 95) return "⛈️";
+if(code === 0)
+return "☀️";
+
+if(code === 1 || code === 2)
+return "🌤️";
+
+if(code === 3)
+return "☁️";
+
+if(code >= 45 && code <= 48)
+return "🌫️";
+
+if(code >= 51 && code <= 67)
+return "🌧️";
+
+if(code >= 71 && code <= 77)
+return "❄️";
+
+if(code >= 80 && code <= 82)
+return "🌦️";
+
+if(code >= 95)
+return "⛈️";
 
 return "🌤️";
 
 }
 
+
 loadForecast();
-setInterval(loadForecast, 60 * 60 * 1000);
+
+setInterval(
+loadForecast,
+60 * 60 * 1000
+);
 
 </script>
 
