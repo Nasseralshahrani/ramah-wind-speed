@@ -20,11 +20,8 @@ const firebaseConfig = {
         "https://naser-wynd-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
-
 const weatherRef = ref(db, "/");
 
 
@@ -33,32 +30,9 @@ const weatherRef = ref(db, "/");
 ================================= */
 
 let lastSeen = 0;
-
 let currentWind = 0;
-
 let currentTemperature = null;
-
 let currentHumidity = null;
-
-
-/* =================================
-   TEMPERATURE FILTER
-   منع القراءات المتذبذبة
-================================= */
-
-let acceptedTemperature = null;
-
-let pendingTemperature = null;
-
-let pendingTemperatureCount = 0;
-
-
-/*
-   لا نعتمد الحرارة الجديدة مباشرة.
-   يجب أن تصل نفس القراءة 3 مرات متتالية.
-*/
-
-const TEMPERATURE_CONFIRM_COUNT = 3;
 
 
 /* =================================
@@ -109,134 +83,28 @@ const windDirection =
 
 
 /* =================================
-   TEMPERATURE STABILITY
+   TEMPERATURE
+   Firebase → الموقع مباشرة
 ================================= */
 
-function updateStableTemperature(newTemperature) {
+function updateTemperature(temperature) {
 
-    /*
-       أول قراءة صحيحة
-    */
-
-    if (acceptedTemperature === null) {
-
-        acceptedTemperature =
-            newTemperature;
-
-        currentTemperature =
-            newTemperature;
-
-        displayTemperature();
-
-        return;
-    }
-
-
-    /*
-       إذا كانت القراءة نفس الحرارة الحالية
-       نثبتها ونلغي أي قراءة معلقة
-    */
-
-    if (
-        Math.abs(
-            newTemperature -
-            acceptedTemperature
-        ) < 0.5
-    ) {
-
-        pendingTemperature =
-            null;
-
-        pendingTemperatureCount =
-            0;
-
-        currentTemperature =
-            acceptedTemperature;
-
-        displayTemperature();
-
-        return;
-    }
-
-
-    /*
-       قراءة جديدة مختلفة
-    */
-
-    if (
-        pendingTemperature !== null &&
-        Math.abs(
-            newTemperature -
-            pendingTemperature
-        ) < 0.5
-    ) {
-
-        pendingTemperatureCount++;
-
-    }
-    else {
-
-        pendingTemperature =
-            newTemperature;
-
-        pendingTemperatureCount =
-            1;
-    }
-
-
-    /*
-       إذا تكررت القراءة 3 مرات
-       نعتمدها
-    */
-
-    if (
-        pendingTemperatureCount >=
-        TEMPERATURE_CONFIRM_COUNT
-    ) {
-
-        acceptedTemperature =
-            pendingTemperature;
-
-        currentTemperature =
-            acceptedTemperature;
-
-        pendingTemperature =
-            null;
-
-        pendingTemperatureCount =
-            0;
-
-        displayTemperature();
-    }
-
-}
-
-
-/* =================================
-   DISPLAY TEMPERATURE
-================================= */
-
-function displayTemperature() {
-
-    if (currentTemperature === null)
+    if (!Number.isFinite(temperature))
         return;
 
+    currentTemperature = temperature;
 
-    const temperature =
-        currentTemperature;
-
+    const displayTemp =
+        Math.round(temperature);
 
     mainTemperature.textContent =
-        temperature.toFixed(0);
-
+        displayTemp;
 
     tempValue.textContent =
-        temperature.toFixed(0);
-
+        displayTemp;
 
     feelsTemperature.textContent =
-        temperature.toFixed(0);
-
+        displayTemp;
 
     updateWeatherDisplay();
 }
@@ -312,14 +180,12 @@ function updateWeatherDisplay() {
     if (currentTemperature === null)
         return;
 
-
     weatherDescription.textContent =
         getWeatherDescription(
             currentTemperature,
             currentHumidity ?? 0,
             currentWind
         );
-
 
     weatherSymbol.textContent =
         getWeatherIcon(
@@ -338,22 +204,15 @@ function updateWindDirection() {
 
     if (currentWind >= 60) {
 
-        windDirection.textContent =
-            "→";
+        windDirection.textContent = "→";
 
-    }
+    } else if (currentWind >= 35) {
 
-    else if (currentWind >= 35) {
+        windDirection.textContent = "↗";
 
-        windDirection.textContent =
-            "↗";
+    } else {
 
-    }
-
-    else {
-
-        windDirection.textContent =
-            "↑";
+        windDirection.textContent = "↑";
     }
 }
 
@@ -368,15 +227,12 @@ onValue(
 
     (snapshot) => {
 
-        const data =
-            snapshot.val();
-
+        const data = snapshot.val();
 
         console.log(
             "RAMAH WEATHER DATA:",
             data
         );
-
 
         if (!data) {
 
@@ -398,32 +254,25 @@ onValue(
             const wind =
                 Number(data.windSpeed);
 
-
             if (Number.isFinite(wind)) {
 
-                currentWind =
-                    wind;
-
+                currentWind = wind;
 
                 windValue.textContent =
                     wind.toFixed(1);
 
-
                 mainWind.textContent =
                     wind.toFixed(1);
 
-
                 gustValue.textContent =
-                    Math.round(
-                        wind * 1.35
-                    );
+                    Math.round(wind * 1.35);
             }
         }
 
 
         /* =========================
            TEMPERATURE
-           FILTERED
+           بدون فلتر
         ========================= */
 
         if (
@@ -434,16 +283,13 @@ onValue(
             const temperature =
                 Number(data.temperature);
 
-
             if (
                 Number.isFinite(temperature) &&
                 temperature >= -20 &&
                 temperature <= 60
             ) {
 
-                updateStableTemperature(
-                    temperature
-                );
+                updateTemperature(temperature);
             }
         }
 
@@ -460,22 +306,22 @@ onValue(
             const humidity =
                 Number(data.humidity);
 
+            if (
+                Number.isFinite(humidity) &&
+                humidity >= 0 &&
+                humidity <= 100
+            ) {
 
-            if (Number.isFinite(humidity)) {
-
-                currentHumidity =
-                    humidity;
-
+                currentHumidity = humidity;
 
                 humidityValue.textContent =
-                    humidity.toFixed(0) +
-                    " %";
+                    humidity.toFixed(0) + " %";
             }
         }
 
 
         /* =========================
-           UPDATE WEATHER
+           WEATHER
         ========================= */
 
         updateWeatherDisplay();
@@ -500,16 +346,13 @@ onValue(
             lastSeen =
                 Number(data.lastSeen);
 
-
             const date =
                 new Date(lastSeen);
-
 
             if (!isNaN(date.getTime())) {
 
                 mainDate.textContent =
                     formatArabicDate(date);
-
 
                 lastUpdate.textContent =
                     formatTime(date);
@@ -525,7 +368,6 @@ onValue(
 
     },
 
-
     (error) => {
 
         console.error(
@@ -535,7 +377,6 @@ onValue(
 
         setOffline();
     }
-
 );
 
 
@@ -552,30 +393,22 @@ function checkConnection() {
         return;
     }
 
-
     const age =
         Date.now() - lastSeen;
-
 
     if (
         age >= 0 &&
         age <= 10000
     ) {
 
-        mainStatus.classList.add(
-            "online"
-        );
+        mainStatus.classList.add("online");
 
         mainStatusText.textContent =
             "المحطة متصلة";
 
-    }
+    } else {
 
-    else {
-
-        mainStatus.classList.remove(
-            "online"
-        );
+        mainStatus.classList.remove("online");
 
         mainStatusText.textContent =
             "المحطة منقطعة";
@@ -589,9 +422,7 @@ function checkConnection() {
 
 function setOffline() {
 
-    mainStatus.classList.remove(
-        "online"
-    );
+    mainStatus.classList.remove("online");
 
     mainStatusText.textContent =
         "المحطة منقطعة";
@@ -615,7 +446,6 @@ setInterval(
 function formatArabicDate(date) {
 
     const days = [
-
         "الأحد",
         "الاثنين",
         "الثلاثاء",
@@ -623,12 +453,9 @@ function formatArabicDate(date) {
         "الخميس",
         "الجمعة",
         "السبت"
-
     ];
 
-
     const months = [
-
         "يناير",
         "فبراير",
         "مارس",
@@ -641,18 +468,14 @@ function formatArabicDate(date) {
         "أكتوبر",
         "نوفمبر",
         "ديسمبر"
-
     ];
 
-
     return (
-
         days[date.getDay()] +
         "، " +
         date.getDate() +
         " " +
         months[date.getMonth()]
-
     );
 }
 
@@ -664,22 +487,16 @@ function formatArabicDate(date) {
 function formatTime(date) {
 
     const h =
-        String(
-            date.getHours()
-        ).padStart(2, "0");
-
+        String(date.getHours())
+            .padStart(2, "0");
 
     const m =
-        String(
-            date.getMinutes()
-        ).padStart(2, "0");
-
+        String(date.getMinutes())
+            .padStart(2, "0");
 
     const s =
-        String(
-            date.getSeconds()
-        ).padStart(2, "0");
-
+        String(date.getSeconds())
+            .padStart(2, "0");
 
     return (
         h +
@@ -696,14 +513,12 @@ function formatTime(date) {
 ================================= */
 
 setInterval(
-
     () => {
 
         if (lastSeen) {
 
             const date =
                 new Date(lastSeen);
-
 
             if (!isNaN(date.getTime())) {
 
@@ -713,7 +528,6 @@ setInterval(
         }
 
     },
-
     1000
 );
 
@@ -727,16 +541,13 @@ window.changeTheme = function () {
     document.body.style.background =
         "radial-gradient(circle at 50% -10%, #174e61 0%, #073445 35%, #031b27 70%, #02131c 100%)";
 
-
     setTimeout(
-
         () => {
 
             document.body.style.background =
                 "radial-gradient(circle at 50% -10%, #0d4355 0%, #062b3a 30%, #031b27 65%, #02131c 100%)";
 
         },
-
         1200
     );
 };
