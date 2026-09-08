@@ -12,7 +12,7 @@ import {
 
 
 /* =================================
-   FIREBASE CONFIG
+   FIREBASE
 ================================= */
 
 const firebaseConfig = {
@@ -22,6 +22,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
 const weatherRef = ref(db, "/");
 
 
@@ -83,6 +84,28 @@ const windDirection =
 
 
 /* =================================
+   GET NUMBER
+================================= */
+
+function getNumber(value) {
+
+    if (
+        value === undefined ||
+        value === null ||
+        value === ""
+    ) {
+        return null;
+    }
+
+    const number = Number(value);
+
+    return Number.isFinite(number)
+        ? number
+        : null;
+}
+
+
+/* =================================
    WEATHER DESCRIPTION
 ================================= */
 
@@ -92,29 +115,23 @@ function getWeatherDescription(
     wind
 ) {
 
-    if (wind >= 60) {
+    if (wind >= 60)
         return "رياح قوية";
-    }
 
-    if (wind >= 35) {
+    if (wind >= 35)
         return "رياح نشطة";
-    }
 
-    if (temperature >= 45) {
+    if (temperature >= 45)
         return "أجواء شديدة الحرارة";
-    }
 
-    if (temperature >= 35) {
+    if (temperature >= 35)
         return "أجواء حارة";
-    }
 
-    if (temperature <= 10) {
+    if (temperature <= 10)
         return "أجواء باردة";
-    }
 
-    if (humidity >= 80) {
+    if (humidity >= 80)
         return "رطوبة مرتفعة";
-    }
 
     return "سماء صافية";
 }
@@ -130,25 +147,20 @@ function getWeatherIcon(
     wind
 ) {
 
-    if (wind >= 60) {
+    if (wind >= 60)
         return "🌪️";
-    }
 
-    if (wind >= 35) {
+    if (wind >= 35)
         return "💨";
-    }
 
-    if (humidity >= 80) {
+    if (humidity >= 80)
         return "🌧️";
-    }
 
-    if (temperature >= 40) {
+    if (temperature >= 40)
         return "☀️";
-    }
 
-    if (temperature <= 15) {
+    if (temperature <= 15)
         return "🌤️";
-    }
 
     return "☀️";
 }
@@ -161,12 +173,15 @@ function getWeatherIcon(
 function updateWindDirection() {
 
     if (currentWind >= 60) {
+
         windDirection.textContent = "→";
-    }
-    else if (currentWind >= 35) {
+
+    } else if (currentWind >= 35) {
+
         windDirection.textContent = "↗";
-    }
-    else {
+
+    } else {
+
         windDirection.textContent = "↑";
     }
 }
@@ -183,152 +198,218 @@ onValue(
 
         const data = snapshot.val();
 
-        console.log("Firebase DATA:", data);
+        console.log("=================================");
+        console.log("RAMAH WEATHER FIREBASE DATA");
+        console.log(data);
+        console.log("=================================");
+
 
         if (!data) {
+
+            console.warn("Firebase فارغ");
+
             setOffline();
+
             return;
         }
 
 
-        /* -------------------------
+        /* =================================
            WIND
-        ------------------------- */
+        ================================= */
 
-        if (
-            data.windSpeed !== undefined &&
-            data.windSpeed !== null
-        ) {
+        let wind =
+            getNumber(data.windSpeed);
 
-            const wind =
-                parseFloat(data.windSpeed);
 
-            if (!isNaN(wind)) {
+        if (wind === null) {
 
-                currentWind = wind;
+            wind =
+                getNumber(data.wind);
 
-                windValue.textContent =
-                    wind.toFixed(1);
-
-                mainWind.textContent =
-                    wind.toFixed(1);
-
-                gustValue.textContent =
-                    Math.round(wind * 1.35);
-            }
         }
 
 
-        /* -------------------------
+        if (wind !== null) {
+
+            currentWind = wind;
+
+            windValue.textContent =
+                wind.toFixed(1);
+
+            mainWind.textContent =
+                wind.toFixed(1);
+
+            gustValue.textContent =
+                Math.round(wind * 1.35);
+        }
+
+
+        /* =================================
            TEMPERATURE
-        ------------------------- */
+        ================================= */
+
+        let temperature =
+            getNumber(data.temperature);
+
+
+        /*
+         * دعم حالة:
+         *
+         * weather:
+         *   temperature
+         */
 
         if (
-            data.temperature !== undefined &&
-            data.temperature !== null
+            temperature === null &&
+            data.weather
         ) {
 
-            const temp =
-                parseFloat(data.temperature);
-
-            if (!isNaN(temp)) {
-
-                currentTemperature = temp;
-
-                mainTemperature.textContent =
-                    temp.toFixed(0);
-
-                tempValue.textContent =
-                    temp.toFixed(0);
-
-                feelsTemperature.textContent =
-                    temp.toFixed(0);
-            }
+            temperature =
+                getNumber(
+                    data.weather.temperature
+                );
         }
 
 
-        /* -------------------------
+        if (temperature !== null) {
+
+            currentTemperature =
+                temperature;
+
+            mainTemperature.textContent =
+                temperature.toFixed(0);
+
+            tempValue.textContent =
+                temperature.toFixed(0);
+
+            feelsTemperature.textContent =
+                temperature.toFixed(0);
+        }
+
+
+        /* =================================
            HUMIDITY
-        ------------------------- */
+        ================================= */
+
+        let humidity =
+            getNumber(data.humidity);
+
+
+        /*
+         * دعم حالة:
+         *
+         * weather:
+         *   humidity
+         */
 
         if (
-            data.humidity !== undefined &&
-            data.humidity !== null
+            humidity === null &&
+            data.weather
         ) {
 
-            const hum =
-                parseFloat(data.humidity);
-
-            if (!isNaN(hum)) {
-
-                currentHumidity = hum;
-
-                humidityValue.textContent =
-                    hum.toFixed(0) + " %";
-            }
+            humidity =
+                getNumber(
+                    data.weather.humidity
+                );
         }
 
 
-        /* -------------------------
-           WEATHER DISPLAY
-        ------------------------- */
+        if (humidity !== null) {
 
-        if (currentTemperature !== null) {
+            currentHumidity =
+                humidity;
+
+            humidityValue.textContent =
+                humidity.toFixed(0) + " %";
+        }
+
+
+        /* =================================
+           WEATHER DISPLAY
+        ================================= */
+
+        if (
+            currentTemperature !== null
+        ) {
 
             weatherDescription.textContent =
                 getWeatherDescription(
                     currentTemperature,
-                    currentHumidity || 0,
+                    currentHumidity ?? 0,
                     currentWind
                 );
 
             weatherSymbol.textContent =
                 getWeatherIcon(
                     currentTemperature,
-                    currentHumidity || 0,
+                    currentHumidity ?? 0,
                     currentWind
                 );
         }
 
 
-        /* -------------------------
+        /* =================================
            WIND DIRECTION
-        ------------------------- */
+        ================================= */
 
         updateWindDirection();
 
 
-        /* -------------------------
+        /* =================================
            LAST SEEN
-        ------------------------- */
+        ================================= */
 
-        if (data.lastSeen) {
+        let firebaseLastSeen =
+            getNumber(data.lastSeen);
+
+
+        if (firebaseLastSeen !== null) {
+
+            /*
+             * إذا كان ESP32 أرسل الوقت
+             * بالثواني بدل milliseconds
+             */
+
+            if (firebaseLastSeen < 100000000000) {
+
+                firebaseLastSeen *= 1000;
+            }
 
             lastSeen =
-                Number(data.lastSeen);
+                firebaseLastSeen;
 
             const date =
                 new Date(lastSeen);
 
-            mainDate.textContent =
-                formatArabicDate(date);
 
-            lastUpdate.textContent =
-                formatTime(date);
+            if (!isNaN(date.getTime())) {
+
+                mainDate.textContent =
+                    formatArabicDate(date);
+
+                lastUpdate.textContent =
+                    formatTime(date);
+            }
         }
 
 
-        /* -------------------------
-           CONNECTED
-        ------------------------- */
+        /* =================================
+           CONNECTION
+        ================================= */
 
         checkConnection();
     },
 
+
+    /* =================================
+       FIREBASE ERROR
+    ================================= */
+
     (error) => {
 
         console.error(
-            "Firebase error:",
+            "Firebase ERROR:",
             error
         );
 
@@ -344,21 +425,33 @@ onValue(
 function checkConnection() {
 
     if (!lastSeen) {
+
         setOffline();
+
         return;
     }
+
 
     const age =
         Date.now() - lastSeen;
 
-    if (age <= 10000) {
+
+    /*
+     * المحطة تعتبر متصلة إذا
+     * حدثت البيانات خلال آخر 10 ثوانٍ
+     */
+
+    if (
+        age >= 0 &&
+        age <= 10000
+    ) {
 
         mainStatus.classList.add("online");
 
         mainStatusText.textContent =
             "المحطة متصلة";
-    }
-    else {
+
+    } else {
 
         mainStatus.classList.remove("online");
 
@@ -382,7 +475,7 @@ function setOffline() {
 
 
 /* =================================
-   TIME CHECK
+   CONNECTION TIMER
 ================================= */
 
 setInterval(
@@ -392,7 +485,7 @@ setInterval(
 
 
 /* =================================
-   DATE
+   ARABIC DATE
 ================================= */
 
 function formatArabicDate(date) {
@@ -432,6 +525,10 @@ function formatArabicDate(date) {
 }
 
 
+/* =================================
+   TIME
+================================= */
+
 function formatTime(date) {
 
     const h =
@@ -451,7 +548,7 @@ function formatTime(date) {
 
 
 /* =================================
-   PAGE CLOCK
+   LIVE CLOCK
 ================================= */
 
 setInterval(
@@ -462,8 +559,11 @@ setInterval(
             const date =
                 new Date(lastSeen);
 
-            lastUpdate.textContent =
-                formatTime(date);
+            if (!isNaN(date.getTime())) {
+
+                lastUpdate.textContent =
+                    formatTime(date);
+            }
         }
 
     },
@@ -475,7 +575,7 @@ setInterval(
    THEME
 ================================= */
 
-window.changeTheme = function () {
+window.changeTheme = function() {
 
     document.body.style.background =
         "radial-gradient(circle at 50% -10%, #174e61 0%, #073445 35%, #031b27 70%, #02131c 100%)";
@@ -496,7 +596,7 @@ window.changeTheme = function () {
    SCROLL
 ================================= */
 
-window.scrollToForecast = function () {
+window.scrollToForecast = function() {
 
     document
         .getElementById("forecast")
