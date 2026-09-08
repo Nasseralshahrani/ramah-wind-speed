@@ -1,8 +1,6 @@
 <script type="module">
 
-import {
-    initializeApp
-} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 
 import {
     getDatabase,
@@ -11,39 +9,33 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 
-/* =================================
-   FIREBASE CONFIG
-================================= */
+// =================================
+// FIREBASE CONFIG
+// =================================
 
 const firebaseConfig = {
     databaseURL:
         "https://naser-wynd-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
-
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
-
 const weatherRef = ref(db, "/");
 
 
-/* =================================
-   VARIABLES
-================================= */
+// =================================
+// VARIABLES
+// =================================
 
 let lastSeen = 0;
-
 let currentWind = 0;
-
 let currentTemperature = null;
-
 let currentHumidity = null;
 
 
-/* =================================
-   ELEMENTS
-================================= */
+// =================================
+// ELEMENTS
+// =================================
 
 const mainTemperature =
     document.getElementById("mainTemperature");
@@ -88,45 +80,32 @@ const windDirection =
     document.getElementById("windDirection");
 
 
-/* =================================
-   TEMPERATURE
-   Firebase → الموقع مباشرة
-================================= */
+// =================================
+// TEMPERATURE
+// Firebase → الشاشة مباشرة
+// =================================
 
 function updateTemperature(temperature) {
 
-    if (!Number.isFinite(temperature))
+    if (!Number.isFinite(temperature)) {
         return;
+    }
 
     currentTemperature = temperature;
 
+    const displayTemp = Math.round(temperature);
 
-    /*
-       عرض درجة الحرارة كما تصل من Firebase
-       مع التقريب لأقرب درجة.
-    */
-
-    const displayTemp =
-        Math.round(temperature);
-
-
-    mainTemperature.textContent =
-        displayTemp;
-
-    tempValue.textContent =
-        displayTemp;
-
-    feelsTemperature.textContent =
-        displayTemp;
-
+    mainTemperature.textContent = displayTemp;
+    tempValue.textContent = displayTemp;
+    feelsTemperature.textContent = displayTemp;
 
     updateWeatherDisplay();
 }
 
 
-/* =================================
-   WEATHER DESCRIPTION
-================================= */
+// =================================
+// WEATHER DESCRIPTION
+// =================================
 
 function getWeatherDescription(
     temperature,
@@ -156,9 +135,9 @@ function getWeatherDescription(
 }
 
 
-/* =================================
-   WEATHER ICON
-================================= */
+// =================================
+// WEATHER ICON
+// =================================
 
 function getWeatherIcon(
     temperature,
@@ -185,15 +164,14 @@ function getWeatherIcon(
 }
 
 
-/* =================================
-   WEATHER DISPLAY
-================================= */
+// =================================
+// WEATHER DISPLAY
+// =================================
 
 function updateWeatherDisplay() {
 
     if (currentTemperature === null)
         return;
-
 
     weatherDescription.textContent =
         getWeatherDescription(
@@ -201,7 +179,6 @@ function updateWeatherDisplay() {
             currentHumidity ?? 0,
             currentWind
         );
-
 
     weatherSymbol.textContent =
         getWeatherIcon(
@@ -212,9 +189,9 @@ function updateWeatherDisplay() {
 }
 
 
-/* =================================
-   WIND DIRECTION
-================================= */
+// =================================
+// WIND DIRECTION
+// =================================
 
 function updateWindDirection() {
 
@@ -233,72 +210,55 @@ function updateWindDirection() {
 }
 
 
-/* =================================
-   FIREBASE LIVE DATA
-================================= */
+// =================================
+// FIREBASE LIVE DATA
+// =================================
 
 onValue(
-
     weatherRef,
 
     (snapshot) => {
 
         const data = snapshot.val();
 
-
-        console.log(
-            "RAMAH WEATHER DATA:",
-            data
-        );
-
+        console.log("RAMAH WEATHER DATA:", data);
 
         if (!data) {
-
             setOffline();
-
             return;
         }
 
 
-        /* =========================
-           WIND
-        ========================= */
+        // =========================
+        // WIND
+        // =========================
 
         if (
             data.windSpeed !== undefined &&
             data.windSpeed !== null
         ) {
 
-            const wind =
-                Number(data.windSpeed);
-
+            const wind = Number(data.windSpeed);
 
             if (Number.isFinite(wind)) {
 
-                currentWind =
-                    wind;
-
+                currentWind = wind;
 
                 windValue.textContent =
                     wind.toFixed(1);
 
-
                 mainWind.textContent =
                     wind.toFixed(1);
 
-
                 gustValue.textContent =
-                    Math.round(
-                        wind * 1.35
-                    );
+                    Math.round(wind * 1.35);
             }
         }
 
 
-        /* =========================
-           TEMPERATURE
-           Firebase مباشرة
-        ========================= */
+        // =========================
+        // TEMPERATURE
+        // =========================
 
         if (
             data.temperature !== undefined &&
@@ -308,23 +268,20 @@ onValue(
             const temperature =
                 Number(data.temperature);
 
-
             if (
                 Number.isFinite(temperature) &&
                 temperature >= -20 &&
                 temperature <= 60
             ) {
 
-                updateTemperature(
-                    temperature
-                );
+                updateTemperature(temperature);
             }
         }
 
 
-        /* =========================
-           HUMIDITY
-        ========================= */
+        // =========================
+        // HUMIDITY
+        // =========================
 
         if (
             data.humidity !== undefined &&
@@ -334,60 +291,51 @@ onValue(
             const humidity =
                 Number(data.humidity);
 
-
             if (
                 Number.isFinite(humidity) &&
                 humidity >= 0 &&
                 humidity <= 100
             ) {
 
-                currentHumidity =
-                    humidity;
-
+                currentHumidity = humidity;
 
                 humidityValue.textContent =
-                    humidity.toFixed(0) +
-                    " %";
+                    humidity.toFixed(0) + " %";
             }
         }
 
 
-        /* =========================
-           WEATHER
-        ========================= */
+        // =========================
+        // WEATHER
+        // =========================
 
         updateWeatherDisplay();
 
 
-        /* =========================
-           WIND DIRECTION
-        ========================= */
+        // =========================
+        // WIND DIRECTION
+        // =========================
 
         updateWindDirection();
 
 
-        /* =========================
-           LAST SEEN
-        ========================= */
+        // =========================
+        // LAST SEEN
+        // =========================
 
         if (
             data.lastSeen !== undefined &&
             data.lastSeen !== null
         ) {
 
-            lastSeen =
-                Number(data.lastSeen);
+            lastSeen = Number(data.lastSeen);
 
-
-            const date =
-                new Date(lastSeen);
-
+            const date = new Date(lastSeen);
 
             if (!isNaN(date.getTime())) {
 
                 mainDate.textContent =
                     formatArabicDate(date);
-
 
                 lastUpdate.textContent =
                     formatTime(date);
@@ -395,62 +343,49 @@ onValue(
         }
 
 
-        /* =========================
-           CONNECTION
-        ========================= */
+        // =========================
+        // CONNECTION
+        // =========================
 
         checkConnection();
-
     },
-
 
     (error) => {
 
-        console.error(
-            "Firebase error:",
-            error
-        );
+        console.error("Firebase error:", error);
 
         setOffline();
     }
 );
 
 
-/* =================================
-   CONNECTION CHECK
-================================= */
+// =================================
+// CONNECTION CHECK
+// =================================
 
 function checkConnection() {
 
     if (!lastSeen) {
 
         setOffline();
-
         return;
     }
 
-
-    const age =
-        Date.now() - lastSeen;
-
+    const age = Date.now() - lastSeen;
 
     if (
         age >= 0 &&
         age <= 10000
     ) {
 
-        mainStatus.classList.add(
-            "online"
-        );
+        mainStatus.classList.add("online");
 
         mainStatusText.textContent =
             "المحطة متصلة";
 
     } else {
 
-        mainStatus.classList.remove(
-            "online"
-        );
+        mainStatus.classList.remove("online");
 
         mainStatusText.textContent =
             "المحطة منقطعة";
@@ -458,24 +393,22 @@ function checkConnection() {
 }
 
 
-/* =================================
-   OFFLINE
-================================= */
+// =================================
+// OFFLINE
+// =================================
 
 function setOffline() {
 
-    mainStatus.classList.remove(
-        "online"
-    );
+    mainStatus.classList.remove("online");
 
     mainStatusText.textContent =
         "المحطة منقطعة";
 }
 
 
-/* =================================
-   CONNECTION TIMER
-================================= */
+// =================================
+// CONNECTION TIMER
+// =================================
 
 setInterval(
     checkConnection,
@@ -483,9 +416,9 @@ setInterval(
 );
 
 
-/* =================================
-   ARABIC DATE
-================================= */
+// =================================
+// ARABIC DATE
+// =================================
 
 function formatArabicDate(date) {
 
@@ -498,7 +431,6 @@ function formatArabicDate(date) {
         "الجمعة",
         "السبت"
     ];
-
 
     const months = [
         "يناير",
@@ -515,7 +447,6 @@ function formatArabicDate(date) {
         "ديسمبر"
     ];
 
-
     return (
         days[date.getDay()] +
         "، " +
@@ -526,53 +457,35 @@ function formatArabicDate(date) {
 }
 
 
-/* =================================
-   TIME
-================================= */
+// =================================
+// TIME
+// =================================
 
 function formatTime(date) {
 
     const h =
-        String(
-            date.getHours()
-        ).padStart(2, "0");
-
+        String(date.getHours()).padStart(2, "0");
 
     const m =
-        String(
-            date.getMinutes()
-        ).padStart(2, "0");
-
+        String(date.getMinutes()).padStart(2, "0");
 
     const s =
-        String(
-            date.getSeconds()
-        ).padStart(2, "0");
+        String(date.getSeconds()).padStart(2, "0");
 
-
-    return (
-        h +
-        ":" +
-        m +
-        ":" +
-        s
-    );
+    return h + ":" + m + ":" + s;
 }
 
 
-/* =================================
-   LIVE CLOCK
-================================= */
+// =================================
+// LIVE CLOCK
+// =================================
 
 setInterval(
-
     () => {
 
         if (lastSeen) {
 
-            const date =
-                new Date(lastSeen);
-
+            const date = new Date(lastSeen);
 
             if (!isNaN(date.getTime())) {
 
@@ -582,38 +495,34 @@ setInterval(
         }
 
     },
-
     1000
 );
 
 
-/* =================================
-   THEME
-================================= */
+// =================================
+// THEME
+// =================================
 
 window.changeTheme = function () {
 
     document.body.style.background =
         "radial-gradient(circle at 50% -10%, #174e61 0%, #073445 35%, #031b27 70%, #02131c 100%)";
 
-
     setTimeout(
-
         () => {
 
             document.body.style.background =
                 "radial-gradient(circle at 50% -10%, #0d4355 0%, #062b3a 30%, #031b27 65%, #02131c 100%)";
 
         },
-
         1200
     );
 };
 
 
-/* =================================
-   SCROLL
-================================= */
+// =================================
+// SCROLL
+// =================================
 
 window.scrollToForecast = function () {
 
