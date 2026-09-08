@@ -20,8 +20,11 @@ const firebaseConfig = {
         "https://naser-wynd-default-rtdb.europe-west1.firebasedatabase.app"
 };
 
+
 const app = initializeApp(firebaseConfig);
+
 const db = getDatabase(app);
+
 const weatherRef = ref(db, "/");
 
 
@@ -30,8 +33,11 @@ const weatherRef = ref(db, "/");
 ================================= */
 
 let lastSeen = 0;
+
 let currentWind = 0;
+
 let currentTemperature = null;
+
 let currentHumidity = null;
 
 
@@ -94,8 +100,15 @@ function updateTemperature(temperature) {
 
     currentTemperature = temperature;
 
+
+    /*
+       عرض درجة الحرارة كما تصل من Firebase
+       مع التقريب لأقرب درجة.
+    */
+
     const displayTemp =
         Math.round(temperature);
+
 
     mainTemperature.textContent =
         displayTemp;
@@ -105,6 +118,7 @@ function updateTemperature(temperature) {
 
     feelsTemperature.textContent =
         displayTemp;
+
 
     updateWeatherDisplay();
 }
@@ -180,12 +194,14 @@ function updateWeatherDisplay() {
     if (currentTemperature === null)
         return;
 
+
     weatherDescription.textContent =
         getWeatherDescription(
             currentTemperature,
             currentHumidity ?? 0,
             currentWind
         );
+
 
     weatherSymbol.textContent =
         getWeatherIcon(
@@ -229,10 +245,12 @@ onValue(
 
         const data = snapshot.val();
 
+
         console.log(
             "RAMAH WEATHER DATA:",
             data
         );
+
 
         if (!data) {
 
@@ -254,25 +272,32 @@ onValue(
             const wind =
                 Number(data.windSpeed);
 
+
             if (Number.isFinite(wind)) {
 
-                currentWind = wind;
+                currentWind =
+                    wind;
+
 
                 windValue.textContent =
                     wind.toFixed(1);
 
+
                 mainWind.textContent =
                     wind.toFixed(1);
 
+
                 gustValue.textContent =
-                    Math.round(wind * 1.35);
+                    Math.round(
+                        wind * 1.35
+                    );
             }
         }
 
 
         /* =========================
            TEMPERATURE
-           بدون فلتر
+           Firebase مباشرة
         ========================= */
 
         if (
@@ -283,13 +308,16 @@ onValue(
             const temperature =
                 Number(data.temperature);
 
+
             if (
                 Number.isFinite(temperature) &&
                 temperature >= -20 &&
                 temperature <= 60
             ) {
 
-                updateTemperature(temperature);
+                updateTemperature(
+                    temperature
+                );
             }
         }
 
@@ -306,16 +334,20 @@ onValue(
             const humidity =
                 Number(data.humidity);
 
+
             if (
                 Number.isFinite(humidity) &&
                 humidity >= 0 &&
                 humidity <= 100
             ) {
 
-                currentHumidity = humidity;
+                currentHumidity =
+                    humidity;
+
 
                 humidityValue.textContent =
-                    humidity.toFixed(0) + " %";
+                    humidity.toFixed(0) +
+                    " %";
             }
         }
 
@@ -346,13 +378,16 @@ onValue(
             lastSeen =
                 Number(data.lastSeen);
 
+
             const date =
                 new Date(lastSeen);
+
 
             if (!isNaN(date.getTime())) {
 
                 mainDate.textContent =
                     formatArabicDate(date);
+
 
                 lastUpdate.textContent =
                     formatTime(date);
@@ -367,6 +402,7 @@ onValue(
         checkConnection();
 
     },
+
 
     (error) => {
 
@@ -393,22 +429,28 @@ function checkConnection() {
         return;
     }
 
+
     const age =
         Date.now() - lastSeen;
+
 
     if (
         age >= 0 &&
         age <= 10000
     ) {
 
-        mainStatus.classList.add("online");
+        mainStatus.classList.add(
+            "online"
+        );
 
         mainStatusText.textContent =
             "المحطة متصلة";
 
     } else {
 
-        mainStatus.classList.remove("online");
+        mainStatus.classList.remove(
+            "online"
+        );
 
         mainStatusText.textContent =
             "المحطة منقطعة";
@@ -422,7 +464,9 @@ function checkConnection() {
 
 function setOffline() {
 
-    mainStatus.classList.remove("online");
+    mainStatus.classList.remove(
+        "online"
+    );
 
     mainStatusText.textContent =
         "المحطة منقطعة";
@@ -455,6 +499,7 @@ function formatArabicDate(date) {
         "السبت"
     ];
 
+
     const months = [
         "يناير",
         "فبراير",
@@ -469,6 +514,7 @@ function formatArabicDate(date) {
         "نوفمبر",
         "ديسمبر"
     ];
+
 
     return (
         days[date.getDay()] +
@@ -487,16 +533,22 @@ function formatArabicDate(date) {
 function formatTime(date) {
 
     const h =
-        String(date.getHours())
-            .padStart(2, "0");
+        String(
+            date.getHours()
+        ).padStart(2, "0");
+
 
     const m =
-        String(date.getMinutes())
-            .padStart(2, "0");
+        String(
+            date.getMinutes()
+        ).padStart(2, "0");
+
 
     const s =
-        String(date.getSeconds())
-            .padStart(2, "0");
+        String(
+            date.getSeconds()
+        ).padStart(2, "0");
+
 
     return (
         h +
@@ -513,12 +565,14 @@ function formatTime(date) {
 ================================= */
 
 setInterval(
+
     () => {
 
         if (lastSeen) {
 
             const date =
                 new Date(lastSeen);
+
 
             if (!isNaN(date.getTime())) {
 
@@ -528,6 +582,7 @@ setInterval(
         }
 
     },
+
     1000
 );
 
@@ -541,13 +596,16 @@ window.changeTheme = function () {
     document.body.style.background =
         "radial-gradient(circle at 50% -10%, #174e61 0%, #073445 35%, #031b27 70%, #02131c 100%)";
 
+
     setTimeout(
+
         () => {
 
             document.body.style.background =
                 "radial-gradient(circle at 50% -10%, #0d4355 0%, #062b3a 30%, #031b27 65%, #02131c 100%)";
 
         },
+
         1200
     );
 };
